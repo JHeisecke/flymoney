@@ -8,18 +8,23 @@
 import Foundation
 
 protocol UpsertExpenseTitleUseCase: Sendable {
-	func execute(name: String, limit: Money?, period: BudgetPeriod) async throws -> ExpenseTitle
+	func execute(id: UUID?, name: String, limit: Money?, period: BudgetPeriod) async throws -> ExpenseTitle
 }
 
 struct UpsertExpenseTitleUseCaseImpl: UpsertExpenseTitleUseCase {
 	let titles: ExpenseTitleRepository
 
-	func execute(name: String, limit: Money?, period: BudgetPeriod) async throws -> ExpenseTitle {
+	func execute(id: UUID?, name: String, limit: Money?, period: BudgetPeriod) async throws -> ExpenseTitle {
+		let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
 		let title: ExpenseTitle
-		if let existing = try await titles.title(named: name) {
-			title = ExpenseTitle(id: existing.id, name: name, limit: limit, period: period, createdAt: existing.createdAt)
+		if let id, let existing = try await titles.title(id: id) {
+			title = ExpenseTitle(id: existing.id, name: trimmed, limit: limit,
+								period: period, createdAt: existing.createdAt)
+		} else if let existing = try await titles.title(named: trimmed) {
+			title = ExpenseTitle(id: existing.id, name: trimmed, limit: limit,
+								period: period, createdAt: existing.createdAt)
 		} else {
-			title = ExpenseTitle(name: name, limit: limit, period: period)
+			title = ExpenseTitle(name: trimmed, limit: limit, period: period)
 		}
 		try await titles.upsert(title)
 		return title

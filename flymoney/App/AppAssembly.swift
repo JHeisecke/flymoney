@@ -6,10 +6,72 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @MainActor
 final class AppAssembly {
+	private let container: ModelContainer
+	private let currencyProvider: CurrencyProvider
+	private let expenseRepo: ExpenseRepository
+	private let titleRepo: ExpenseTitleRepository
+
+	init() throws {
+		container = try SwiftDataStack.makeContainer()
+		let provider = LocaleCurrencyProvider()
+		currencyProvider = provider
+		expenseRepo = SwiftDataExpenseRepository(
+			modelContainer: container
+		)
+		titleRepo = SwiftDataExpenseTitleRepository(
+			modelContainer: container, defaultCurrencyCode: provider.defaultCurrencyCode
+		)
+	}
+
+	func makeAddExpenseUseCase() -> any AddExpenseUseCase {
+		AddExpenseUseCaseImpl(expenses: expenseRepo, titles: titleRepo)
+	}
+
+	func makeFetchExpensesForMonthUseCase() -> any FetchExpensesForMonthUseCase {
+		FetchExpensesForMonthUseCaseImpl(expenses: expenseRepo)
+	}
+
+	func makeRemainingBudgetUseCase() -> any RemainingBudgetUseCase {
+		RemainingBudgetUseCaseImpl(expenses: expenseRepo, titles: titleRepo)
+	}
+
+	func makeSearchExpenseTitlesUseCase() -> any SearchExpenseTitlesUseCase {
+		SearchExpenseTitlesUseCaseImpl(titles: titleRepo)
+	}
+
+	func makeUpsertExpenseTitleUseCase() -> any UpsertExpenseTitleUseCase {
+		UpsertExpenseTitleUseCaseImpl(titles: titleRepo)
+	}
+
+	func makeDeleteExpenseUseCase() -> any DeleteExpenseUseCase {
+		DeleteExpenseUseCaseImpl(expenses: expenseRepo)
+	}
+
+	func makeExportMonthUseCase() -> any ExportMonthUseCase {
+		ExportMonthUseCaseImpl(expenses: expenseRepo, titles: titleRepo, currencyProvider: currencyProvider)
+	}
+
+	func makeFetchExpenseTitlesUseCase() -> any FetchExpenseTitlesUseCase {
+		FetchExpenseTitlesUseCaseImpl(titles: titleRepo)
+	}
+
+	func makeDeleteExpenseTitleUseCase() -> any DeleteExpenseTitleUseCase {
+		DeleteExpenseTitleUseCaseImpl(titles: titleRepo, expenses: expenseRepo)
+	}
+
+	func makeTitlesViewModel() -> TitlesViewModel {
+		TitlesViewModel(
+			fetchTitles: makeFetchExpenseTitlesUseCase(),
+			upsertTitle: makeUpsertExpenseTitleUseCase(),
+			deleteTitle: makeDeleteExpenseTitleUseCase(),
+			currencyCode: currencyProvider.defaultCurrencyCode)
+	}
+
 	func makeRootView() -> some View {
-		RootView()
+		RootView(assembly: self)
 	}
 }

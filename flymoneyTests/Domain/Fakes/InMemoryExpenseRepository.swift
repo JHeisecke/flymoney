@@ -26,4 +26,8 @@ actor InMemoryExpenseRepository: ExpenseRepository {
 			return inInterval && matchesTitle
 		}
 	}
+
+	func count(forTitleID titleID: UUID) async throws -> Int {
+		storage.filter { $0.titleID == titleID }.count
+	}
 }

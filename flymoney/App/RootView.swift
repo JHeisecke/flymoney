@@ -10,6 +10,7 @@ import SwiftUI
 struct RootView: View {
 	enum TabID: Hashable { case add, history, titles }
 	@State private var selection: TabID = .add
+	let assembly: AppAssembly
 
 	var body: some View {
 		TabView(selection: $selection) {
@@ -20,7 +21,7 @@ struct RootView: View {
 				PlaceholderScreen(title: "History")
 			}
 			Tab("Titles", systemImage: "tag", value: TabID.titles) {
-				PlaceholderScreen(title: "Titles")
+				TitlesView(viewModel: assembly.makeTitlesViewModel())
 			}
 		}
 		.tint(Theme.Colors.accent)

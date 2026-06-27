@@ -15,6 +15,10 @@ actor InMemoryExpenseTitleRepository: ExpenseTitleRepository {
 		storage[title.id] = title
 	}
 
+	func delete(id: UUID) async throws {
+		storage.removeValue(forKey: id)
+	}
+
 	func title(id: UUID) async throws -> ExpenseTitle? {
 		storage[id]
 	}
