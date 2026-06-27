@@ -50,7 +50,7 @@ struct SharingViewModelTests {
 			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: titles),
 			addExpense: AddExpenseUseCaseImpl(expenses: expenses, titles: titles),
 			upsertTitle: UpsertExpenseTitleUseCaseImpl(titles: titles),
-			transport: BLEQRSharingTransport())
+			transport: transport)
 	}
 
 	@Test("sender happy path event trail")

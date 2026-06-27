@@ -36,7 +36,8 @@ final class SharingViewModel {
 	private let fetchTitles: any FetchExpenseTitlesUseCase
 	private let addExpense: any AddExpenseUseCase
 	private let upsertTitle: any UpsertExpenseTitleUseCase
-	let transport: BLEQRSharingTransport
+	private let sharingTransport: any SharingTransport
+	let bleTransport: BLEQRSharingTransport?
 
 	init(role: SharingRole,
 		 exportMonth: any ExportMonthUseCase,
@@ -45,7 +46,8 @@ final class SharingViewModel {
 		 fetchTitles: any FetchExpenseTitlesUseCase,
 		 addExpense: any AddExpenseUseCase,
 		 upsertTitle: any UpsertExpenseTitleUseCase,
-		 transport: BLEQRSharingTransport) {
+		 transport: any SharingTransport,
+		 bleTransport: BLEQRSharingTransport? = nil) {
 		self.role = role
 		self.exportMonth = exportMonth
 		self.importShared = importShared
@@ -53,7 +55,8 @@ final class SharingViewModel {
 		self.fetchTitles = fetchTitles
 		self.addExpense = addExpense
 		self.upsertTitle = upsertTitle
-		self.transport = transport
+		self.sharingTransport = transport
+		self.bleTransport = bleTransport
 	}
 
 	func start() async {
@@ -66,12 +69,12 @@ final class SharingViewModel {
 	}
 
 	func cancel() {
-		transport.cancel()
+		bleTransport?.cancel()
 		phase = .idle
 	}
 
 	func provideScannedQR(_ text: String) {
-		transport.provideScannedQR(text)
+		bleTransport?.provideScannedQR(text)
 	}
 
 	func setResolution(_ id: UUID, _ r: MergeResolution) async {
@@ -103,12 +106,12 @@ final class SharingViewModel {
 	private func startSend(month: CalendarMonth) async {
 		do {
 			let payload = try await exportMonth.execute(month)
-			let stream = transport.send(payload)
+			let stream = sharingTransport.send(payload)
 			for await event in stream {
 				switch event {
 				case .handshaking:
 					phase = .handshaking
-					qrText = transport.qrText
+					qrText = bleTransport?.qrText
 				case .transferring(let p):
 					phase = .sending(p)
 				case .completed:
@@ -127,7 +130,7 @@ final class SharingViewModel {
 	}
 
 	private func startReceive() async {
-		let stream = transport.receive()
+		let stream = sharingTransport.receive()
 		for await event in stream {
 			switch event {
 			case .handshaking:

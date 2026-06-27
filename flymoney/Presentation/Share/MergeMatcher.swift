@@ -21,7 +21,8 @@ enum MergeMatcher {
 			for loc in local {
 				let impName = imp.name
 				let locName = loc.name
-				if impName.localizedCaseInsensitiveContains(locName) || locName.localizedCaseInsensitiveContains(impName) {
+				if impName.isEmpty || locName.isEmpty { continue }
+				if impName.localizedStandardContains(locName) || locName.localizedStandardContains(impName) {
 					matches.append(LocalMatch(titleID: loc.id, name: locName, isStrong: true))
 				} else {
 					let d = levenshtein(impName.lowercased(), locName.lowercased())

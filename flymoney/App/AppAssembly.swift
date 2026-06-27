@@ -99,7 +99,8 @@ final class AppAssembly {
 	}
 
 	func makeSharingViewModel(role: SharingRole) -> SharingViewModel {
-		SharingViewModel(
+		let transport = makeSharingTransport()
+		return SharingViewModel(
 			role: role,
 			exportMonth: makeExportMonthUseCase(),
 			importShared: makeImportSharedMonthUseCase(),
@@ -107,7 +108,8 @@ final class AppAssembly {
 			fetchTitles: makeFetchExpenseTitlesUseCase(),
 			addExpense: makeAddExpenseUseCase(),
 			upsertTitle: makeUpsertExpenseTitleUseCase(),
-			transport: makeSharingTransport())
+			transport: transport,
+			bleTransport: transport)
 	}
 
 	func makeRootView() -> some View {

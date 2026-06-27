@@ -48,10 +48,10 @@ struct MergeMatcherTests {
 		#expect(matches.contains(where: { $0.isStrong }))
 	}
 
-	@Test("empty strings handled")
+	@Test("empty strings handled safely")
 	func emptyStrings() {
 		let imported = [ExpenseTitle(name: "")]
-		let local = [ExpenseTitle(name: "")]
+		let local = [ExpenseTitle(name: "Something")]
 		let result = MergeMatcher.findMatches(imported: imported, local: local)
 		let matches = result[imported[0].id] ?? []
 		#expect(matches.isEmpty)
