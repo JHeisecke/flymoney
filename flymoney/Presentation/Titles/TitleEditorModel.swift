@@ -16,6 +16,7 @@ final class TitleEditorModel: Identifiable {
 	var name: String
 	var limitText: String
 	let currencyCode: String
+	var parseLocale: Locale
 	var nameError: String?
 	var saveError: String?
 
@@ -24,6 +25,7 @@ final class TitleEditorModel: Identifiable {
 		self.name = ""
 		self.limitText = ""
 		self.currencyCode = currencyCode
+		self.parseLocale = .current
 	}
 
 	init(editing title: ExpenseTitle, currencyCode fallback: String) {
@@ -36,6 +38,7 @@ final class TitleEditorModel: Identifiable {
 			self.limitText = ""
 		}
 		self.currencyCode = title.limit?.currencyCode ?? fallback
+		self.parseLocale = .current
 	}
 
 	var isEditing: Bool { titleID != nil }
@@ -56,7 +59,7 @@ final class TitleEditorModel: Identifiable {
 		if limitText.trimmingCharacters(in: .whitespaces).isEmpty {
 			limit = nil
 		} else {
-			guard let decimal = Decimal(string: limitText, locale: .current), decimal >= 0 else {
+			guard let decimal = Decimal(string: limitText, locale: parseLocale), decimal >= 0 else {
 				nameError = String(localized: "Enter a valid amount.")
 				return nil
 			}

@@ -15,7 +15,7 @@ struct RootView: View {
 	var body: some View {
 		TabView(selection: $selection) {
 			Tab("Add", systemImage: "plus.circle", value: TabID.add) {
-				PlaceholderScreen(title: "Add")
+				AddExpenseView(viewModel: assembly.makeAddExpenseViewModel())
 			}
 			Tab("History", systemImage: "list.bullet", value: TabID.history) {
 				PlaceholderScreen(title: "History")

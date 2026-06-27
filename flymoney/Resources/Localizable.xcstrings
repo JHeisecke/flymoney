@@ -11,6 +11,16 @@
         }
       }
     },
+    "Add Expense" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar gasto"
+          }
+        }
+      }
+    },
     "Add your first title to start setting monthly limits." : {
       "localizations" : {
         "es" : {
@@ -27,6 +37,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ya existe un t\u00edtulo con ese nombre."
+          }
+        }
+      }
+    },
+    "Amount (%@)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monto (%@)"
           }
         }
       }
@@ -81,6 +101,16 @@
         }
       }
     },
+    "Date" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fecha"
+          }
+        }
+      }
+    },
     "Edit Title" : {
       "localizations" : {
         "es" : {
@@ -97,6 +127,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingresa un nombre."
+          }
+        }
+      }
+    },
+    "Enter an amount." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingresa un monto."
+          }
+        }
+      }
+    },
+    "Enter a title." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingresa un t\u00edtulo."
           }
         }
       }
@@ -207,6 +257,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "T\u00edtulos"
+          }
+        }
+      }
+    },
+    "Saved" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardado"
           }
         }
       }

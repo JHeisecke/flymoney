@@ -71,6 +71,12 @@ final class AppAssembly {
 			currencyCode: currencyProvider.defaultCurrencyCode)
 	}
 
+	func makeAddExpenseViewModel() -> AddExpenseViewModel {
+		AddExpenseViewModel(
+			addExpense: makeAddExpenseUseCase(),
+			currencyCode: currencyProvider.defaultCurrencyCode)
+	}
+
 	func makeRootView() -> some View {
 		RootView(assembly: self)
 	}
