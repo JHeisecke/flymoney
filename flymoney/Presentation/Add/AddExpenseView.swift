@@ -50,7 +50,7 @@ struct AddExpenseView: View {
 		.tint(Theme.Colors.accent)
 		.onChange(of: viewModel.didJustSave) { _, isTrue in
 			if isTrue {
-				UIAccessibility.post(notification: .announcement, argument: String(localized: "Saved"))
+				AccessibilityNotification.Announcement(String(localized: "Saved")).post()
 				Task {
 					try? await Task.sleep(for: .seconds(2))
 					viewModel.clearSavedFlag()
