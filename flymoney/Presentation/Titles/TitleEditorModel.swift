@@ -41,6 +41,8 @@ final class TitleEditorModel: Identifiable {
 	var isEditing: Bool { titleID != nil }
 
 	func validated(existing: [ExpenseTitle]) -> (id: UUID?, name: String, limit: Money?)? {
+		nameError = nil
+		saveError = nil
 		let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
 		guard !trimmed.isEmpty else {
 			nameError = String(localized: "Enter a name.")

@@ -18,17 +18,15 @@ struct TitlesView: View {
 		NavigationStack {
 			Group {
 				if viewModel.titles.isEmpty && !viewModel.isLoading {
-					VStack(spacing: Theme.Spacing.lg) {
-						ContentUnavailableView {
-							Label {
-								Text(Lexicon.noTitlesYet)
-							} icon: {
-								Image(systemName: "tag")
-									.foregroundStyle(Theme.Colors.accent)
-							}
-						} description: {
-							Text(Lexicon.emptyStatePrompt)
+					ContentUnavailableView {
+						Label {
+							Text(Lexicon.noTitlesYet)
+						} icon: {
+							Image(systemName: "tag")
+								.foregroundStyle(Theme.Colors.accent)
 						}
+					} description: {
+						Text(Lexicon.emptyStatePrompt)
 					}
 				} else {
 					List {
