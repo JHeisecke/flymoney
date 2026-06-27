@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShareReceiveView: View {
 	@State private var viewModel: SharingViewModel
+	@State private var cameraDenied = false
 
 	init(viewModel: SharingViewModel) {
 		_viewModel = State(initialValue: viewModel)
@@ -16,7 +17,19 @@ struct ShareReceiveView: View {
 
 	var body: some View {
 		VStack(spacing: Theme.Spacing.lg) {
-			if case .idle = viewModel.phase {
+			if cameraDenied {
+				ContentUnavailableView {
+					Label(String(localized: "Camera access needed"), systemImage: "camera.fill")
+						.foregroundStyle(Theme.Colors.accent)
+				} description: {
+					Text(String(localized: "Camera access needed"))
+				}
+				Button(String(localized: "Open Settings")) {
+					Permissions.openSettings()
+				}
+				.buttonStyle(.borderedProminent)
+				.tint(Theme.Colors.accent)
+			} else if case .idle = viewModel.phase {
 				QRScannerView(
 					onCode: { code in
 						viewModel.provideScannedQR(code)
@@ -52,5 +65,11 @@ struct ShareReceiveView: View {
 			.foregroundStyle(Theme.Colors.danger)
 		}
 		.padding()
+		.task {
+			let granted = await QRScannerViewController.requestCameraAccess()
+			if !granted {
+				cameraDenied = true
+			}
+		}
 	}
 }

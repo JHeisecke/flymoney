@@ -61,4 +61,12 @@ final class QRScannerViewController: UIViewController, AVCaptureMetadataOutputOb
 		session.stopRunning()
 		onCode?(value)
 	}
+
+	static func requestCameraAccess() async -> Bool {
+		await AVCaptureDevice.requestAccess(for: .video)
+	}
+
+	static var cameraAuthorizationStatus: AVAuthorizationStatus {
+		AVCaptureDevice.authorizationStatus(for: .video)
+	}
 }

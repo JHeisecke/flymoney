@@ -26,7 +26,8 @@ final class BLEPeripheralService: NSObject, CBPeripheralManagerDelegate {
 		}
 	}
 
-	func start(serviceUUID uuid: CBUUID) {
+	func start(serviceUUID uuidString: String) {
+		let uuid = CBUUID(string: uuidString)
 		self.serviceUUID = uuid
 		service = CBMutableService(type: uuid, primary: true)
 

@@ -38,6 +38,8 @@ enum MergeMatcher {
 	}
 
 	private static func levenshtein(_ s1: String, _ s2: String) -> Int {
+		if s1.isEmpty { return s2.count }
+		if s2.isEmpty { return s1.count }
 		let a = Array(s1), b = Array(s2)
 		var dp = [Int](0...b.count)
 		for i in 1...a.count {

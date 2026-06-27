@@ -25,8 +25,8 @@ final class BLECentralService: NSObject, CBCentralManagerDelegate, CBPeripheralD
 		}
 	}
 
-	func start(serviceUUID: CBUUID) {
-		manager.scanForPeripherals(withServices: [serviceUUID])
+	func start(serviceUUID uuidString: String) {
+		manager.scanForPeripherals(withServices: [CBUUID(string: uuidString)])
 	}
 
 	func writeControl(_ data: Data) {
