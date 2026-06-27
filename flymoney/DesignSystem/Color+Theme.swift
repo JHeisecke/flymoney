@@ -7,31 +7,60 @@
 
 import SwiftUI
 
-extension Color {
-	init(hex: UInt32) {
-		self.init(.sRGB,
-				  red: Double((hex >> 16) & 0xFF) / 255,
-				  green: Double((hex >> 8) & 0xFF) / 255,
-				  blue: Double(hex & 0xFF) / 255,
-				  opacity: 1)
-	}
-}
-
 extension Theme {
 	enum Colors {
-		static let accent = Color(hex: 0x7C5CFF)
-		static let ink = Color(hex: 0x0B0B0C)
-		static let surface = Color(hex: 0xFFFFFF)
-		static let background = Color(hex: 0xFBFBFC)
-		static let textSecondary = Color(hex: 0x6A6A72)
-		static let textTertiary = Color(hex: 0x9A9AA0)
-		static let border = Color(hex: 0xECECEE)
-		static let borderStrong = Color(hex: 0xE7E7EA)
-		static let fill = Color(hex: 0xF1F1F3)
-		static let success = Color(hex: 0x1F8A5B)
-		static let successBg = Color(hex: 0xE7F4EC)
-		static let danger = Color(hex: 0xD14343)
-		static let warning = Color(hex: 0xC28A00)
-		static let warningBg = Color(hex: 0xFBF3DF)
+		static let accent = Color(.accent)
+		static let accentTint = Color(.accentTint)
+		static let accentFocusRing = Color(.accentFocusRing)
+		static let accentOnDark = Color.white
+
+		static let ink = Color(.inkPrimary)
+		static let inkSecondary = Color(.inkSecondary)
+		static let inkTertiary = Color(.inkTertiary)
+		static let inkQuaternary = Color(.inkQuaternary)
+		static let textSubtle = Color(.textSubtle)
+		static let textPlaceholder = Color(.textPlaceholder)
+		static let textOnAccent = Color(.textOnAccent)
+
+		static let surface = Color(.surface)
+		static let card = Color(.card)
+		static let cardElevated = Color(.cardElevated)
+		static let scrim = Color(.scrim)
+
+		static let borderHairline = Color(.borderHairline)
+		static let borderDivider = Color(.borderDivider)
+		static let borderSubtle = Color(.borderSubtle)
+		static let borderStrong = Color(.borderStrong)
+
+		static let success = Color(.success)
+		static let successTint = Color(.successTint)
+		static let warning = Color(.warning)
+		static let warningTint = Color(.warningTint)
+		static let danger = Color(.danger)
+		static let neutralTint = Color(.neutralTint)
+
+		static let segmentedTrack = Color(.segmentedTrack)
+		static let segmentedThumb = Color(.segmentedThumb)
+
+		@available(*, deprecated, renamed: "inkSecondary")
+		static let textSecondary = Color(.inkSecondary)
+
+		@available(*, deprecated, renamed: "inkTertiary")
+		static let textTertiary = Color(.inkTertiary)
+
+		@available(*, deprecated, renamed: "borderHairline")
+		static let border = Color(.borderHairline)
+
+		@available(*, deprecated, renamed: "borderDivider")
+		static let fill = Color(.borderDivider)
+
+		@available(*, deprecated, renamed: "successTint")
+		static let successBg = Color(.successTint)
+
+		@available(*, deprecated, renamed: "warningTint")
+		static let warningBg = Color(.warningTint)
+
+		@available(*, deprecated, renamed: "surface")
+		static let background = Color(.surface)
 	}
 }
