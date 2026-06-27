@@ -25,7 +25,7 @@ struct TitlesViewModelTests {
 		)
 	}
 
-	@Test("load populates titles")
+	@Test("load populates titles", .tags(.viewModel))
 	func loadPopulates() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		try await titles.upsert(ExpenseTitle(name: "Coffee"))
@@ -38,7 +38,7 @@ struct TitlesViewModelTests {
 		#expect(vm.loadError == nil)
 	}
 
-	@Test("create with limit")
+	@Test("create with limit", .tags(.viewModel))
 	func createWithLimit() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let vm = makeVM(titles: titles)
@@ -54,7 +54,7 @@ struct TitlesViewModelTests {
 		#expect(vm.titles.first?.limit?.minorUnits == 1000)
 	}
 
-	@Test("create without limit")
+	@Test("create without limit", .tags(.viewModel))
 	func createWithoutLimit() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let vm = makeVM(titles: titles)
@@ -69,7 +69,7 @@ struct TitlesViewModelTests {
 		#expect(vm.titles.first?.limit == nil)
 	}
 
-	@Test("edit name and limit")
+	@Test("edit name and limit", .tags(.viewModel))
 	func editNameAndLimit() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let original = ExpenseTitle(id: UUID(), name: "Coffee", limit: Money(minorUnits: 500, currencyCode: "USD"))
@@ -90,7 +90,7 @@ struct TitlesViewModelTests {
 		#expect(vm.titles.first?.limit?.minorUnits == 1500)
 	}
 
-	@Test("delete success removes title")
+	@Test("delete success removes title", .tags(.viewModel))
 	func deleteSuccess() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		try await titles.upsert(ExpenseTitle(name: "Coffee"))
@@ -103,7 +103,7 @@ struct TitlesViewModelTests {
 		#expect(vm.titles.isEmpty)
 	}
 
-	@Test("delete in-use sets deleteBlocked")
+	@Test("delete in-use sets deleteBlocked", .tags(.viewModel))
 	func deleteInUseSetsBlocked() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let expenses = InMemoryExpenseRepository()
@@ -119,7 +119,7 @@ struct TitlesViewModelTests {
 		#expect(vm.titles.count == 1)
 	}
 
-	@Test("validation blocks empty name")
+	@Test("validation blocks empty name", .tags(.viewModel))
 	func validationEmptyName() async throws {
 		let vm = makeVM()
 		vm.beginCreate()
@@ -130,7 +130,7 @@ struct TitlesViewModelTests {
 		#expect(editor.nameError != nil)
 	}
 
-	@Test("validation blocks duplicate name")
+	@Test("validation blocks duplicate name", .tags(.viewModel))
 	func validationDuplicateName() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		try await titles.upsert(ExpenseTitle(name: "Coffee"))
@@ -145,7 +145,7 @@ struct TitlesViewModelTests {
 		#expect(editor.nameError != nil)
 	}
 
-	@Test("validation blocks negative limit")
+	@Test("validation blocks negative limit", .tags(.viewModel))
 	func validationNegativeLimit() async throws {
 		let vm = makeVM()
 		vm.beginCreate()

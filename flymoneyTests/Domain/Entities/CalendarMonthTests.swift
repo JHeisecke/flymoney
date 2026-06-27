@@ -82,7 +82,7 @@ struct CalendarMonthTests {
 		#expect(month.month == 1)
 	}
 
-	@Test("previous wraps year")
+	@Test("previous wraps year", .tags(.entity))
 	func previousWrapsYear() {
 		let jan2026 = CalendarMonth(year: 2026, month: 1)
 		let result = jan2026.previous(using: utc)
@@ -90,7 +90,7 @@ struct CalendarMonthTests {
 		#expect(result.month == 12)
 	}
 
-	@Test("next wraps year")
+	@Test("next wraps year", .tags(.entity))
 	func nextWrapsYear() {
 		let dec2026 = CalendarMonth(year: 2026, month: 12)
 		let result = dec2026.next(using: utc)

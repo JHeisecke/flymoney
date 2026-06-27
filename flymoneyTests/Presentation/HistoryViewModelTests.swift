@@ -32,7 +32,7 @@ struct HistoryViewModelTests {
 			now: now)
 	}
 
-	@Test("default month is calendar-now")
+	@Test("default month is calendar-now", .tags(.viewModel))
 	func defaultMonth() {
 		let now = Date(timeIntervalSince1970: 1748736000)
 		let vm = makeVM(now: now)
@@ -40,7 +40,7 @@ struct HistoryViewModelTests {
 		#expect(vm.month == expected)
 	}
 
-	@Test("load groups by day descending")
+	@Test("load groups by day descending", .tags(.viewModel))
 	func loadGroupsByDay() async throws {
 		let expenses = InMemoryExpenseRepository()
 		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: UUID(), date: Date(timeIntervalSince1970: 1748736000)))
@@ -53,7 +53,7 @@ struct HistoryViewModelTests {
 		#expect(vm.sections[0].id > vm.sections[1].id)
 	}
 
-	@Test("load resolves title names")
+	@Test("load resolves title names", .tags(.viewModel))
 	func loadResolvesTitles() async throws {
 		let expenses = InMemoryExpenseRepository()
 		let titles = InMemoryExpenseTitleRepository()
@@ -67,7 +67,7 @@ struct HistoryViewModelTests {
 		#expect(vm.sections.first?.rows.first?.titleName == "Coffee")
 	}
 
-	@Test("load handles orphan titleID")
+	@Test("load handles orphan titleID", .tags(.viewModel))
 	func loadOrphanTitle() async throws {
 		let expenses = InMemoryExpenseRepository()
 		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: UUID(), date: Date(timeIntervalSince1970: 1748736000)))
@@ -78,7 +78,7 @@ struct HistoryViewModelTests {
 		#expect(vm.sections.first?.rows.first?.titleName == String(localized: "Untitled"))
 	}
 
-	@Test("load month-scoped")
+	@Test("load month-scoped", .tags(.viewModel))
 	func loadMonthScoped() async throws {
 		let expenses = InMemoryExpenseRepository()
 		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: UUID(), date: Date(timeIntervalSince1970: 1748736000)))
@@ -91,7 +91,7 @@ struct HistoryViewModelTests {
 		#expect(vm.sections.first?.rows.first?.amount.minorUnits == 100)
 	}
 
-	@Test("previousMonth and nextMonth navigate")
+	@Test("previousMonth and nextMonth navigate", .tags(.viewModel))
 	func navigateMonths() async throws {
 		let expenses = InMemoryExpenseRepository()
 		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: UUID(), date: Date(timeIntervalSince1970: 1748736000)))
@@ -109,7 +109,7 @@ struct HistoryViewModelTests {
 		#expect(vm.sections.count == 1)
 	}
 
-	@Test("change month triggers reload")
+	@Test("change month triggers reload", .tags(.viewModel))
 	func changeMonthReloads() async throws {
 		let expenses = InMemoryExpenseRepository()
 		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: UUID(), date: Date(timeIntervalSince1970: 1748736000)))
@@ -121,7 +121,7 @@ struct HistoryViewModelTests {
 		#expect(vm.sections.isEmpty)
 	}
 
-	@Test("optimistic delete removes row")
+	@Test("optimistic delete removes row", .tags(.viewModel))
 	func optimisticDelete() async throws {
 		let expenses = InMemoryExpenseRepository()
 		let id = UUID()
@@ -135,7 +135,7 @@ struct HistoryViewModelTests {
 		#expect(vm.sections.isEmpty)
 	}
 
-	@Test("delete empties section")
+	@Test("delete empties section", .tags(.viewModel))
 	func deleteEmptiesSection() async throws {
 		let expenses = InMemoryExpenseRepository()
 		let id1 = UUID()
@@ -151,7 +151,7 @@ struct HistoryViewModelTests {
 		#expect(vm.sections.count == 1)
 	}
 
-	@Test("delete error restores row")
+	@Test("delete error restores row", .tags(.viewModel))
 	func deleteErrorRestores() async throws {
 		let expenses = InMemoryExpenseRepository()
 		let id = UUID()
@@ -172,7 +172,7 @@ struct HistoryViewModelTests {
 		#expect(vm.loadError != nil)
 	}
 
-	@Test("multi-currency rows preserved")
+	@Test("multi-currency rows preserved", .tags(.viewModel))
 	func multiCurrencyRows() async throws {
 		let expenses = InMemoryExpenseRepository()
 		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: UUID(), date: Date(timeIntervalSince1970: 1748736000)))
@@ -186,7 +186,7 @@ struct HistoryViewModelTests {
 		#expect(currencies.contains("EUR"))
 	}
 
-	@Test("empty month")
+	@Test("empty month", .tags(.viewModel))
 	func emptyMonth() async {
 		let vm = makeVM()
 		await vm.load()

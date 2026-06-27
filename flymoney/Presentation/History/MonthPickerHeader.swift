@@ -20,12 +20,12 @@ struct MonthPickerHeader: View {
 			Button {
 				onPrevious()
 			} label: {
-				Image(systemName: "chevron.left")
+				Label(String(localized: "Previous month"), systemImage: "chevron.left")
+					.labelStyle(.iconOnly)
 					.font(Theme.Typography.body)
 					.padding(Theme.Spacing.sm)
 			}
 			.buttonStyle(.plain)
-			.accessibilityLabel(Text(String(localized: "Previous month")))
 
 			Button {
 				isPickerPresented = true
@@ -41,12 +41,12 @@ struct MonthPickerHeader: View {
 			Button {
 				onNext()
 			} label: {
-				Image(systemName: "chevron.right")
+				Label(String(localized: "Next month"), systemImage: "chevron.right")
+					.labelStyle(.iconOnly)
 					.font(Theme.Typography.body)
 					.padding(Theme.Spacing.sm)
 			}
 			.buttonStyle(.plain)
-			.accessibilityLabel(Text(String(localized: "Next month")))
 		}
 		.padding(.horizontal, Theme.Spacing.lg)
 		.padding(.vertical, Theme.Spacing.md)

@@ -36,7 +36,7 @@ struct AddExpenseViewModelTests {
 		return vm
 	}
 
-	@Test("happy path persists expense and resets form")
+	@Test("happy path persists expense and resets form", .tags(.viewModel))
 	func happyPath() async throws {
 		let expenses = InMemoryExpenseRepository()
 		let titles = InMemoryExpenseTitleRepository()
@@ -55,7 +55,7 @@ struct AddExpenseViewModelTests {
 		#expect(allExpenses.first?.amount.minorUnits == 500)
 	}
 
-	@Test("new title creation generates limit-less title")
+	@Test("new title creation generates limit-less title", .tags(.viewModel))
 	func newTitleCreation() async throws {
 		let expenses = InMemoryExpenseRepository()
 		let titles = InMemoryExpenseTitleRepository()
@@ -71,7 +71,7 @@ struct AddExpenseViewModelTests {
 		#expect(created?.period == .calendarMonth)
 	}
 
-	@Test("existing title reused no duplicate")
+	@Test("existing title reused no duplicate", .tags(.viewModel))
 	func existingTitleReused() async throws {
 		let expenses = InMemoryExpenseRepository()
 		let titles = InMemoryExpenseTitleRepository()
@@ -88,7 +88,7 @@ struct AddExpenseViewModelTests {
 		#expect(all.first?.id == existing.id)
 	}
 
-	@Test("empty amount blocked")
+	@Test("empty amount blocked", .tags(.viewModel))
 	func emptyAmountBlocked() async {
 		let vm = makeVM()
 		vm.form.amountText = ""
@@ -99,7 +99,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.didJustSave == false)
 	}
 
-	@Test("empty title blocked")
+	@Test("empty title blocked", .tags(.viewModel))
 	func emptyTitleBlocked() async {
 		let vm = makeVM()
 		vm.form.amountText = "5"
@@ -110,7 +110,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.didJustSave == false)
 	}
 
-	@Test("zero amount blocked")
+	@Test("zero amount blocked", .tags(.viewModel))
 	func zeroAmountBlocked() async {
 		let vm = makeVM()
 		vm.form.amountText = "0"
@@ -121,7 +121,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.didJustSave == false)
 	}
 
-	@Test("invalid amount string blocked")
+	@Test("invalid amount string blocked", .tags(.viewModel))
 	func invalidAmountBlocked() async {
 		let vm = makeVM()
 		vm.form.amountText = "abc"
@@ -132,7 +132,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.didJustSave == false)
 	}
 
-	@Test("amount parsing whitespace trimmed")
+	@Test("amount parsing whitespace trimmed", .tags(.viewModel))
 	func amountParsingWhitespace() async throws {
 		let expenses = InMemoryExpenseRepository()
 		let vm = makeVM(expenses: expenses)
@@ -145,7 +145,7 @@ struct AddExpenseViewModelTests {
 		#expect(all.first?.amount.minorUnits == 500)
 	}
 
-	@Test("date defaults to today")
+	@Test("date defaults to today", .tags(.viewModel))
 	func dateDefaultsToToday() async throws {
 		let expenses = InMemoryExpenseRepository()
 		let vm = makeVM(expenses: expenses)
@@ -160,7 +160,7 @@ struct AddExpenseViewModelTests {
 		#expect(cal.isDate(savedDate, inSameDayAs: Date()))
 	}
 
-	@Test("search returns max 5 recency-sorted matches")
+	@Test("search returns max 5 recency-sorted matches", .tags(.viewModel))
 	func searchRecencySorted() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		for i in 1...7 {
@@ -174,7 +174,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.suggestions.first?.name == "Coffee7")
 	}
 
-	@Test("search empty query clears state")
+	@Test("search empty query clears state", .tags(.viewModel))
 	func searchEmptyQuery() async {
 		let vm = makeVM()
 		await vm.search("")
@@ -184,7 +184,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.budget == nil)
 	}
 
-	@Test("select fills field and binds")
+	@Test("select fills field and binds", .tags(.viewModel))
 	func selectFillsAndBinds() async {
 		let title = ExpenseTitle(name: "Coffee")
 		let vm = makeVM()
@@ -195,7 +195,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.suggestions.isEmpty)
 	}
 
-	@Test("select loads under-budget summary")
+	@Test("select loads under-budget summary", .tags(.viewModel))
 	func selectUnderBudget() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let expenses = InMemoryExpenseRepository()
@@ -211,7 +211,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.budget?.remaining != nil)
 	}
 
-	@Test("select loads over-budget summary")
+	@Test("select loads over-budget summary", .tags(.viewModel))
 	func selectOverBudget() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let expenses = InMemoryExpenseRepository()
@@ -226,7 +226,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.budget?.isOver == true)
 	}
 
-	@Test("select limit-less title has nil limit in budget")
+	@Test("select limit-less title has nil limit in budget", .tags(.viewModel))
 	func selectLimitLessTitle() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let title = ExpenseTitle(name: "Coffee", limit: nil)
@@ -238,7 +238,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.budget?.limit == nil)
 	}
 
-	@Test("auto-bind on exact typed match")
+	@Test("auto-bind on exact typed match", .tags(.viewModel))
 	func autoBindOnExactMatch() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let title = ExpenseTitle(name: "Coffee")
@@ -250,7 +250,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.selectedTitleID == title.id)
 	}
 
-	@Test("typing away from match clears binding")
+	@Test("typing away from match clears binding", .tags(.viewModel))
 	func typingAwayClearsBinding() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		try await titles.upsert(ExpenseTitle(name: "Coffee"))
@@ -264,7 +264,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.budget == nil)
 	}
 
-	@Test("save clears autocomplete state")
+	@Test("save clears autocomplete state", .tags(.viewModel))
 	func saveClearsAutocomplete() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		try await titles.upsert(ExpenseTitle(name: "Coffee"))
@@ -280,7 +280,7 @@ struct AddExpenseViewModelTests {
 		#expect(vm.budget == nil)
 	}
 
-	@Test("budget uses current month not date field")
+	@Test("budget uses current month not date field", .tags(.viewModel))
 	func budgetUsesCurrentMonth() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let expenses = InMemoryExpenseRepository()

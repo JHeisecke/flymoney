@@ -11,7 +11,7 @@ struct HistoryView: View {
 	@State private var viewModel: HistoryViewModel
 
 	init(viewModel: HistoryViewModel) {
-		_viewModel = State(initialValue: viewModel)
+        self.viewModel = viewModel
 	}
 
 	var body: some View {

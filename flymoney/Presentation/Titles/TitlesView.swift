@@ -11,7 +11,7 @@ struct TitlesView: View {
 	@State private var viewModel: TitlesViewModel
 
 	init(viewModel: TitlesViewModel) {
-		_viewModel = State(initialValue: viewModel)
+        self.viewModel = viewModel
 	}
 
 	var body: some View {
