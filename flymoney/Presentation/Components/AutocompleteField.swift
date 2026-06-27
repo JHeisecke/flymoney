@@ -21,21 +21,20 @@ struct AutocompleteField<Suggestion: Identifiable>: View {
 
 	var body: some View {
 		VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-			Text(label)
-				.font(Theme.Typography.caption)
-				.foregroundStyle(Theme.Colors.textSecondary)
-
 			TextField(placeholder, text: $text)
-				.font(Theme.Typography.body)
-				.textFieldStyle(.plain)
+				.font(Theme.Typography.body17)
+				.tint(Theme.Colors.accent)
 				.focused($isFocused)
-				.padding(Theme.Spacing.md)
-				.background(Theme.Colors.surface)
+				.textFieldStyle(.plain)
+				.padding(.horizontal, Theme.Spacing.lg)
+				.frame(height: 56)
+				.background(Theme.Colors.card)
 				.clipShape(.rect(cornerRadius: Theme.Radius.md))
 				.overlay {
 					RoundedRectangle(cornerRadius: Theme.Radius.md)
-						.stroke(Theme.Colors.border, lineWidth: 1)
+						.stroke(Theme.Colors.accent, lineWidth: 1.5)
 				}
+				.shadow(isFocused ? Theme.Shadow.focusGlow : Theme.Shadow.subtle)
 
 			if isFocused, !suggestions.isEmpty {
 				SuggestionListView(
@@ -43,7 +42,7 @@ struct AutocompleteField<Suggestion: Identifiable>: View {
 					label: suggestionLabel,
 					onSelect: onSelect
 				)
-				.padding(.top, Theme.Spacing.xs)
+				.padding(.top, Theme.Spacing.sm)
 				.transition(.opacity)
 			}
 		}
@@ -67,22 +66,24 @@ private struct SuggestionListView<Suggestion: Identifiable>: View {
 					Task { await onSelect(suggestion) }
 				} label: {
 					Text(label(suggestion))
-						.font(Theme.Typography.body)
-						.foregroundStyle(Theme.Colors.ink)
+						.font(Theme.Typography.body16)
+						.foregroundStyle(Theme.Colors.inkSecondary)
 						.frame(maxWidth: .infinity, alignment: .leading)
-						.padding(Theme.Spacing.md)
+						.padding(.horizontal, Theme.Spacing.lg)
+						.frame(height: 52)
 				}
 				.buttonStyle(.plain)
 				if suggestion.id != suggestions.last?.id {
-					Divider()
+					Divider().background(Theme.Colors.borderDivider)
 				}
 			}
 		}
-		.background(Theme.Colors.surface)
+		.background(Theme.Colors.card)
 		.clipShape(.rect(cornerRadius: Theme.Radius.md))
 		.overlay {
 			RoundedRectangle(cornerRadius: Theme.Radius.md)
-				.stroke(Theme.Colors.border, lineWidth: 1)
+				.stroke(Theme.Colors.borderHairline, lineWidth: 1)
 		}
+		.shadow(Theme.Shadow.dropdown)
 	}
 }

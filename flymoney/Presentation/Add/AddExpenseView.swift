@@ -11,62 +11,55 @@ struct AddExpenseView: View {
 	@State private var viewModel: AddExpenseViewModel
 
 	init(viewModel: AddExpenseViewModel) {
-        self.viewModel = viewModel
+		_viewModel = State(initialValue: viewModel)
 	}
 
 	var body: some View {
-		NavigationStack {
-			VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
-				AmountFieldView(form: viewModel.form)
+		VStack(spacing: 0) {
+			EyebrowLabel(text: "New expense", tracking: 2.16)
+				.padding(.top, Theme.Spacing.sm)
+				.padding(.bottom, Theme.Spacing.s26)
 
-				AutocompleteField(
-					label: Lexicon.titleSingular,
-					placeholder: String(localized: "Title"),
-					text: $viewModel.form.titleName,
-					suggestions: viewModel.suggestions,
-					suggestionLabel: \.name,
-					onQueryChange: { await viewModel.search($0) },
-					onSelect: { await viewModel.select($0) }
-				)
+			HeroAmountView(
+				formattedAmount: formattedAmount,
+				currencySymbol: Theme.Currency.symbol(for: viewModel.form.currencyCode),
+				isPlaceholder: viewModel.form.amountDecimal == 0)
 
-				if let titleError = viewModel.form.titleError {
-					Text(titleError)
-						.font(Theme.Typography.caption)
-						.foregroundStyle(Theme.Colors.danger)
-				}
+			Spacer().frame(height: 40)
 
-				BudgetCaptionView(summary: viewModel.budget)
+			TitleAutocompleteField(
+				form: viewModel.form,
+				suggestions: viewModel.suggestions,
+				selectedID: viewModel.selectedTitleID,
+				selectedSummary: viewModel.budget,
+				onQueryChange: { await viewModel.search($0) },
+				onSelect: { await viewModel.select($0) })
 
-				DatePicker(String(localized: "Date"),
-						   selection: $viewModel.form.date, displayedComponents: .date)
-					.datePickerStyle(.compact)
-					.font(Theme.Typography.body)
+			if let titleError = viewModel.form.titleError {
+				Text(titleError)
+					.font(Theme.Typography.body13)
+					.foregroundStyle(Theme.Colors.danger)
+					.padding(.top, Theme.Spacing.xs)
+			}
 
-				Button(String(localized: "Save")) {
+			DateChipView(date: $viewModel.form.date)
+				.padding(.top, Theme.Spacing.s18)
+
+			Spacer()
+
+			SaveButton(
+				title: "Save expense",
+				isLoading: viewModel.isSaving,
+				isDisabled: !viewModel.form.canSave) {
 					Task { await viewModel.save() }
 				}
-				.buttonStyle(.borderedProminent)
-				.tint(Theme.Colors.accent)
-				.disabled(!viewModel.form.canSave || viewModel.isSaving)
-				.frame(maxWidth: .infinity)
+				.padding(.bottom, Theme.Spacing.xxl)
 
-				if viewModel.didJustSave {
-					Label(String(localized: "Saved"), systemImage: "checkmark.circle.fill")
-						.font(Theme.Typography.bodyMedium)
-						.foregroundStyle(Theme.Colors.success)
-				}
-				if let saveError = viewModel.saveError {
-					Text(saveError)
-						.font(Theme.Typography.body)
-						.foregroundStyle(Theme.Colors.danger)
-				}
-				Spacer()
-			}
-			.padding(Theme.Spacing.lg)
-			.navigationTitle(Text(String(localized: "Add Expense")))
+			if viewModel.didJustSave { savedToast }
+			if let saveError = viewModel.saveError { errorToast(saveError) }
 		}
-		.tint(Theme.Colors.accent)
-		.dismissKeyboardOnTap()
+		.padding(.horizontal, Theme.Spacing.xxl)
+		.background(Theme.Colors.surface)
 		.onChange(of: viewModel.didJustSave) { _, isTrue in
 			if isTrue {
 				AccessibilityNotification.Announcement(String(localized: "Saved")).post()
@@ -77,32 +70,23 @@ struct AddExpenseView: View {
 			}
 		}
 	}
-}
 
-private struct AmountFieldView: View {
-	@Bindable var form: AddExpenseFormModel
-
-	var body: some View {
-		VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-			Text(String(localized: "Amount (\(form.currencyCode))"))
-				.font(Theme.Typography.caption)
-				.foregroundStyle(Theme.Colors.textSecondary)
-			TextField(String(localized: "Amount"), value: $form.amountDecimal, format: .currency(code: form.currencyCode))
-				.keyboardType(.decimalPad)
-				.font(Theme.Typography.body)
-				.textFieldStyle(.plain)
-				.padding(Theme.Spacing.md)
-				.background(Theme.Colors.surface)
-				.clipShape(.rect(cornerRadius: Theme.Radius.md))
-				.overlay {
-					RoundedRectangle(cornerRadius: Theme.Radius.md)
-						.stroke(Theme.Colors.border, lineWidth: 1)
-				}
-			if let amountError = form.amountError {
-				Text(amountError)
-					.font(Theme.Typography.caption)
-					.foregroundStyle(Theme.Colors.danger)
-			}
+	private var formattedAmount: String {
+		if let money = (try? viewModel.form.validated())?.amount {
+			return money.formatted()
 		}
+		return viewModel.form.amountDecimal == 0 ? "0" : viewModel.form.amountDecimal.formatted()
+	}
+
+	private var savedToast: some View {
+		Label(String(localized: "Saved"), systemImage: "checkmark.circle.fill")
+			.font(Theme.Typography.body14)
+			.foregroundStyle(Theme.Colors.success)
+	}
+
+	private func errorToast(_ msg: String) -> some View {
+		Text(msg)
+			.font(Theme.Typography.body14)
+			.foregroundStyle(Theme.Colors.danger)
 	}
 }

@@ -10,29 +10,26 @@ import SwiftUI
 struct BudgetCaptionView: View {
 	let summary: MonthSummary?
 
-	@Environment(\.accessibilityDifferentiateWithoutColor) private var differentiate
-
 	var body: some View {
 		if let summary, let remaining = summary.remaining {
 			Label {
-				Text(captionText(summary: summary, remaining: remaining))
+				Text(captionText(summary, remaining))
+					.font(Theme.Typography.caption13Strong)
+					.monospacedDigit()
 			} icon: {
 				Image(systemName: summary.isOver
 					  ? "exclamationmark.triangle.fill"
 					  : "checkmark.circle.fill")
+					.font(Theme.Typography.body13)
 			}
-			.font(Theme.Typography.bodyMedium)
 			.foregroundStyle(summary.isOver ? Theme.Colors.danger : Theme.Colors.success)
 		}
 	}
 
-	private func captionText(summary: MonthSummary, remaining: Money) -> String {
-		if summary.isOver {
-			let over = Money(minorUnits: abs(remaining.minorUnits),
-							 currencyCode: remaining.currencyCode)
-			return String(localized: "Over by \(over.formatted())")
-		} else {
-			return String(localized: "Left: \(remaining.formatted())")
-		}
+	private func captionText(_ summary: MonthSummary, _ remaining: Money) -> String {
+		let absRemaining = Money(minorUnits: abs(remaining.minorUnits), currencyCode: remaining.currencyCode)
+		return summary.isOver
+			? String(localized: "Over by \(absRemaining.formatted())")
+			: String(localized: "Left: \(remaining.formatted())")
 	}
 }
