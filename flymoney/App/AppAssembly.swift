@@ -74,6 +74,8 @@ final class AppAssembly {
 	func makeAddExpenseViewModel() -> AddExpenseViewModel {
 		AddExpenseViewModel(
 			addExpense: makeAddExpenseUseCase(),
+			searchTitles: makeSearchExpenseTitlesUseCase(),
+			remainingBudget: makeRemainingBudgetUseCase(),
 			currencyCode: currencyProvider.defaultCurrencyCode)
 	}
 

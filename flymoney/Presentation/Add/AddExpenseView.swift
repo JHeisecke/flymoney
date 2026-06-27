@@ -18,7 +18,25 @@ struct AddExpenseView: View {
 		NavigationStack {
 			VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
 				AmountFieldView(form: viewModel.form)
-				TitleFieldView(form: viewModel.form)
+
+				AutocompleteField(
+					label: Lexicon.titleSingular,
+					placeholder: String(localized: "Title"),
+					text: $viewModel.form.titleName,
+					suggestions: viewModel.suggestions,
+					suggestionLabel: \.name,
+					onQueryChange: { await viewModel.search($0) },
+					onSelect: { await viewModel.select($0) }
+				)
+
+				if let titleError = viewModel.form.titleError {
+					Text(titleError)
+						.font(Theme.Typography.caption)
+						.foregroundStyle(Theme.Colors.danger)
+				}
+
+				BudgetCaptionView(summary: viewModel.budget)
+
 				DatePicker(String(localized: "Date"),
 						   selection: $viewModel.form.date, displayedComponents: .date)
 					.datePickerStyle(.compact)
@@ -81,33 +99,6 @@ private struct AmountFieldView: View {
 				}
 			if let amountError = form.amountError {
 				Text(amountError)
-					.font(Theme.Typography.caption)
-					.foregroundStyle(Theme.Colors.danger)
-			}
-		}
-	}
-}
-
-private struct TitleFieldView: View {
-	@Bindable var form: AddExpenseFormModel
-
-	var body: some View {
-		VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-			Text(Lexicon.titleSingular)
-				.font(Theme.Typography.caption)
-				.foregroundStyle(Theme.Colors.textSecondary)
-			TextField(String(localized: "Title"), text: $form.titleName)
-				.font(Theme.Typography.body)
-				.textFieldStyle(.plain)
-				.padding(Theme.Spacing.md)
-				.background(Theme.Colors.surface)
-				.clipShape(.rect(cornerRadius: Theme.Radius.md))
-				.overlay {
-					RoundedRectangle(cornerRadius: Theme.Radius.md)
-						.stroke(Theme.Colors.border, lineWidth: 1)
-				}
-			if let titleError = form.titleError {
-				Text(titleError)
 					.font(Theme.Typography.caption)
 					.foregroundStyle(Theme.Colors.danger)
 			}
