@@ -26,16 +26,16 @@ final class TitleEditorModel: Identifiable {
 		self.currencyCode = currencyCode
 	}
 
-	init(editing title: ExpenseTitle) {
+	init(editing title: ExpenseTitle, currencyCode fallback: String) {
 		self.titleID = title.id
 		self.name = title.name
 		if let limit = title.limit {
 			let major = Decimal(limit.minorUnits) / 100
-			self.limitText = major.formatted(.number.precision(.fractionLength(0...2)))
+			self.limitText = major.formatted(.number.grouping(.never).precision(.fractionLength(0...2)))
 		} else {
 			self.limitText = ""
 		}
-		self.currencyCode = title.limit?.currencyCode ?? "USD"
+		self.currencyCode = title.limit?.currencyCode ?? fallback
 	}
 
 	var isEditing: Bool { titleID != nil }

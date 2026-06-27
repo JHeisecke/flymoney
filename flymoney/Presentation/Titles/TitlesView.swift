@@ -29,11 +29,6 @@ struct TitlesView: View {
 						} description: {
 							Text(Lexicon.emptyStatePrompt)
 						}
-						Button(String(localized: "Add"), systemImage: "plus") {
-							viewModel.beginCreate()
-						}
-						.buttonStyle(.borderedProminent)
-						.tint(Theme.Colors.accent)
 					}
 				} else {
 					List {
@@ -46,7 +41,8 @@ struct TitlesView: View {
 						}
 						.onDelete { offsets in
 							for offset in offsets {
-								Task { await viewModel.delete(viewModel.titles[offset]) }
+								let title = viewModel.titles[offset]
+								Task { await viewModel.delete(title) }
 							}
 						}
 					}
@@ -62,9 +58,11 @@ struct TitlesView: View {
 			}
 			.task { await viewModel.load() }
 			.sheet(item: $viewModel.editor) { model in
-				TitleEditorView(model: model) {
-					await viewModel.save(model)
-				}
+				TitleEditorView(
+					model: model,
+					onSave: { await viewModel.save(model) },
+					onCancel: { viewModel.editor = nil }
+				)
 			}
 			.alert(Text(Lexicon.titleSingular), isPresented: isDeleteBlockedPresented,
 				   presenting: viewModel.deleteBlocked) { _ in

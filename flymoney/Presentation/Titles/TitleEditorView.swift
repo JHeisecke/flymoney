@@ -10,6 +10,7 @@ import SwiftUI
 struct TitleEditorView: View {
 	@Bindable var model: TitleEditorModel
 	let onSave: @MainActor () async -> Void
+	let onCancel: @MainActor () -> Void
 
 	var body: some View {
 		NavigationStack {
@@ -37,14 +38,19 @@ struct TitleEditorView: View {
 						.font(Theme.Typography.caption)
 						.foregroundStyle(Theme.Colors.textTertiary)
 				}
+
+				if let saveError = model.saveError {
+					Section {
+						Text(saveError)
+							.font(Theme.Typography.body)
+							.foregroundStyle(Theme.Colors.danger)
+					}
+				}
 			}
 			.navigationTitle(Text(model.isEditing ? Lexicon.editTitle : Lexicon.newTitle))
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
-					Button(String(localized: "Cancel")) {
-						model.nameError = nil
-						model.saveError = nil
-					}
+					Button(String(localized: "Cancel"), action: onCancel)
 				}
 				ToolbarItem(placement: .topBarTrailing) {
 					Button(String(localized: "Save")) {

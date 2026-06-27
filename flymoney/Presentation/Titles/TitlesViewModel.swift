@@ -48,7 +48,7 @@ final class TitlesViewModel {
 	}
 
 	func beginEdit(_ t: ExpenseTitle) {
-		editor = TitleEditorModel(editing: t)
+		editor = TitleEditorModel(editing: t, currencyCode: currencyCode)
 	}
 
 	func save(_ model: TitleEditorModel) async {
