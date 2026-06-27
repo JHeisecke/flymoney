@@ -11,7 +11,7 @@ flymoney is a minimalist expense tracker. **Clean Architecture + MVVM, SwiftUI, 
 Planning context lives in an **Obsidian vault**, not in this repo:
 
 ```
-/Users/jheisecke/Documents/RPGym/Obsidian/flymoney/
+/Users/jheisecke/Documents/Obsidian/flymoney/
 ├── Roadmap.md                  ← stage tracker + status (start here)
 ├── Stages/                      ← per-stage scope + acceptance criteria
 ├── Plans/                       ← detailed implementation plans (Stage N - Plan.md)
@@ -85,6 +85,16 @@ Tests use **Swift Testing** (`@Test`/`#expect`), not XCTest.
 - **Don't scaffold or create source files until the relevant plan is signed off.**
 - **Don't edit Obsidian plan content to match shortcuts you took** — update status/checkboxes, but if reality diverges from the plan, surface the divergence.
 - iOS **18** is the floor even though `/swiftui-pro` defaults to 26 — avoid 26-only APIs.
+- **Every `.swift` file** must include the standard Xcode header comment at the top:
+
+```
+//
+//  FileName.swift
+//  flymoney
+//
+//  Created by Javier Heisecke on 2026-06-26.
+//
+```
 
 ---
 

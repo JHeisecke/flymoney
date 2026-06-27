@@ -1,3 +1,10 @@
+//
+//  SearchExpenseTitlesUseCaseTests.swift
+//  flymoney
+//
+//  Created by Javier Heisecke on 2026-06-26.
+//
+
 import Foundation
 import Testing
 @testable import flymoney

@@ -1,3 +1,10 @@
+//
+//  Font+Theme.swift
+//  flymoney
+//
+//  Created by Javier Heisecke on 2026-06-26.
+//
+
 import SwiftUI
 
 extension Theme {
@@ -14,4 +21,3 @@ extension Theme {
 		static let caption = Font.subheadline
 	}
 }
-

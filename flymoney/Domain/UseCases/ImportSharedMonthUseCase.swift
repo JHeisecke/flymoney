@@ -1,3 +1,10 @@
+//
+//  ImportSharedMonthUseCase.swift
+//  flymoney
+//
+//  Created by Javier Heisecke on 2026-06-26.
+//
+
 import Foundation
 
 enum MergeResolution: Equatable, Sendable {

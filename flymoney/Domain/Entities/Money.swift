@@ -1,3 +1,10 @@
+//
+//  Money.swift
+//  flymoney
+//
+//  Created by Javier Heisecke on 2026-06-26.
+//
+
 import Foundation
 
 struct Money: Equatable, Hashable, Sendable {
