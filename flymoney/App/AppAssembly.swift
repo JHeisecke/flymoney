@@ -86,6 +86,30 @@ final class AppAssembly {
 			deleteExpense: makeDeleteExpenseUseCase())
 	}
 
+	func makeImportSharedMonthUseCase() -> any ImportSharedMonthUseCase {
+		ImportSharedMonthUseCaseImpl()
+	}
+
+	func makeMergeTitlesUseCase() -> any MergeTitlesUseCase {
+		MergeTitlesUseCaseImpl()
+	}
+
+	func makeSharingTransport() -> BLEQRSharingTransport {
+		BLEQRSharingTransport()
+	}
+
+	func makeSharingViewModel(role: SharingRole) -> SharingViewModel {
+		SharingViewModel(
+			role: role,
+			exportMonth: makeExportMonthUseCase(),
+			importShared: makeImportSharedMonthUseCase(),
+			mergeTitles: makeMergeTitlesUseCase(),
+			fetchTitles: makeFetchExpenseTitlesUseCase(),
+			addExpense: makeAddExpenseUseCase(),
+			upsertTitle: makeUpsertExpenseTitleUseCase(),
+			transport: makeSharingTransport())
+	}
+
 	func makeRootView() -> some View {
 		RootView(assembly: self)
 	}

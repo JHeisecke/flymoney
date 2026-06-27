@@ -9,9 +9,12 @@ import SwiftUI
 
 struct HistoryView: View {
 	@State private var viewModel: HistoryViewModel
+	@State private var sharingRole: SharingRole?
+	let assembly: AppAssembly
 
-	init(viewModel: HistoryViewModel) {
-        self.viewModel = viewModel
+	init(viewModel: HistoryViewModel, assembly: AppAssembly) {
+		_viewModel = State(initialValue: viewModel)
+		self.assembly = assembly
 	}
 
 	var body: some View {
@@ -64,16 +67,24 @@ struct HistoryView: View {
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .topBarTrailing) {
-					Button(String(localized: "Share"),
-						   systemImage: "square.and.arrow.up") {
+					Menu {
+						Button(String(localized: "Share this month"), systemImage: "qrcode") {
+							sharingRole = .send(month: viewModel.month)
+						}
+						Button(String(localized: "Receive from a friend"), systemImage: "qrcode.viewfinder") {
+							sharingRole = .receive
+						}
+					} label: {
+						Image(systemName: "square.and.arrow.up")
 					}
-					.disabled(true)
-					.accessibilityHint(Text(String(localized: "Available in a future update")))
 				}
 			}
 			.task { await viewModel.load() }
 			.onChange(of: viewModel.month) { _, _ in
 				Task { await viewModel.load() }
+			}
+			.sheet(item: $sharingRole) { role in
+				SharingSheetHost(assembly: assembly, role: role)
 			}
 			.alert("Error",
 				   isPresented: errorAlertBinding,

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MergeResolution: Equatable, Sendable {
+enum MergeResolution: Equatable, Hashable, Sendable {
 	case keepSeparate
 	case mergeInto(localTitleID: UUID)
 }

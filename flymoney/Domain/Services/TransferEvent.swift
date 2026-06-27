@@ -11,5 +11,6 @@ enum TransferEvent: Equatable, Sendable {
 	case handshaking
 	case transferring(progress: Double)
 	case completed
+	case received(SharePayload)
 	case failed(reason: String)
 }

@@ -18,7 +18,7 @@ struct RootView: View {
 				AddExpenseView(viewModel: assembly.makeAddExpenseViewModel())
 			}
 			Tab("History", systemImage: "list.bullet", value: TabID.history) {
-				HistoryView(viewModel: assembly.makeHistoryViewModel())
+				HistoryView(viewModel: assembly.makeHistoryViewModel(), assembly: assembly)
 			}
 			Tab("Titles", systemImage: "tag", value: TabID.titles) {
 				TitlesView(viewModel: assembly.makeTitlesViewModel())

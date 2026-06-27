@@ -47,6 +47,7 @@ struct TitleEditorView: View {
 					}
 				}
 			}
+			.scrollDismissesKeyboard(.interactively)
 			.navigationTitle(Text(model.isEditing ? Lexicon.editTitle : Lexicon.newTitle))
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
@@ -61,7 +62,8 @@ struct TitleEditorView: View {
 					.disabled(model.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
 				}
 			}
-			.tint(Theme.Colors.accent)
-		}
+		.tint(Theme.Colors.accent)
+		.dismissKeyboardOnTap()
+	}
 	}
 }

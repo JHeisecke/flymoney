@@ -66,6 +66,7 @@ struct AddExpenseView: View {
 			.navigationTitle(Text(String(localized: "Add Expense")))
 		}
 		.tint(Theme.Colors.accent)
+		.dismissKeyboardOnTap()
 		.onChange(of: viewModel.didJustSave) { _, isTrue in
 			if isTrue {
 				AccessibilityNotification.Announcement(String(localized: "Saved")).post()
