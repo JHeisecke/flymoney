@@ -79,6 +79,13 @@ final class AppAssembly {
 			currencyCode: currencyProvider.defaultCurrencyCode)
 	}
 
+	func makeHistoryViewModel() -> HistoryViewModel {
+		HistoryViewModel(
+			fetchExpenses: makeFetchExpensesForMonthUseCase(),
+			fetchTitles: makeFetchExpenseTitlesUseCase(),
+			deleteExpense: makeDeleteExpenseUseCase())
+	}
+
 	func makeRootView() -> some View {
 		RootView(assembly: self)
 	}

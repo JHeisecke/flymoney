@@ -44,6 +44,7 @@ struct AutocompleteField<Suggestion: Identifiable>: View {
 					onSelect: onSelect
 				)
 				.padding(.top, Theme.Spacing.xs)
+				.transition(.opacity)
 			}
 		}
 		.task(id: text) {

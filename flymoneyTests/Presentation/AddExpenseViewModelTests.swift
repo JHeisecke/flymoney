@@ -279,4 +279,20 @@ struct AddExpenseViewModelTests {
 		#expect(vm.selectedTitleID == nil)
 		#expect(vm.budget == nil)
 	}
+
+	@Test("budget uses current month not date field")
+	func budgetUsesCurrentMonth() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let expenses = InMemoryExpenseRepository()
+		let limit = Money(minorUnits: 1000, currencyCode: "USD")
+		let title = ExpenseTitle(id: UUID(), name: "Coffee", limit: limit)
+		try await titles.upsert(title)
+		try await expenses.add(Expense(amount: Money(minorUnits: 400, currencyCode: "USD"), titleID: title.id, date: Date()))
+
+		let vm = makeVM(expenses: expenses, titles: titles)
+		vm.form.date = Date().addingTimeInterval(-60 * 86400)
+		await vm.select(title)
+
+		#expect(vm.budget?.spent.minorUnits == 400)
+	}
 }

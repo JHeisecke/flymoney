@@ -81,4 +81,20 @@ struct CalendarMonthTests {
 		#expect(month.year == 2025)
 		#expect(month.month == 1)
 	}
+
+	@Test("previous wraps year")
+	func previousWrapsYear() {
+		let jan2026 = CalendarMonth(year: 2026, month: 1)
+		let result = jan2026.previous(using: utc)
+		#expect(result.year == 2025)
+		#expect(result.month == 12)
+	}
+
+	@Test("next wraps year")
+	func nextWrapsYear() {
+		let dec2026 = CalendarMonth(year: 2026, month: 12)
+		let result = dec2026.next(using: utc)
+		#expect(result.year == 2027)
+		#expect(result.month == 1)
+	}
 }

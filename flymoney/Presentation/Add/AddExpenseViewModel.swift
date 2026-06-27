@@ -62,7 +62,7 @@ final class AddExpenseViewModel {
 
 	private func updateBinding(forText text: String) async {
 		if let match = suggestions.first(where: {
-			$0.name.caseInsensitiveCompare(text) == .orderedSame
+			$0.name.compare(text, options: [.caseInsensitive, .diacriticInsensitive], range: nil, locale: .current) == .orderedSame
 		}) {
 			selectedTitleID = match.id
 			await loadBudget(for: match.id)

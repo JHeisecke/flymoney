@@ -26,3 +26,17 @@ struct CalendarMonth: Equatable, Hashable, Sendable, Codable {
 		return CalendarMonth(year: c.year ?? 1970, month: c.month ?? 1)
 	}
 }
+
+extension CalendarMonth {
+	func previous(using calendar: Calendar) -> CalendarMonth {
+		let start = interval(using: calendar).start
+		let previousStart = calendar.date(byAdding: .month, value: -1, to: start) ?? start
+		return CalendarMonth.containing(previousStart, using: calendar)
+	}
+
+	func next(using calendar: Calendar) -> CalendarMonth {
+		let start = interval(using: calendar).start
+		let nextStart = calendar.date(byAdding: .month, value: 1, to: start) ?? start
+		return CalendarMonth.containing(nextStart, using: calendar)
+	}
+}

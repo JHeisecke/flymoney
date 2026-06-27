@@ -18,7 +18,7 @@ struct RootView: View {
 				AddExpenseView(viewModel: assembly.makeAddExpenseViewModel())
 			}
 			Tab("History", systemImage: "list.bullet", value: TabID.history) {
-				PlaceholderScreen(title: "History")
+				HistoryView(viewModel: assembly.makeHistoryViewModel())
 			}
 			Tab("Titles", systemImage: "tag", value: TabID.titles) {
 				TitlesView(viewModel: assembly.makeTitlesViewModel())
