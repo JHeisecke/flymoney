@@ -16,12 +16,13 @@ Planning context lives in an **Obsidian vault**, not in this repo:
 ├── Stages/                      ← per-stage scope + acceptance criteria
 ├── Plans/                       ← detailed implementation plans (Stage N - Plan.md)
 └── Reference/
-    ├── Architecture.md          ← layer rules, dependency direction
+    ├── Decisions.md             ← locked product/tech decisions (canonical)
+    ├── Architecture.md          ← layer rules, dependency direction, full file tree
     ├── Coding Standards.md      ← binding Swift/SwiftUI rules
     └── flymoney.html            ← UI design reference (Claude Design export)
 ```
 
-Also in this repo: `PLAN.md` (root) is the canonical architecture/decisions doc; `Reference/Architecture.md` mirrors it.
+`Reference/Decisions.md` + `Reference/Architecture.md` are the canonical architecture/decisions docs. (There is no `PLAN.md` in the repo.)
 
 **Before implementing a stage:** read its `Stages/Stage N - …md` and `Plans/Stage N - Plan.md`. If no plan file exists yet, do not improvise — ask, or write the plan first and get sign-off.
 
@@ -79,7 +80,7 @@ Tests use **Swift Testing** (`@Test`/`#expect`), not XCTest.
 ## 4. Boundaries — respect these
 
 - **Stay in scope.** Implement the current stage only. Don't pull work forward from later stages. Out-of-scope finds → flag, don't fix inline.
-- **Decisions are locked** (see `PLAN.md` §1 / `Roadmap.md`): iOS 18+, SwiftData, `Money` as Int cents, monthly limits, manual DI, Swift Testing, QR+BLE sharing. Don't silently change these. To revisit, raise it explicitly.
+- **Decisions are locked** (see `Reference/Decisions.md`): iOS 18+, SwiftData, `Money` as Int cents, monthly limits, manual DI, Swift Testing, QR+BLE sharing. Don't silently change these. To revisit, raise it explicitly.
 - **No third-party dependencies** without asking first. (Sora font is the one approved bundled asset.)
 - **No UIKit** unless a stage plan explicitly allows it (only sanctioned exception: AVFoundation QR scanner in Stage 7, wrapped).
 - **Don't scaffold or create source files until the relevant plan is signed off.**
