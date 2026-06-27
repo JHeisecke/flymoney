@@ -81,18 +81,12 @@ struct AddExpenseView: View {
 private struct AmountFieldView: View {
 	@Bindable var form: AddExpenseFormModel
 
-    private let formatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        return formatter
-    }()
-
 	var body: some View {
 		VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
 			Text(String(localized: "Amount (\(form.currencyCode))"))
 				.font(Theme.Typography.caption)
 				.foregroundStyle(Theme.Colors.textSecondary)
-            TextField(String(localized: "Amount"), value: $form.amountText, formatter: formatter)
+			TextField(String(localized: "Amount"), value: $form.amountDecimal, format: .currency(code: form.currencyCode))
 				.keyboardType(.decimalPad)
 				.font(Theme.Typography.body)
 				.textFieldStyle(.plain)

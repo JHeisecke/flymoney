@@ -11,7 +11,7 @@ import Observation
 @MainActor
 @Observable
 final class AddExpenseFormModel {
-	var amountText: String = ""
+	var amountDecimal: Decimal = 0
 	var titleName: String = ""
 	var date: Date = Date()
 
@@ -19,15 +19,13 @@ final class AddExpenseFormModel {
 	var titleError: String?
 
 	let currencyCode: String
-	var parseLocale: Locale
 
-	init(currencyCode: String, parseLocale: Locale = .current) {
+	init(currencyCode: String) {
 		self.currencyCode = currencyCode
-		self.parseLocale = parseLocale
 	}
 
 	var canSave: Bool {
-		!amountText.trimmingCharacters(in: .whitespaces).isEmpty &&
+		amountDecimal > 0 &&
 		!titleName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 	}
 
@@ -40,23 +38,18 @@ final class AddExpenseFormModel {
 			titleError = String(localized: "Enter a title.")
 			return nil
 		}
-		let rawAmount = amountText.trimmingCharacters(in: .whitespaces)
-		guard !rawAmount.isEmpty else {
+		guard amountDecimal > 0 else {
 			amountError = String(localized: "Enter an amount.")
 			return nil
 		}
-		guard let decimal = Decimal(string: rawAmount, locale: parseLocale), decimal > 0 else {
-			amountError = String(localized: "Enter a valid amount.")
-			return nil
-		}
-		let scaled = (decimal as NSDecimalNumber).multiplying(by: 100)
+		let scaled = (amountDecimal as NSDecimalNumber).multiplying(by: 100)
 		let minorUnits = Int(truncating: scaled.rounding(accordingToBehavior: nil))
 		let amount = Money(minorUnits: minorUnits, currencyCode: currencyCode)
 		return (amount, trimmedTitle, date)
 	}
 
 	func reset() {
-		amountText = ""
+		amountDecimal = 0
 		titleName = ""
 		date = Date()
 		amountError = nil

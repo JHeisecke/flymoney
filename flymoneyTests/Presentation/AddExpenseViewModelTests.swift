@@ -32,7 +32,6 @@ struct AddExpenseViewModelTests {
 			remainingBudget: budget,
 			currencyCode: "USD",
 			calendar: Self.utc)
-		vm.form.parseLocale = Locale(identifier: "en_US")
 		return vm
 	}
 
@@ -42,12 +41,12 @@ struct AddExpenseViewModelTests {
 		let titles = InMemoryExpenseTitleRepository()
 		let vm = makeVM(expenses: expenses, titles: titles)
 
-		vm.form.amountText = "5"
+		vm.form.amountDecimal = 5
 		vm.form.titleName = "Coffee"
 		await vm.save()
 
 		#expect(vm.didJustSave == true)
-		#expect(vm.form.amountText == "")
+		#expect(vm.form.amountDecimal == 0)
 		#expect(vm.form.titleName == "")
 
 		let allExpenses = try await expenses.expenses(in: DateInterval(start: Date.distantPast, end: Date.distantFuture), titleID: nil)
@@ -61,7 +60,7 @@ struct AddExpenseViewModelTests {
 		let titles = InMemoryExpenseTitleRepository()
 		let vm = makeVM(expenses: expenses, titles: titles)
 
-		vm.form.amountText = "5"
+		vm.form.amountDecimal = 5
 		vm.form.titleName = "Coffee"
 		await vm.save()
 
@@ -79,7 +78,7 @@ struct AddExpenseViewModelTests {
 		try await titles.upsert(existing)
 
 		let vm = makeVM(expenses: expenses, titles: titles)
-		vm.form.amountText = "5"
+		vm.form.amountDecimal = 5
 		vm.form.titleName = "Coffee"
 		await vm.save()
 
@@ -91,7 +90,7 @@ struct AddExpenseViewModelTests {
 	@Test("empty amount blocked", .tags(.viewModel))
 	func emptyAmountBlocked() async {
 		let vm = makeVM()
-		vm.form.amountText = ""
+		vm.form.amountDecimal = 0
 		vm.form.titleName = "Coffee"
 		await vm.save()
 
@@ -102,7 +101,7 @@ struct AddExpenseViewModelTests {
 	@Test("empty title blocked", .tags(.viewModel))
 	func emptyTitleBlocked() async {
 		let vm = makeVM()
-		vm.form.amountText = "5"
+		vm.form.amountDecimal = 5
 		vm.form.titleName = ""
 		await vm.save()
 
@@ -113,18 +112,7 @@ struct AddExpenseViewModelTests {
 	@Test("zero amount blocked", .tags(.viewModel))
 	func zeroAmountBlocked() async {
 		let vm = makeVM()
-		vm.form.amountText = "0"
-		vm.form.titleName = "Coffee"
-		await vm.save()
-
-		#expect(vm.form.amountError != nil)
-		#expect(vm.didJustSave == false)
-	}
-
-	@Test("invalid amount string blocked", .tags(.viewModel))
-	func invalidAmountBlocked() async {
-		let vm = makeVM()
-		vm.form.amountText = "abc"
+		vm.form.amountDecimal = 0
 		vm.form.titleName = "Coffee"
 		await vm.save()
 
@@ -137,7 +125,7 @@ struct AddExpenseViewModelTests {
 		let expenses = InMemoryExpenseRepository()
 		let vm = makeVM(expenses: expenses)
 
-		vm.form.amountText = "  5  "
+		vm.form.amountDecimal = 5
 		vm.form.titleName = "Coffee"
 		await vm.save()
 
@@ -150,7 +138,7 @@ struct AddExpenseViewModelTests {
 		let expenses = InMemoryExpenseRepository()
 		let vm = makeVM(expenses: expenses)
 
-		vm.form.amountText = "5"
+		vm.form.amountDecimal = 5
 		vm.form.titleName = "Coffee"
 		await vm.save()
 
@@ -272,7 +260,7 @@ struct AddExpenseViewModelTests {
 		let vm = makeVM(titles: titles)
 		await vm.search("Coffee")
 		vm.form.titleName = "Coffee"
-		vm.form.amountText = "5"
+		vm.form.amountDecimal = 5
 		await vm.save()
 
 		#expect(vm.suggestions.isEmpty)

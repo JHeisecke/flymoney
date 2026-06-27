@@ -46,7 +46,7 @@ struct TitlesViewModelTests {
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
 		editor.name = "Coffee"
-		editor.limitText = "10"
+		editor.limitDecimal = 10
 		await vm.save(editor)
 
 		await vm.load()
@@ -62,7 +62,7 @@ struct TitlesViewModelTests {
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
 		editor.name = "Coffee"
-		editor.limitText = ""
+		editor.limitDecimal = 0
 		await vm.save(editor)
 
 		await vm.load()
@@ -81,7 +81,7 @@ struct TitlesViewModelTests {
 
 		let editor = try #require(vm.editor)
 		editor.name = "Espresso"
-		editor.limitText = "15"
+		editor.limitDecimal = 15
 		await vm.save(editor)
 
 		await vm.load()
@@ -151,7 +151,7 @@ struct TitlesViewModelTests {
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
 		editor.name = "Coffee"
-		editor.limitText = "-5"
+		editor.limitDecimal = -5
 		await vm.save(editor)
 
 		#expect(editor.nameError != nil)

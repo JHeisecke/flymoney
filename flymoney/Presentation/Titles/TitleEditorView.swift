@@ -27,11 +27,11 @@ struct TitleEditorView: View {
 					Text(String(localized: "Name"))
 				}
 
-				Section {
-					TextField(String(localized: "Monthly limit"), text: $model.limitText)
-						.keyboardType(.decimalPad)
-						.font(Theme.Typography.body)
-				} header: {
+			Section {
+				TextField(String(localized: "Monthly limit"), value: $model.limitDecimal, format: .currency(code: model.currencyCode))
+					.keyboardType(.decimalPad)
+					.font(Theme.Typography.body)
+			} header: {
 					Text(String(localized: "Monthly limit"))
 				} footer: {
 					Text(model.currencyCode)

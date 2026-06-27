@@ -10,35 +10,31 @@ import Observation
 
 @MainActor
 @Observable
-final class TitleEditorModel: Identifiable {
+	final class TitleEditorModel: Identifiable {
 	let id = UUID()
 	let titleID: UUID?
 	var name: String
-	var limitText: String
+	var limitDecimal: Decimal = 0
 	let currencyCode: String
-	var parseLocale: Locale
 	var nameError: String?
 	var saveError: String?
 
 	init(currencyCode: String) {
 		self.titleID = nil
 		self.name = ""
-		self.limitText = ""
+		self.limitDecimal = 0
 		self.currencyCode = currencyCode
-		self.parseLocale = .current
 	}
 
 	init(editing title: ExpenseTitle, currencyCode fallback: String) {
 		self.titleID = title.id
 		self.name = title.name
 		if let limit = title.limit {
-			let major = Decimal(limit.minorUnits) / 100
-			self.limitText = major.formatted(.number.grouping(.never).precision(.fractionLength(0...2)))
+			self.limitDecimal = Decimal(limit.minorUnits) / 100
 		} else {
-			self.limitText = ""
+			self.limitDecimal = 0
 		}
 		self.currencyCode = title.limit?.currencyCode ?? fallback
-		self.parseLocale = .current
 	}
 
 	var isEditing: Bool { titleID != nil }
@@ -56,14 +52,14 @@ final class TitleEditorModel: Identifiable {
 			return nil
 		}
 		let limit: Money?
-		if limitText.trimmingCharacters(in: .whitespaces).isEmpty {
+		if limitDecimal == 0 {
 			limit = nil
 		} else {
-			guard let decimal = Decimal(string: limitText, locale: parseLocale), decimal >= 0 else {
+			guard limitDecimal > 0 else {
 				nameError = String(localized: "Enter a valid amount.")
 				return nil
 			}
-			let scaled = (decimal as NSDecimalNumber).multiplying(by: 100)
+			let scaled = (limitDecimal as NSDecimalNumber).multiplying(by: 100)
 			let minorUnits = Int(truncating: scaled.rounding(accordingToBehavior: nil))
 			limit = Money(minorUnits: minorUnits, currencyCode: currencyCode)
 		}
