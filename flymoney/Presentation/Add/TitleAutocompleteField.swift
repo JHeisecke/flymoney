@@ -112,9 +112,9 @@ private struct SuggestionRowView: View {
 				.foregroundStyle(summary.isOver ? Theme.Colors.danger : Theme.Colors.success)
 				.monospacedDigit()
 		} else if let limit = title.limit {
-			Text(String(localized: "Left \(limit.formatted())"))
-				.font(Theme.Typography.caption13Strong)
-				.foregroundStyle(Theme.Colors.success)
+			Text("\(limit.formatted()) / \(String(localized: "mo"))")
+				.font(Theme.Typography.body13)
+				.foregroundStyle(Theme.Colors.textSubtle)
 				.monospacedDigit()
 		} else {
 			Text(String(localized: "no limit"))

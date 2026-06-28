@@ -25,5 +25,6 @@ struct RootView: View {
 			}
 		}
 		.tint(Theme.Colors.accent)
+        .preferredColorScheme(.light)
 	}
 }
