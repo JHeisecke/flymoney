@@ -17,13 +17,15 @@ struct AddExpenseView: View {
 	var body: some View {
 		VStack(spacing: 0) {
 			EyebrowLabel(text: "New expense", tracking: 2.16)
+				.frame(maxWidth: .infinity)
+				.multilineTextAlignment(.center)
 				.padding(.top, Theme.Spacing.sm)
 				.padding(.bottom, Theme.Spacing.s26)
 
 			HeroAmountView(
-				formattedAmount: formattedAmount,
-				currencySymbol: Theme.Currency.symbol(for: viewModel.form.currencyCode),
-				isPlaceholder: viewModel.form.amountDecimal == 0)
+				form: viewModel.form,
+                currencySymbol: Theme.Currency.symbol(for: viewModel.form.currencyCode)
+            )
 
 			Spacer().frame(height: 40)
 
@@ -69,13 +71,6 @@ struct AddExpenseView: View {
 				}
 			}
 		}
-	}
-
-	private var formattedAmount: String {
-		if let money = (try? viewModel.form.validated())?.amount {
-			return money.formatted()
-		}
-		return viewModel.form.amountDecimal == 0 ? "0" : viewModel.form.amountDecimal.formatted()
 	}
 
 	private var savedToast: some View {
