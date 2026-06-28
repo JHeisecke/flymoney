@@ -14,7 +14,7 @@ struct ScannerOverlay: View {
 	var body: some View {
 		ZStack {
 			Rectangle()
-				.fill(Theme.Colors.surfaceDeepDark)
+				.fill(diagonalStripePattern)
 			GeometryReader { geo in
 				cornerBrackets(in: geo.size)
 				if !reduceMotion {
@@ -28,6 +28,16 @@ struct ScannerOverlay: View {
 			RoundedRectangle(cornerRadius: Theme.Radius.xxxl)
 				.stroke(Theme.Colors.borderSubtle, lineWidth: 1)
 		}
+	}
+
+	private var diagonalStripePattern: some ShapeStyle {
+		LinearGradient(
+			colors: [
+				Color(red: 0.078, green: 0.078, blue: 0.094),
+				Color(red: 0.063, green: 0.063, blue: 0.078),
+			],
+			startPoint: .topLeading,
+			endPoint: .bottomTrailing)
 	}
 
 	@ViewBuilder
@@ -44,13 +54,17 @@ struct ScannerOverlay: View {
 		Path { p in
 			switch corner {
 			case 0:
-				p.move(to: CGPoint(x: 0, y: 34)); p.addLine(to: CGPoint(x: 0, y: 12)); p.addLine(to: CGPoint(x: 0, y: 0)); p.addLine(to: CGPoint(x: 12, y: 0))
+				p.move(to: CGPoint(x: 0, y: 34)); p.addLine(to: CGPoint(x: 0, y: 12))
+				p.move(to: CGPoint(x: 0, y: 0)); p.addLine(to: CGPoint(x: 12, y: 0))
 			case 1:
-				p.move(to: CGPoint(x: 34, y: 34)); p.addLine(to: CGPoint(x: 34, y: 12)); p.addLine(to: CGPoint(x: 34, y: 0)); p.addLine(to: CGPoint(x: 22, y: 0))
+				p.move(to: CGPoint(x: 34, y: 34)); p.addLine(to: CGPoint(x: 34, y: 12))
+				p.move(to: CGPoint(x: 34, y: 0)); p.addLine(to: CGPoint(x: 22, y: 0))
 			case 2:
-				p.move(to: CGPoint(x: 0, y: 0)); p.addLine(to: CGPoint(x: 0, y: 22)); p.addLine(to: CGPoint(x: 0, y: 34)); p.addLine(to: CGPoint(x: 12, y: 34))
+				p.move(to: CGPoint(x: 0, y: 0)); p.addLine(to: CGPoint(x: 0, y: 22))
+				p.move(to: CGPoint(x: 0, y: 34)); p.addLine(to: CGPoint(x: 12, y: 34))
 			case 3:
-				p.move(to: CGPoint(x: 34, y: 0)); p.addLine(to: CGPoint(x: 34, y: 22)); p.addLine(to: CGPoint(x: 34, y: 34)); p.addLine(to: CGPoint(x: 22, y: 34))
+				p.move(to: CGPoint(x: 34, y: 0)); p.addLine(to: CGPoint(x: 34, y: 22))
+				p.move(to: CGPoint(x: 34, y: 34)); p.addLine(to: CGPoint(x: 22, y: 34))
 			default: break
 			}
 		}

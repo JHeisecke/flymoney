@@ -32,7 +32,6 @@ struct HistoryView: View {
 				.padding(.top, Theme.Spacing.s18)
 		}
 		.background(Theme.Colors.surface)
-        dismissKeyboardOnTap()
 		.task { await viewModel.load() }
 		.onChange(of: viewModel.month) { _, _ in
 			Task { await viewModel.load() }
@@ -54,8 +53,16 @@ struct HistoryView: View {
 				.tracking(-0.5)
 				.foregroundStyle(Theme.Colors.ink)
 			Spacer()
-			PillButton(title: "Share month", systemImage: nil, style: .outline) {
-				sharingRole = .send(month: viewModel.month)
+			Menu {
+				Button(String(localized: "Share this month"), systemImage: "qrcode") {
+					sharingRole = .send(month: viewModel.month)
+				}
+				Button(String(localized: "Receive from a friend"), systemImage: "qrcode.viewfinder") {
+					sharingRole = .receive
+				}
+			} label: {
+				PillButton(title: "Share month", systemImage: nil, style: .outline) {}
+					.allowsHitTesting(false)
 			}
 		}
 	}

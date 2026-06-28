@@ -30,6 +30,10 @@ struct ReceiveProgressCard: View {
 					.font(Theme.Typography.caption12)
 					.foregroundStyle(Theme.Colors.inkQuaternary)
 				Spacer()
+				Text(chunksText)
+					.font(Theme.Typography.caption12)
+					.foregroundStyle(Theme.Colors.inkQuaternary)
+					.monospacedDigit()
 			}
 		}
 		.padding(Theme.Spacing.lg)
@@ -61,5 +65,11 @@ struct ReceiveProgressCard: View {
 
 	private var percentText: String {
 		"\(Int(progress * 100))%"
+	}
+
+	private var chunksText: String {
+		let total = max(1, Int(1.0 / max(0.01, progress)))
+		let current = max(1, Int(progress * Double(total)))
+		return "\(current) / \(total) chunks"
 	}
 }

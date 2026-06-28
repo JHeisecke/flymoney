@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShareReceiveView: View {
 	@State private var viewModel: SharingViewModel
+	@State private var cameraDenied = false
 	let onDismiss: () -> Void
 
 	init(viewModel: SharingViewModel, onDismiss: @escaping () -> Void) {
@@ -24,40 +25,70 @@ struct ShareReceiveView: View {
 				startRadius: 0, endRadius: 600)
 				.ignoresSafeArea()
 
-			VStack(spacing: 0) {
-				ShareSheetHeader(
-					title: "Receive",
-					onCancel: { viewModel.cancel(); onDismiss() },
-					onDark: true)
+			if cameraDenied {
+				VStack(spacing: Theme.Spacing.lg) {
+					ShareSheetHeader(
+						title: "Receive",
+						onCancel: { onDismiss() },
+						onDark: true)
+					Spacer()
+					ContentUnavailableView {
+						Label(String(localized: "Camera access needed"), systemImage: "camera.fill")
+							.foregroundStyle(Theme.Colors.accent)
+					} description: {
+						Text(String(localized: "Camera access is required to scan a share code."))
+					}
+					Button(String(localized: "Open Settings")) {
+						Permissions.openSettings()
+					}
+					.buttonStyle(.borderedProminent)
+					.tint(Theme.Colors.accent)
+					Spacer()
+				}
+			} else {
+				VStack(spacing: 0) {
+					ShareSheetHeader(
+						title: "Receive",
+						onCancel: { viewModel.cancel(); onDismiss() },
+						onDark: true)
 
-				Spacer().frame(height: Theme.Spacing.s30)
+					Spacer().frame(height: Theme.Spacing.s30)
 
-				QRScannerView(
-					onCode: { code in
-						viewModel.provideScannedQR(code)
-						Task { await viewModel.start() }
-					},
-					onError: { _ in })
-					.frame(width: 248, height: 248)
-					.clipShape(.rect(cornerRadius: Theme.Radius.xxxl))
-					.overlay { ScannerOverlay() }
+					QRScannerView(
+						onCode: { code in
+							viewModel.provideScannedQR(code)
+							AccessibilityNotification.Announcement(String(localized: "Code found")).post()
+							Task { await viewModel.start() }
+						},
+						onError: { _ in })
+						.frame(width: 248, height: 248)
+						.clipShape(.rect(cornerRadius: Theme.Radius.xxxl))
+						.overlay { ScannerOverlay() }
 
-				Spacer()
+					Spacer()
 
-				if case .receiving = viewModel.phase {
-					ReceiveProgressCard(phase: viewModel.phase, monthName: "June")
-						.padding(.horizontal, Theme.Spacing.xxl)
-						.padding(.bottom, Theme.Spacing.s42)
-				} else {
-					Text(String(localized: "Point at the other phone's code to pair over Bluetooth."))
-						.font(Theme.Typography.body14)
-						.foregroundStyle(Color(white: 0.66))
-						.multilineTextAlignment(.center)
-						.padding(.horizontal, Theme.Spacing.xxl)
-						.padding(.bottom, Theme.Spacing.s42)
+					if case .receiving = viewModel.phase {
+						ReceiveProgressCard(phase: viewModel.phase, monthName: "June")
+							.padding(.horizontal, Theme.Spacing.xxl)
+							.padding(.bottom, Theme.Spacing.s42)
+					} else {
+						Text(String(localized: "Point at the other phone's code to pair over Bluetooth."))
+							.font(Theme.Typography.body14)
+							.foregroundStyle(Color(white: 0.66))
+							.multilineTextAlignment(.center)
+							.padding(.horizontal, Theme.Spacing.xxl)
+							.padding(.bottom, Theme.Spacing.s42)
+					}
 				}
 			}
 		}
 		.preferredColorScheme(.dark)
+		.task {
+			let granted = await QRScannerViewController.requestCameraAccess()
+			cameraDenied = !granted
+			if granted {
+				AccessibilityNotification.Announcement(String(localized: "Scanning for share code")).post()
+			}
+		}
 	}
 }
