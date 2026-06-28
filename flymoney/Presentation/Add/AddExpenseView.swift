@@ -62,6 +62,11 @@ struct AddExpenseView: View {
 		}
 		.padding(.horizontal, Theme.Spacing.xxl)
 		.background(Theme.Colors.surface)
+		.simultaneousGesture(
+			TapGesture().onEnded {
+				UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+			}
+		)
 		.onChange(of: viewModel.didJustSave) { _, isTrue in
 			if isTrue {
 				AccessibilityNotification.Announcement(String(localized: "Saved")).post()

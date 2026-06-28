@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreText
 
 extension Theme {
 	enum Typography {
@@ -47,18 +48,30 @@ extension Theme {
 		static let display = display66
 
 		private static func sora(_ weight: Font.Weight, size: CGFloat, relativeTo style: Font.TextStyle) -> Font {
-			Font.custom(soraName(for: weight), size: size, relativeTo: style)
+			guard let uiFont = soraUIFont(weight: weight, size: size) else {
+				return Font.system(size: size, weight: weight, design: .rounded)
+			}
+			return Font(uiFont)
 		}
 
-		private static func soraName(for weight: Font.Weight) -> String {
-			switch weight {
-			case .regular: return "Sora-Regular"
-			case .medium: return "Sora-Medium"
-			case .semibold: return "Sora-SemiBold"
-			case .bold: return "Sora-Bold"
-			case .heavy: return "Sora-Bold"
-			default: return "Sora-Regular"
+		private static func soraUIFont(weight: Font.Weight, size: CGFloat) -> UIFont? {
+			let variationWeight: CGFloat = switch weight {
+			case .regular: 400
+			case .medium: 500
+			case .semibold: 600
+			case .bold: 700
+			case .heavy: 700
+			default: 400
 			}
+
+			let descriptor = UIFontDescriptor(fontAttributes: [
+				.family: "Sora",
+				UIFontDescriptor.AttributeName(rawValue: kCTFontVariationAttribute as String): [
+					2003265652: variationWeight,
+				],
+			])
+
+			return UIFont(descriptor: descriptor, size: size)
 		}
 	}
 }

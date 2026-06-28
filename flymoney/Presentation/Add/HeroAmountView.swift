@@ -16,73 +16,42 @@ struct HeroAmountView: View {
 
 	var body: some View {
 		VStack(spacing: Theme.Spacing.xl) {
-			Button {
-				isFocused = true
-			} label: {
-				HStack(alignment: .firstTextBaseline, spacing: 0) {
-					Text(currencySymbol)
-						.font(Theme.Typography.display24)
-						.foregroundStyle(Theme.Colors.inkQuaternary)
-						.baselineOffset(-Theme.Spacing.md)
-					if isFocused {
-						amountTextField
-					} else {
-						Text(displayText)
-							.font(Theme.Typography.display66)
-							.foregroundStyle(form.amountDecimal > 0
-								? Theme.Colors.ink : Theme.Colors.inkQuaternary)
-							.monospacedDigit()
-							.tracking(-1.5)
+			HStack(alignment: .firstTextBaseline, spacing: 0) {
+				Text(currencySymbol)
+					.font(Theme.Typography.display24)
+					.foregroundStyle(Theme.Colors.inkQuaternary)
+					.baselineOffset(-Theme.Spacing.md)
+				TextField("0", text: $amountText)
+					.font(Theme.Typography.display66)
+					.foregroundStyle(form.amountDecimal > 0 ? Theme.Colors.ink : Theme.Colors.inkQuaternary)
+					.tint(Theme.Colors.accent)
+					.keyboardType(.decimalPad)
+					.focused($isFocused)
+					.textFieldStyle(.plain)
+					.multilineTextAlignment(.center)
+					.monospacedDigit()
+					.tracking(-1.5)
+					.onChange(of: amountText) { _, newValue in
+						syncToDecimal(newValue)
 					}
-				}
 			}
-			.buttonStyle(.plain)
-			.overlay(alignment: .leading) {
-				if isFocused {
-					amountTextField
-						.opacity(0)
-				}
-			}
-
 			Rectangle()
 				.fill(Theme.Colors.accent)
 				.frame(width: 52, height: 3)
 				.clipShape(.rect(cornerRadius: Theme.Radius.xxs))
 		}
 		.frame(maxWidth: .infinity)
+		.contentShape(.rect)
+		.onTapGesture { isFocused = true }
 		.onAppear { syncFromDecimal() }
 		.onChange(of: form.amountDecimal) { _, _ in
 			if !isFocused { syncFromDecimal() }
 		}
 	}
 
-	private var amountTextField: some View {
-		TextField("0", text: $amountText)
-			.font(Theme.Typography.display66)
-			.foregroundStyle(form.amountDecimal > 0 ? Theme.Colors.ink : Theme.Colors.inkQuaternary)
-			.tint(Theme.Colors.accent)
-			.keyboardType(.decimalPad)
-			.focused($isFocused)
-			.textFieldStyle(.plain)
-			.multilineTextAlignment(.center)
-			.monospacedDigit()
-			.tracking(-1.5)
-			.onChange(of: amountText) { _, newValue in
-				syncToDecimal(newValue)
-			}
-	}
-
-	private var displayText: String {
-		if form.amountDecimal > 0 {
-			form.amountDecimal.formatted(.number.grouping(.never).precision(.fractionLength(0...2)))
-		} else {
-			"0"
-		}
-	}
-
 	private func syncFromDecimal() {
 		if form.amountDecimal > 0 {
-			amountText = displayText
+			amountText = form.amountDecimal.formatted(.number.grouping(.never).precision(.fractionLength(0...2)))
 		} else {
 			amountText = ""
 		}

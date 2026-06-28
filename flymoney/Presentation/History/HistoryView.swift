@@ -13,7 +13,7 @@ struct HistoryView: View {
 	let assembly: AppAssembly
 
 	init(viewModel: HistoryViewModel, assembly: AppAssembly) {
-		_viewModel = State(initialValue: viewModel)
+        self.viewModel = viewModel
 		self.assembly = assembly
 	}
 
@@ -32,6 +32,7 @@ struct HistoryView: View {
 				.padding(.top, Theme.Spacing.s18)
 		}
 		.background(Theme.Colors.surface)
+        dismissKeyboardOnTap()
 		.task { await viewModel.load() }
 		.onChange(of: viewModel.month) { _, _ in
 			Task { await viewModel.load() }

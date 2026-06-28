@@ -39,6 +39,7 @@ extension Theme {
 		static let warning = Color(.warning)
 		static let warningTint = Color(.warningTint)
 		static let danger = Color(.danger)
+		static let dangerTint = Color(.dangerTint)
 		static let neutralTint = Color(.neutralTint)
 
 		static let segmentedTrack = Color(.segmentedTrack)

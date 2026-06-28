@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreText
 
 @main
 struct flymoneyApp: App {
@@ -20,11 +21,18 @@ private struct ContentView: View {
 	private let assembly: AppAssembly?
 
 	init() {
+		Self.registerFonts()
 		do {
 			self.assembly = try AppAssembly()
 		} catch {
 			self.assembly = nil
 		}
+	}
+
+	private static func registerFonts() {
+		guard let url = Bundle.main.url(forResource: "Sora", withExtension: "ttf") else { return }
+		var error: Unmanaged<CFError>?
+		CTFontManagerRegisterFontsForURL(url as CFURL, .process, &error)
 	}
 
 	var body: some View {
