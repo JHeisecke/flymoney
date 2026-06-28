@@ -9,51 +9,34 @@ import SwiftUI
 
 struct ShareExportView: View {
 	@State private var viewModel: SharingViewModel
+	let onDismiss: () -> Void
 
-	init(viewModel: SharingViewModel) {
+	init(viewModel: SharingViewModel, onDismiss: @escaping () -> Void) {
 		_viewModel = State(initialValue: viewModel)
+		self.onDismiss = onDismiss
 	}
 
 	var body: some View {
-		VStack(spacing: Theme.Spacing.xl) {
-			Spacer()
+		VStack(spacing: 0) {
+			ShareSheetHeader(
+				title: "Share month",
+				onCancel: { viewModel.cancel(); onDismiss() },
+				onDark: true)
+				.padding(.bottom, Theme.Spacing.sm)
 
-			if let qrText = viewModel.qrText, let img = qrImage(for: qrText) {
-				Image(decorative: img, scale: 1)
-					.resizable()
-					.interpolation(.none)
-					.frame(width: 220, height: 220)
-					.clipShape(.rect(cornerRadius: Theme.Radius.md))
-			}
+			QRCardView(text: viewModel.qrText)
 
-			ShareStatusCaption(phase: viewModel.phase)
-
-			if case .failed = viewModel.phase {
-				Button(String(localized: "Try again")) {
-					Task { await viewModel.start() }
-				}
-				.buttonStyle(.borderedProminent)
-				.tint(Theme.Colors.accent)
-			}
+			BLEStatusPill(phase: viewModel.phase)
+				.padding(.top, Theme.Spacing.s26)
 
 			Spacer()
 
-			Button(String(localized: "Cancel")) {
-				viewModel.cancel()
-			}
-			.buttonStyle(.plain)
-			.foregroundStyle(Theme.Colors.danger)
+			EncryptionFooter()
+				.padding(.bottom, Theme.Spacing.s42)
 		}
-		.padding()
-	}
-
-	private func qrImage(for text: String) -> CGImage? {
-		let data = text.data(using: .utf8)
-		guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
-		filter.setValue(data, forKey: "inputMessage")
-		filter.setValue("H", forKey: "inputCorrectionLevel")
-		guard let output = filter.outputImage else { return nil }
-		let scaled = output.transformed(by: CGAffineTransform(scaleX: 8, y: 8))
-		return CIContext().createCGImage(scaled, from: scaled.extent)
+		.frame(maxWidth: .infinity, maxHeight: .infinity)
+		.background(Theme.Colors.surfaceDeepDark)
+		.preferredColorScheme(.dark)
+		.task { await viewModel.start() }
 	}
 }

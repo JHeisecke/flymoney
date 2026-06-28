@@ -35,6 +35,9 @@ extension Theme {
 
 		static let focusGlow = ShadowToken(
 			color: Theme.Colors.accent.opacity(0.12), radius: 4, x: 0, y: 0)
+
+		static let qrAccentGlow = ShadowToken(
+			color: Theme.Colors.accent.opacity(0.45), radius: 50, x: 0, y: -18)
 	}
 }
 

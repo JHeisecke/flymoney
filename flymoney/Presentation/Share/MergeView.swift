@@ -9,58 +9,90 @@ import SwiftUI
 
 struct MergeView: View {
 	@State private var viewModel: SharingViewModel
+	let onDismiss: () -> Void
 
-	init(viewModel: SharingViewModel) {
+	init(viewModel: SharingViewModel, onDismiss: @escaping () -> Void) {
 		_viewModel = State(initialValue: viewModel)
+		self.onDismiss = onDismiss
 	}
 
 	var body: some View {
 		if case .awaitingMerge(let imported) = viewModel.phase {
-			List {
-				ForEach(imported.titles.sorted(by: { a, b in
-					let spentA = imported.expenses.filter { $0.titleID == a.id }.reduce(0) { $0 + $1.amount.minorUnits }
-					let spentB = imported.expenses.filter { $0.titleID == b.id }.reduce(0) { $0 + $1.amount.minorUnits }
-					return spentA > spentB
-				}), id: \.id) { title in
-					let spent = imported.expenses.filter { $0.titleID == title.id }
-						.reduce(Money.zero(imported.currencyCode)) { (try? $0.adding($1.amount)) ?? $0 }
-					let res = Binding<MergeResolution>(
-						get: { viewModel.resolutions[title.id] ?? .keepSeparate },
-						set: { new in Task { await viewModel.setResolution(title.id, new) } }
-					)
-					MergeRowView(
-						importedTitle: title,
-						importedSpent: spent,
-						localTitles: viewModel.localTitles,
-						fuzzyMatches: viewModel.fuzzyMatches[title.id] ?? [],
-						resolution: res)
-				}
+			VStack(spacing: 0) {
+				ShareSheetHeader(
+					title: "Merge month",
+					onCancel: onDismiss)
 
-				Section(String(localized: "Combined total")) {
-					ForEach(viewModel.combinedSummary, id: \.titleID) { summary in
-						let name = viewModel.localTitles.first { $0.id == summary.titleID }?.name ?? "Untitled"
-						HStack {
-							Text(name)
-								.font(Theme.Typography.body)
-								.foregroundStyle(Theme.Colors.ink)
-							Spacer()
-							Text(summary.spent.formatted())
-								.font(Theme.Typography.bodyMedium)
-								.foregroundStyle(summary.isOver ? Theme.Colors.danger : Theme.Colors.success)
-								.monospacedDigit()
+				ScrollView {
+					VStack(spacing: Theme.Spacing.md) {
+						ForEach(imported.titles, id: \.id) { title in
+							let spent = spentFor(title.id, in: imported)
+							MergeRowView(
+								importedTitle: title,
+								importedSpent: spent,
+								localTitles: viewModel.localTitles,
+								fuzzyMatches: viewModel.fuzzyMatches[title.id] ?? [],
+								resolution: resolutionBinding(for: title.id))
 						}
 					}
+					.padding(.horizontal, Theme.Spacing.s18)
+					.padding(.bottom, Theme.Spacing.lg)
 				}
+
+				combinedTotalBar
 			}
-			.listStyle(.plain)
-			.toolbar {
-				ToolbarItem(placement: .topBarTrailing) {
-					Button(String(localized: "Save to my expenses")) {
-						Task { await viewModel.saveToMyExpenses() }
-					}
-					.disabled(viewModel.phase == .saving || viewModel.phase == .done)
-				}
-			}
+			.background(Theme.Colors.surface)
 		}
+	}
+
+	private var combinedTotalBar: some View {
+		VStack(spacing: Theme.Spacing.md) {
+			if let total = viewModel.combinedSummary.reduce(Money?.none, { partial, s in
+				guard let p = partial else { return s.spent }
+				return (try? p.adding(s.spent)) ?? p
+			}) {
+				HStack {
+					Text(String(localized: "Combined total"))
+						.font(Theme.Typography.body13)
+						.foregroundStyle(Theme.Colors.inkTertiary)
+					Spacer()
+					Text(total.formatted())
+						.font(Theme.Typography.display24)
+						.foregroundStyle(Theme.Colors.ink)
+						.monospacedDigit()
+				}
+				.padding(.horizontal, Theme.Spacing.s22)
+			}
+			SaveButton(
+				title: "Save to my expenses",
+				isLoading: viewModel.phase == .saving,
+				isDisabled: viewModel.phase == .done) {
+					Task { await viewModel.saveToMyExpenses(); onDismiss() }
+				}
+				.padding(.horizontal, Theme.Spacing.s22)
+				.padding(.bottom, Theme.Spacing.s30)
+		}
+		.padding(.top, Theme.Spacing.s18)
+		.background(Theme.Colors.card)
+		.overlay(alignment: .top) {
+			Rectangle()
+				.fill(Theme.Colors.borderHairline)
+				.frame(height: 1)
+		}
+	}
+
+	private func spentFor(_ id: UUID, in imported: ImportedMonth) -> Money {
+		imported.expenses
+			.filter { $0.titleID == id }
+			.reduce(Money.zero(imported.currencyCode)) { (try? $0.adding($1.amount)) ?? $0 }
+	}
+
+	private func resolutionBinding(for id: UUID) -> Binding<MergeResolution?> {
+		Binding(
+			get: { viewModel.resolutions[id] },
+			set: { newValue in
+				guard let newValue else { return }
+				Task { await viewModel.setResolution(id, newValue) }
+			})
 	}
 }

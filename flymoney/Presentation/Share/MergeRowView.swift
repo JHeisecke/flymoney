@@ -12,31 +12,46 @@ struct MergeRowView: View {
 	let importedSpent: Money
 	let localTitles: [ExpenseTitle]
 	let fuzzyMatches: [LocalMatch]
-	@Binding var resolution: MergeResolution
+	@Binding var resolution: MergeResolution?
 
 	var body: some View {
-		VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+		VStack(alignment: .leading, spacing: Theme.Spacing.md) {
 			HStack {
-				Text(importedTitle.name)
-					.font(Theme.Typography.bodyMedium)
-					.foregroundStyle(Theme.Colors.ink)
+				statusBadge
 				Spacer()
-				Text(importedSpent.formatted())
-					.font(Theme.Typography.body)
-					.foregroundStyle(Theme.Colors.textSecondary)
+				Text("\(importedSpent.formatted())")
+					.font(Theme.Typography.body16)
+					.foregroundStyle(Theme.Colors.ink)
 					.monospacedDigit()
 			}
+			Text(importedTitle.name)
+				.font(Theme.Typography.title16)
+				.foregroundStyle(Theme.Colors.ink)
 
-			Picker(String(localized: "Merge into"), selection: $resolution) {
-				Text(String(localized: "Keep separate")).tag(MergeResolution.keepSeparate)
-				ForEach(localTitles) { title in
-					let isSuggested = fuzzyMatches.contains { $0.titleID == title.id && $0.isStrong }
-					Text("\(isSuggested ? String(localized: "Match suggested") + " " : "")\(title.name)")
-						.tag(MergeResolution.mergeInto(localTitleID: title.id))
-				}
+			if let strong = fuzzyMatches.first(where: { $0.isStrong }),
+			   let local = localTitles.first(where: { $0.id == strong.titleID }) {
+				SegmentedToggle(
+					resolution: $resolution,
+					localName: local.name,
+					localTitleID: local.id)
 			}
-			.font(Theme.Typography.caption)
 		}
-		.padding(.vertical, Theme.Spacing.sm)
+		.padding(15)
+		.background(Theme.Colors.card)
+		.clipShape(.rect(cornerRadius: Theme.Radius.lg))
+		.overlay {
+			RoundedRectangle(cornerRadius: Theme.Radius.lg)
+				.stroke(Theme.Colors.borderHairline, lineWidth: 1)
+		}
+	}
+
+	@ViewBuilder
+	private var statusBadge: some View {
+		let style: StatusBadgeStyle = {
+			if fuzzyMatches.contains(where: { $0.isStrong }) { return .match }
+			if fuzzyMatches.contains(where: { !$0.isStrong }) { return .similar }
+			return .newItem
+		}()
+		StatusBadge(style: style)
 	}
 }

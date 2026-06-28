@@ -10,31 +10,15 @@ import SwiftUI
 struct SharingSheetHost: View {
 	let assembly: AppAssembly
 	let role: SharingRole
+	@Environment(\.dismiss) private var dismiss
 
 	var body: some View {
 		let vm = assembly.makeSharingViewModel(role: role)
-		Group {
-			switch role {
-			case .send:
-				NavigationStack {
-					ShareExportView(viewModel: vm)
-						.navigationTitle(Text(String(localized: "Share Month")))
-						.navigationBarTitleDisplayMode(.inline)
-						.task { await vm.start() }
-				}
-			case .receive:
-				NavigationStack {
-					if case .awaitingMerge = vm.phase {
-						MergeView(viewModel: vm)
-							.navigationTitle(Text(String(localized: "Share Month")))
-							.navigationBarTitleDisplayMode(.inline)
-					} else {
-						ShareReceiveView(viewModel: vm)
-							.navigationTitle(Text(String(localized: "Share Month")))
-							.navigationBarTitleDisplayMode(.inline)
-					}
-				}
-			}
+		switch role {
+		case .send:
+			ShareExportView(viewModel: vm, onDismiss: { dismiss() })
+		case .receive:
+			ShareReceiveView(viewModel: vm, onDismiss: { dismiss() })
 		}
 	}
 }

@@ -40,6 +40,10 @@ struct HistoryView: View {
 			   isPresented: errorAlertBinding,
 			   actions: { Button(String(localized: "OK"), role: .cancel) {} },
 			   message: { Text(viewModel.loadError ?? "") })
+		.sheet(item: $sharingRole) { role in
+			SharingSheetHost(assembly: assembly, role: role)
+				.presentationDetents([.large])
+		}
 	}
 
 	private var header: some View {

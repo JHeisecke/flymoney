@@ -23,6 +23,8 @@ extension Theme {
 		static let textOnAccent = Color(.textOnAccent)
 
 		static let surface = Color(.surface)
+		static let surfaceDeepDark = Color(.surfaceDeepDark)
+		static let surfaceElevatedDark = Color(.surfaceElevatedDark)
 		static let card = Color(.card)
 		static let cardElevated = Color(.cardElevated)
 		static let scrim = Color(.scrim)

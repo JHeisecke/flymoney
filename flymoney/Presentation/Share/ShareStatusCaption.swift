@@ -14,7 +14,7 @@ struct ShareStatusCaption: View {
 		HStack(spacing: Theme.Spacing.sm) {
 			statusIcon
 			Text(statusText)
-				.font(Theme.Typography.body)
+				.font(Theme.Typography.body15)
 				.foregroundStyle(Theme.Colors.ink)
 		}
 	}
@@ -38,8 +38,8 @@ struct ShareStatusCaption: View {
 		switch phase {
 		case .idle: String(localized: "Waiting for receiver…")
 		case .handshaking: String(localized: "Connecting…")
-		case .sending(let p): String(localized: "Sending… \(Int(p * 100))%%")
-		case .receiving(let p): String(localized: "Receiving… \(Int(p * 100))%%")
+		case .sending(let p): String(localized: "Sending… \(Int(p * 100))%")
+		case .receiving(let p): String(localized: "Receiving… \(Int(p * 100))%")
 		case .done: String(localized: "Sent ✓")
 		case .failed(let r): r
 		case .awaitingMerge: "Ready to merge"

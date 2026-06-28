@@ -9,67 +9,55 @@ import SwiftUI
 
 struct ShareReceiveView: View {
 	@State private var viewModel: SharingViewModel
-	@State private var cameraDenied = false
+	let onDismiss: () -> Void
 
-	init(viewModel: SharingViewModel) {
+	init(viewModel: SharingViewModel, onDismiss: @escaping () -> Void) {
 		_viewModel = State(initialValue: viewModel)
+		self.onDismiss = onDismiss
 	}
 
 	var body: some View {
-		VStack(spacing: Theme.Spacing.lg) {
-			if cameraDenied {
-				ContentUnavailableView {
-					Label(String(localized: "Camera access needed"), systemImage: "camera.fill")
-						.foregroundStyle(Theme.Colors.accent)
-				} description: {
-					Text(String(localized: "Camera access needed"))
-				}
-				Button(String(localized: "Open Settings")) {
-					Permissions.openSettings()
-				}
-				.buttonStyle(.borderedProminent)
-				.tint(Theme.Colors.accent)
-			} else if case .idle = viewModel.phase {
+		ZStack {
+			RadialGradient(
+				colors: [Theme.Colors.surfaceElevatedDark, Theme.Colors.surfaceDeepDark],
+				center: .init(x: 0.5, y: 0.3),
+				startRadius: 0, endRadius: 600)
+				.ignoresSafeArea()
+
+			VStack(spacing: 0) {
+				ShareSheetHeader(
+					title: "Receive",
+					onCancel: { viewModel.cancel(); onDismiss() },
+					onDark: true)
+
+				Spacer().frame(height: Theme.Spacing.s30)
+
 				QRScannerView(
 					onCode: { code in
 						viewModel.provideScannedQR(code)
 						Task { await viewModel.start() }
 					},
-					onError: { _ in }
-				)
-				.frame(height: 300)
-				.clipShape(.rect(cornerRadius: Theme.Radius.lg))
+					onError: { _ in })
+					.frame(width: 248, height: 248)
+					.clipShape(.rect(cornerRadius: Theme.Radius.xxxl))
+					.overlay { ScannerOverlay() }
 
-				Text(String(localized: "Point your camera at the sender's QR code"))
-					.font(Theme.Typography.caption)
-					.foregroundStyle(Theme.Colors.textSecondary)
-					.multilineTextAlignment(.center)
-			} else {
-				ShareStatusCaption(phase: viewModel.phase)
+				Spacer()
 
-				if case .failed = viewModel.phase {
-					Button(String(localized: "Try again")) {
-						Task { await viewModel.start() }
-					}
-					.buttonStyle(.borderedProminent)
-					.tint(Theme.Colors.accent)
+				if case .receiving = viewModel.phase {
+					ReceiveProgressCard(phase: viewModel.phase, monthName: "June")
+						.padding(.horizontal, Theme.Spacing.xxl)
+						.padding(.bottom, Theme.Spacing.s42)
+				} else {
+					Text(String(localized: "Point at the other phone's code to pair over Bluetooth."))
+						.font(Theme.Typography.body14)
+						.foregroundStyle(Color(white: 0.66))
+						.multilineTextAlignment(.center)
+						.padding(.horizontal, Theme.Spacing.xxl)
+						.padding(.bottom, Theme.Spacing.s42)
 				}
 			}
-
-			Spacer()
-
-			Button(String(localized: "Cancel")) {
-				viewModel.cancel()
-			}
-			.buttonStyle(.plain)
-			.foregroundStyle(Theme.Colors.danger)
 		}
-		.padding()
-		.task {
-			let granted = await QRScannerViewController.requestCameraAccess()
-			if !granted {
-				cameraDenied = true
-			}
-		}
+		.preferredColorScheme(.dark)
 	}
 }
