@@ -11,17 +11,23 @@ struct ExpenseRowView: View {
 	let row: HistoryRow
 
 	var body: some View {
-		HStack(spacing: Theme.Spacing.md) {
-			Text(row.titleName)
-				.font(Theme.Typography.body)
-				.foregroundStyle(Theme.Colors.ink)
-				.frame(maxWidth: .infinity, alignment: .leading)
+		HStack(alignment: .firstTextBaseline) {
+			VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+				Text(row.titleName)
+					.font(Theme.Typography.body16)
+					.foregroundStyle(Theme.Colors.ink)
+				Text(row.date.formatted(date: .omitted, time: .shortened))
+					.font(Theme.Typography.caption12)
+					.foregroundStyle(Theme.Colors.inkTertiary)
+			}
+			Spacer()
 			Text(row.amount.formatted())
-				.font(Theme.Typography.bodyMedium)
+				.font(Theme.Typography.title16)
 				.foregroundStyle(Theme.Colors.ink)
 				.monospacedDigit()
 		}
-		.padding(.vertical, Theme.Spacing.sm)
-		.accessibilityElement(children: .combine)
+		.padding(.vertical, Theme.Spacing.s14)
+		.padding(.horizontal, Theme.Spacing.xxl)
+		.background(Theme.Colors.card)
 	}
 }

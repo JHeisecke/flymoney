@@ -799,6 +799,56 @@
           }
         }
       }
+    },
+    "Share month": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compartir mes"
+          }
+        }
+      }
+    },
+    "Month": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mes"
+          }
+        }
+      }
+    },
+    "no expenses yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sin gastos aún"
+          }
+        }
+      }
+    },
+    "spent across 1 title": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gastado en 1 título"
+          }
+        }
+      }
+    },
+    "spent across %lld titles": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gastado en %lld títulos"
+          }
+        }
+      }
     }
   },
   "version": "1.1"

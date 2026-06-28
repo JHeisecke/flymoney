@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+enum PillButtonStyle { case filled, outline }
+
 struct PillButton: View {
 	let title: LocalizedStringResource
 	let systemImage: String?
+	var style: PillButtonStyle = .filled
 	let action: () -> Void
 
 	var body: some View {
@@ -24,9 +27,15 @@ struct PillButton: View {
 			}
 			.padding(.horizontal, Theme.Spacing.s14)
 			.frame(height: 34)
-			.background(Theme.Colors.accent)
-			.foregroundStyle(Theme.Colors.textOnAccent)
+			.background(style == .filled ? Theme.Colors.accent : Color.clear)
+			.foregroundStyle(style == .filled ? Theme.Colors.textOnAccent : Theme.Colors.accent)
 			.clipShape(.rect(cornerRadius: Theme.Radius.pillSm))
+			.overlay {
+				if style == .outline {
+					RoundedRectangle(cornerRadius: Theme.Radius.pillSm)
+						.stroke(Theme.Colors.accent, lineWidth: 1.5)
+				}
+			}
 		}
 		.buttonStyle(.plain)
 	}

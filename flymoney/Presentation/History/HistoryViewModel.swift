@@ -118,6 +118,7 @@ final class HistoryViewModel {
 			let rows = dayExpenses.map { e in
 				HistoryRow(
 					id: e.id,
+					titleID: e.titleID,
 					titleName: titlesByID[e.titleID]?.name
 						?? String(localized: "Untitled"),
 					amount: e.amount,
@@ -125,5 +126,26 @@ final class HistoryViewModel {
 			}
 			return HistorySection(id: day, day: dayExpenses.first?.date ?? day, rows: rows)
 		}
+	}
+}
+
+extension HistoryViewModel {
+	var totalSpent: Money? {
+		guard let firstCurrency = sections.first?.rows.first?.amount.currencyCode else {
+			return nil
+		}
+		let zero = Money.zero(firstCurrency)
+		return sections.reduce(zero) { partial, section in
+			section.rows.reduce(partial) { acc, row in
+				guard row.amount.currencyCode == firstCurrency else { return acc }
+				return (try? acc.adding(row.amount)) ?? acc
+			}
+		}
+	}
+
+	var titleCount: Int {
+		var ids: Set<UUID> = []
+		for section in sections { for row in section.rows { ids.insert(row.titleID) } }
+		return ids.count
 	}
 }

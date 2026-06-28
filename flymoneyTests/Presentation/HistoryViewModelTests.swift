@@ -194,4 +194,31 @@ struct HistoryViewModelTests {
 		#expect(vm.sections.isEmpty)
 		#expect(vm.loadError == nil)
 	}
+
+	@Test("totalSpent sums correctly across multi-row month", .tags(.viewModel))
+	func totalSpentSums() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let titleID = UUID()
+		try await expenses.add(Expense(id: UUID(), amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: titleID, date: Date(timeIntervalSince1970: 1748736000)))
+		try await expenses.add(Expense(id: UUID(), amount: Money(minorUnits: 300, currencyCode: "USD"), titleID: titleID, date: Date(timeIntervalSince1970: 1748736001)))
+
+		let vm = makeVM(expenses: expenses)
+		await vm.load()
+
+		#expect(vm.totalSpent?.minorUnits == 400)
+	}
+
+	@Test("titleCount returns distinct title IDs", .tags(.viewModel))
+	func titleCountDistinct() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let t1 = UUID()
+		let t2 = UUID()
+		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: t1, date: Date(timeIntervalSince1970: 1748736000)))
+		try await expenses.add(Expense(amount: Money(minorUnits: 200, currencyCode: "USD"), titleID: t2, date: Date(timeIntervalSince1970: 1748736000)))
+
+		let vm = makeVM(expenses: expenses)
+		await vm.load()
+
+		#expect(vm.titleCount == 2)
+	}
 }

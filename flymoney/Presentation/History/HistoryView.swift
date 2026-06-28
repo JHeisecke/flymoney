@@ -18,86 +18,77 @@ struct HistoryView: View {
 	}
 
 	var body: some View {
-		NavigationStack {
-			VStack(spacing: 0) {
-				MonthPickerHeader(
-					month: $viewModel.month,
-					calendar: viewModel.calendar,
-					onPrevious: { viewModel.previousMonth() },
-					onNext: { viewModel.nextMonth() })
-
-				Group {
-					if viewModel.sections.isEmpty && !viewModel.isLoading {
-						ContentUnavailableView {
-							Label {
-								Text(String(localized: "No expenses this month"))
-							} icon: {
-								Image(systemName: "tray")
-									.foregroundStyle(Theme.Colors.accent)
-							}
-						} description: {
-							Text(String(localized: "Add an expense from the Add tab to get started."))
-						}
-					} else {
-						List {
-							ForEach(viewModel.sections) { section in
-								Section {
-									ForEach(section.rows) { row in
-										ExpenseRowView(row: row)
-									}
-									.onDelete { offsets in
-										for offset in offsets {
-											let rowID = section.rows[offset].id
-											Task { await viewModel.delete(rowID: rowID) }
-										}
-									}
-								} header: {
-									Text(sectionHeader(for: section.day))
-										.font(Theme.Typography.caption)
-										.foregroundStyle(Theme.Colors.textSecondary)
-								}
-							}
-						}
-						.listStyle(.plain)
-						.scrollIndicators(.hidden)
-					}
-				}
-			}
-			.navigationTitle(Text(String(localized: "History")))
-			.navigationBarTitleDisplayMode(.inline)
-			.toolbar {
-				ToolbarItem(placement: .topBarTrailing) {
-					Menu {
-						Button(String(localized: "Share this month"), systemImage: "qrcode") {
-							sharingRole = .send(month: viewModel.month)
-						}
-						Button(String(localized: "Receive from a friend"), systemImage: "qrcode.viewfinder") {
-							sharingRole = .receive
-						}
-					} label: {
-						Image(systemName: "square.and.arrow.up")
-					}
-				}
-			}
-			.task { await viewModel.load() }
-			.onChange(of: viewModel.month) { _, _ in
-				Task { await viewModel.load() }
-			}
-			.sheet(item: $sharingRole) { role in
-				SharingSheetHost(assembly: assembly, role: role)
-			}
-			.alert("Error",
-				   isPresented: errorAlertBinding,
-				   actions: { Button(String(localized: "OK"), role: .cancel) {} },
-				   message: { Text(viewModel.loadError ?? "") })
+		VStack(alignment: .leading, spacing: 0) {
+			header
+				.padding(.horizontal, Theme.Spacing.xxl)
+				.padding(.top, Theme.Spacing.s18)
+			MonthHeaderView(month: $viewModel.month, calendar: viewModel.calendar)
+				.padding(.horizontal, Theme.Spacing.xxl)
+				.padding(.top, Theme.Spacing.md)
+			HistoryHeroView(total: viewModel.totalSpent, titleCount: viewModel.titleCount)
+				.padding(.horizontal, Theme.Spacing.xxl)
+				.padding(.top, Theme.Spacing.s14)
+			content
+				.padding(.top, Theme.Spacing.s18)
 		}
-		.tint(Theme.Colors.accent)
+		.background(Theme.Colors.surface)
+		.task { await viewModel.load() }
+		.onChange(of: viewModel.month) { _, _ in
+			Task { await viewModel.load() }
+		}
+		.alert("Error",
+			   isPresented: errorAlertBinding,
+			   actions: { Button(String(localized: "OK"), role: .cancel) {} },
+			   message: { Text(viewModel.loadError ?? "") })
+	}
+
+	private var header: some View {
+		HStack {
+			Text(String(localized: "History"))
+				.font(Theme.Typography.display27)
+				.tracking(-0.5)
+				.foregroundStyle(Theme.Colors.ink)
+			Spacer()
+			PillButton(title: "Share month", systemImage: nil, style: .outline) {
+				sharingRole = .send(month: viewModel.month)
+			}
+		}
+	}
+
+	@ViewBuilder private var content: some View {
+		if viewModel.sections.isEmpty && !viewModel.isLoading {
+			EmptyMonthState()
+		} else {
+			List {
+				ForEach(viewModel.sections) { section in
+					Section {
+						ForEach(section.rows) { row in
+							ExpenseRowView(row: row)
+								.listRowInsets(EdgeInsets())
+								.listRowSeparator(.visible, edges: .bottom)
+								.listRowSeparatorTint(Theme.Colors.borderDivider)
+								.listRowBackground(Theme.Colors.card)
+						}
+						.onDelete { offsets in
+							for offset in offsets {
+								let rowID = section.rows[offset].id
+								Task { await viewModel.delete(rowID: rowID) }
+							}
+						}
+					} header: {
+						DaySectionHeader(label: sectionHeader(for: section.day))
+					}
+				}
+			}
+			.listStyle(.plain)
+			.scrollIndicators(.hidden)
+		}
 	}
 
 	private func sectionHeader(for day: Date) -> String {
-		let calendar = viewModel.calendar
-		if calendar.isDateInToday(day) { return String(localized: "Today") }
-		if calendar.isDateInYesterday(day) { return String(localized: "Yesterday") }
+		let cal = viewModel.calendar
+		if cal.isDateInToday(day) { return String(localized: "Today") }
+		if cal.isDateInYesterday(day) { return String(localized: "Yesterday") }
 		return day.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())
 	}
 
@@ -106,5 +97,23 @@ struct HistoryView: View {
 			get: { viewModel.loadError != nil },
 			set: { if !$0 { viewModel.loadError = nil } }
 		)
+	}
+}
+
+private struct EmptyMonthState: View {
+	var body: some View {
+		ContentUnavailableView {
+			Label {
+				Text(String(localized: "No expenses this month"))
+					.font(Theme.Typography.title17)
+			} icon: {
+				Image(systemName: "tray")
+					.foregroundStyle(Theme.Colors.accent)
+			}
+		} description: {
+			Text(String(localized: "Add an expense from the Add tab to get started."))
+				.font(Theme.Typography.body14)
+				.foregroundStyle(Theme.Colors.inkQuaternary)
+		}
 	}
 }

@@ -15,6 +15,7 @@ struct HistorySection: Identifiable, Equatable, Sendable {
 
 struct HistoryRow: Identifiable, Equatable, Sendable {
 	let id: UUID
+	let titleID: UUID
 	let titleName: String
 	let amount: Money
 	let date: Date
