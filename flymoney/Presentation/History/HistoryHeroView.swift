@@ -13,32 +13,23 @@ struct HistoryHeroView: View {
 
 	var body: some View {
 		VStack(alignment: .leading, spacing: Theme.Spacing.s6) {
-			HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
-				if let total {
-					Text(Theme.Currency.symbol(for: total.currencyCode))
-						.font(Theme.Typography.display24)
-						.foregroundStyle(Theme.Colors.inkQuaternary)
-						.baselineOffset(-Theme.Spacing.sm)
-					Text(amountLabel(total))
-						.font(Theme.Typography.display42)
-						.foregroundStyle(Theme.Colors.ink)
-						.monospacedDigit()
-						.tracking(-1)
-				} else {
-					Text("$0")
-						.font(Theme.Typography.display42)
-						.foregroundStyle(Theme.Colors.inkQuaternary)
-						.monospacedDigit()
-				}
-			}
+			Text(amountLabel)
+				.font(Theme.Typography.display42)
+				.foregroundStyle(total == nil ? Theme.Colors.inkQuaternary : Theme.Colors.ink)
+				.monospacedDigit()
+				.tracking(-1)
 			Text(subtitle)
 				.font(Theme.Typography.body13)
 				.foregroundStyle(Theme.Colors.inkTertiary)
 		}
 	}
 
-	private func amountLabel(_ total: Money) -> String {
-		total.formatted()
+	private var amountLabel: String {
+		if let total {
+			return total.formatted()
+		}
+		let code = Locale.current.currency?.identifier.uppercased() ?? "USD"
+		return Money.zero(code).formatted()
 	}
 
 	private var subtitle: String {

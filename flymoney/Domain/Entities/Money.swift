@@ -20,6 +20,18 @@ struct Money: Equatable, Hashable, Sendable {
 		Money(minorUnits: 0, currencyCode: currencyCode)
 	}
 
+	init(majorUnits: Decimal, currencyCode: String) {
+		let exponent = Self.exponent(for: currencyCode)
+		let multiplier = Decimal(sign: .plus, exponent: exponent, significand: 1)
+		let scaled = (majorUnits * multiplier) as NSDecimalNumber
+		self.minorUnits = Int(truncating: scaled.rounding(accordingToBehavior: nil))
+		self.currencyCode = currencyCode.uppercased()
+	}
+
+	var majorUnits: Decimal {
+		Decimal(minorUnits) / Decimal(sign: .plus, exponent: Self.exponent(for: currencyCode), significand: 1)
+	}
+
 	func adding(_ other: Money) throws -> Money {
 		try requireSameCurrency(as: other)
 		return Money(minorUnits: minorUnits + other.minorUnits, currencyCode: currencyCode)
@@ -31,9 +43,17 @@ struct Money: Equatable, Hashable, Sendable {
 	}
 
 	func formatted(locale: Locale = .current) -> String {
-		let major = Decimal(minorUnits) / Decimal(Self.exponent(for: currencyCode))
-		return major.formatted(
+		majorUnits.formatted(
 			.currency(code: currencyCode).locale(locale)
+		)
+	}
+
+	func formattedNumber(locale: Locale = .current) -> String {
+		majorUnits.formatted(
+			.number
+				.grouping(.automatic)
+				.precision(.fractionLength(0...Self.exponent(for: currencyCode)))
+				.locale(locale)
 		)
 	}
 
@@ -43,5 +63,10 @@ struct Money: Equatable, Hashable, Sendable {
 		}
 	}
 
-	private static func exponent(for code: String) -> Int { 100 }
+	static func exponent(for code: String) -> Int {
+		let formatter = NumberFormatter()
+		formatter.numberStyle = .currency
+		formatter.currencyCode = code.uppercased()
+		return formatter.maximumFractionDigits
+	}
 }

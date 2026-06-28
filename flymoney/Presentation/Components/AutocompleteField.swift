@@ -71,6 +71,7 @@ private struct SuggestionListView<Suggestion: Identifiable>: View {
 						.frame(maxWidth: .infinity, alignment: .leading)
 						.padding(.horizontal, Theme.Spacing.lg)
 						.frame(height: 52)
+                        .contentShape(.rect)
 				}
 				.buttonStyle(.plain)
 				if suggestion.id != suggestions.last?.id {

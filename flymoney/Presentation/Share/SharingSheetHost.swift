@@ -12,13 +12,29 @@ struct SharingSheetHost: View {
 	let role: SharingRole
 	@Environment(\.dismiss) private var dismiss
 
+	@State private var vm: SharingViewModel?
+
 	var body: some View {
-		let vm = assembly.makeSharingViewModel(role: role)
-		switch role {
-		case .send:
-			ShareExportView(viewModel: vm, onDismiss: { dismiss() })
-		case .receive:
-			ShareReceiveView(viewModel: vm, onDismiss: { dismiss() })
+		if let vm {
+			switch role {
+			case .send:
+				ShareExportView(viewModel: vm, onDismiss: { dismiss() })
+			case .receive:
+				NavigationStack {
+					Group {
+						if case .awaitingMerge = vm.phase {
+							MergeView(viewModel: vm, onDismiss: { dismiss() })
+						} else {
+							ShareReceiveView(viewModel: vm, onDismiss: { dismiss() })
+						}
+					}
+				}
+			}
+		} else {
+			Color.clear
+				.onAppear {
+					vm = assembly.makeSharingViewModel(role: role)
+				}
 		}
 	}
 }

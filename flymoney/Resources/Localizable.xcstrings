@@ -20,9 +20,6 @@
         }
       }
     },
-    "$0" : {
-
-    },
     "0" : {
 
     },
@@ -917,7 +914,6 @@
       }
     },
     "Try again" : {
-      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {

@@ -30,7 +30,7 @@ import Observation
 		self.titleID = title.id
 		self.name = title.name
 		if let limit = title.limit {
-			self.limitDecimal = Decimal(limit.minorUnits) / 100
+			self.limitDecimal = limit.majorUnits
 		} else {
 			self.limitDecimal = 0
 		}
@@ -59,9 +59,7 @@ import Observation
 				nameError = String(localized: "Enter a valid amount.")
 				return nil
 			}
-			let scaled = (limitDecimal as NSDecimalNumber).multiplying(by: 100)
-			let minorUnits = Int(truncating: scaled.rounding(accordingToBehavior: nil))
-			limit = Money(minorUnits: minorUnits, currencyCode: currencyCode)
+			limit = Money(majorUnits: limitDecimal, currencyCode: currencyCode)
 		}
 		return (id: titleID, name: trimmed, limit: limit)
 	}

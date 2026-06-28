@@ -13,8 +13,7 @@ struct ScannerOverlay: View {
 
 	var body: some View {
 		ZStack {
-			Rectangle()
-				.fill(diagonalStripePattern)
+			Color.clear
 			GeometryReader { geo in
 				cornerBrackets(in: geo.size)
 				if !reduceMotion {
@@ -28,16 +27,6 @@ struct ScannerOverlay: View {
 			RoundedRectangle(cornerRadius: Theme.Radius.xxxl)
 				.stroke(Theme.Colors.borderSubtle, lineWidth: 1)
 		}
-	}
-
-	private var diagonalStripePattern: some ShapeStyle {
-		LinearGradient(
-			colors: [
-				Color(red: 0.078, green: 0.078, blue: 0.094),
-				Color(red: 0.063, green: 0.063, blue: 0.078),
-			],
-			startPoint: .topLeading,
-			endPoint: .bottomTrailing)
 	}
 
 	@ViewBuilder

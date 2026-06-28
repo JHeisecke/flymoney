@@ -7,11 +7,10 @@
 
 import Foundation
 
-extension Theme {
+	extension Theme {
 	enum Currency {
-		static func symbol(for code: String) -> String {
-			let locale = NSLocale(localeIdentifier: "en_US")
-			return locale.displayName(forKey: .currencySymbol, value: code) ?? "$"
+		static func symbol(for code: String, locale: Locale = .current) -> String {
+			(locale as NSLocale).displayName(forKey: .currencySymbol, value: code.uppercased()) ?? "$"
 		}
 	}
 }

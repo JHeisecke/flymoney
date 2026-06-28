@@ -43,8 +43,14 @@ struct TitleEditorView: View {
 					Text(String(localized: "Monthly limit"))
 						.font(Theme.Typography.caption12)
 						.foregroundStyle(Theme.Colors.textSubtle)
-					TextField(String(localized: "Monthly limit"), value: $model.limitDecimal, format: .number.grouping(.never).precision(.fractionLength(0...2)))
-						.keyboardType(.decimalPad)
+					TextField(
+						String(localized: "Monthly limit"),
+						value: $model.limitDecimal,
+						format: .number
+							.grouping(.automatic)
+							.precision(.fractionLength(0...Money.exponent(for: model.currencyCode)))
+					)
+					.keyboardType(.decimalPad)
 						.font(Theme.Typography.body17)
 						.tint(Theme.Colors.accent)
 						.textFieldStyle(.plain)

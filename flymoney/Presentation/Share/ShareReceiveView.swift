@@ -10,6 +10,7 @@ import SwiftUI
 struct ShareReceiveView: View {
 	@State private var viewModel: SharingViewModel
 	@State private var cameraDenied = false
+	@State private var hasScanned = false
 	let onDismiss: () -> Void
 
 	init(viewModel: SharingViewModel, onDismiss: @escaping () -> Void) {
@@ -45,6 +46,56 @@ struct ShareReceiveView: View {
 					.tint(Theme.Colors.accent)
 					Spacer()
 				}
+			} else if hasScanned {
+				VStack(spacing: 0) {
+					ShareSheetHeader(
+						title: "Receive",
+						onCancel: { viewModel.cancel(); onDismiss() },
+						onDark: true)
+
+					Spacer()
+
+					if case .failed(let reason) = viewModel.phase {
+						VStack(spacing: Theme.Spacing.lg) {
+							Image(systemName: "exclamationmark.triangle.fill")
+								.font(.system(size: 40))
+								.foregroundStyle(Theme.Colors.danger)
+							Text(reason)
+								.font(Theme.Typography.body15)
+								.foregroundStyle(Color.white)
+								.multilineTextAlignment(.center)
+							Button(String(localized: "Try again")) {
+								hasScanned = false
+								Task { await viewModel.start() }
+							}
+							.buttonStyle(.borderedProminent)
+							.tint(Theme.Colors.accent)
+						}
+					} else if case .receiving = viewModel.phase {
+						ReceiveProgressCard(phase: viewModel.phase, monthName: "June")
+							.padding(.horizontal, Theme.Spacing.xxl)
+					} else {
+						VStack(spacing: Theme.Spacing.md) {
+							ProgressView()
+								.scaleEffect(1.2)
+								.tint(Theme.Colors.accent)
+							Text(String(localized: "Connecting…"))
+								.font(Theme.Typography.body15)
+								.foregroundStyle(Color.white)
+						}
+					}
+
+					Spacer()
+
+					HStack(spacing: Theme.Spacing.xs) {
+						Image(systemName: "lock.fill")
+							.font(Theme.Typography.caption12)
+						Text(String(localized: "End-to-end encrypted · X25519 · ChaChaPoly"))
+							.font(Theme.Typography.body13)
+					}
+					.foregroundStyle(Theme.Colors.inkQuaternary)
+					.padding(.bottom, Theme.Spacing.s42)
+				}
 			} else {
 				VStack(spacing: 0) {
 					ShareSheetHeader(
@@ -57,6 +108,7 @@ struct ShareReceiveView: View {
 					QRScannerView(
 						onCode: { code in
 							viewModel.provideScannedQR(code)
+							hasScanned = true
 							AccessibilityNotification.Announcement(String(localized: "Code found")).post()
 							Task { await viewModel.start() }
 						},
@@ -67,18 +119,12 @@ struct ShareReceiveView: View {
 
 					Spacer()
 
-					if case .receiving = viewModel.phase {
-						ReceiveProgressCard(phase: viewModel.phase, monthName: "June")
-							.padding(.horizontal, Theme.Spacing.xxl)
-							.padding(.bottom, Theme.Spacing.s42)
-					} else {
-						Text(String(localized: "Point at the other phone's code to pair over Bluetooth."))
-							.font(Theme.Typography.body14)
-							.foregroundStyle(Color(white: 0.66))
-							.multilineTextAlignment(.center)
-							.padding(.horizontal, Theme.Spacing.xxl)
-							.padding(.bottom, Theme.Spacing.s42)
-					}
+					Text(String(localized: "Point at the other phone's code to pair over Bluetooth."))
+						.font(Theme.Typography.body14)
+						.foregroundStyle(Color(white: 0.66))
+						.multilineTextAlignment(.center)
+						.padding(.horizontal, Theme.Spacing.xxl)
+						.padding(.bottom, Theme.Spacing.s42)
 				}
 			}
 		}

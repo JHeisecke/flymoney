@@ -76,6 +76,30 @@ struct MoneyTests {
 		#expect(result.contains("12,99"))
 	}
 
+	@Test("USD exponent is 2")
+	func usdExponent() {
+		#expect(Money.exponent(for: "USD") == 2)
+	}
+
+	@Test("PYG exponent is 0")
+	func pygExponent() {
+		#expect(Money.exponent(for: "PYG") == 0)
+	}
+
+	@Test("PYG majorUnits equals minorUnits")
+	func pygMajorUnits() {
+		let m = Money(minorUnits: 12345, currencyCode: "PYG")
+		#expect(m.majorUnits == 12345)
+	}
+
+	@Test("PYG formatted in es_PY uses Gs symbol and dot grouping")
+	func formattedPygEsPY() {
+		let m = Money(minorUnits: 12345, currencyCode: "PYG")
+		let result = m.formatted(locale: Locale(identifier: "es_PY"))
+		#expect(result.contains("Gs"))
+		#expect(result.contains("12.345"))
+	}
+
 	@Test("currencyMismatch error has correct associated values")
 	func currencyMismatchError() {
 		let error = MoneyError.currencyMismatch("USD", "EUR")

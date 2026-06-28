@@ -42,9 +42,7 @@ final class AddExpenseFormModel {
 			amountError = String(localized: "Enter an amount.")
 			return nil
 		}
-		let scaled = (amountDecimal as NSDecimalNumber).multiplying(by: 100)
-		let minorUnits = Int(truncating: scaled.rounding(accordingToBehavior: nil))
-		let amount = Money(minorUnits: minorUnits, currencyCode: currencyCode)
+		let amount = Money(majorUnits: amountDecimal, currencyCode: currencyCode)
 		return (amount, trimmedTitle, date)
 	}
 

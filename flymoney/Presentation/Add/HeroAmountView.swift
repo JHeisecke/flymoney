@@ -13,7 +13,12 @@ struct HeroAmountView: View {
 
 	@FocusState private var isFocused: Bool
 	@State private var amountText: String = ""
-	@State private var previousLength: Int = 0
+
+	private let locale: Locale = .current
+
+	private var formatter: AmountFormatter {
+		AmountFormatter(currencyCode: form.currencyCode, locale: locale)
+	}
 
 	var body: some View {
 		VStack(spacing: Theme.Spacing.xl) {
@@ -52,60 +57,16 @@ struct HeroAmountView: View {
 		}
 	}
 
-	private func formatAsYouType(_ text: String) {
-		let cleaned = text.filter { "0123456789.".contains($0) }
-
-		guard cleaned.count < 14 else {
-			amountText = String(cleaned.prefix(13))
-			previousLength = amountText.count
-			return
-		}
-
-		let isDeleting = cleaned.count < previousLength
-		previousLength = cleaned.count
-
-		if cleaned.isEmpty {
-			form.amountDecimal = 0
-			return
-		}
-
-		if isDeleting {
-			amountText = cleaned
-			syncDecimalFromText(cleaned)
-			return
-		}
-
-		let parts = cleaned.components(separatedBy: ".")
-		let integerFiltered = parts[0].filter { $0.isNumber }
-
-		guard let integerValue = Decimal(string: integerFiltered, locale: .current),
-			  integerValue < 1_000_000_000 else {
-			return
-		}
-
-		form.amountDecimal = integerValue
-		var result = integerValue.formatted(.number.grouping(.automatic).precision(.fractionLength(0)).locale(Locale(identifier: "en_US")))
-
-		if parts.count > 1 {
-			result += "."
-			result += parts[1]
-		}
-
-		amountText = result
-	}
-
-	private func syncDecimalFromText(_ text: String) {
-		let filtered = text.filter { $0.isNumber || $0 == "." }
-		guard let decimal = Decimal(string: filtered, locale: .current) else {
-			form.amountDecimal = 0
-			return
-		}
-		form.amountDecimal = decimal
+	private func formatAsYouType(_ newValue: String) {
+		let result = formatter.format(newValue)
+		amountText = result.display
+		form.amountDecimal = result.value
 	}
 
 	private func syncFromDecimal() {
 		if form.amountDecimal > 0 {
-			amountText = form.amountDecimal.formatted(.number.grouping(.automatic).precision(.fractionLength(0...2)).locale(Locale(identifier: "en_US")))
+			amountText = Money(majorUnits: form.amountDecimal, currencyCode: form.currencyCode)
+				.formattedNumber(locale: locale)
 		} else {
 			amountText = ""
 		}
