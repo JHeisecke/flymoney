@@ -77,6 +77,11 @@ struct TitleEditorView: View {
 			.padding(.horizontal, Theme.Spacing.xxl)
 			.padding(.top, Theme.Spacing.lg)
 			.background(Theme.Colors.surface)
+			.simultaneousGesture(
+				TapGesture().onEnded {
+					UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+				}
+			)
 			.navigationTitle(Text(model.isEditing ? Lexicon.editTitle : Lexicon.newTitle))
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
