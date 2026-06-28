@@ -1,0 +1,35 @@
+//
+//  TitleNoLimitRowView.swift
+//  flymoney
+//
+//  Created by Javier Heisecke on 2026-06-27.
+//
+
+import SwiftUI
+
+struct TitleNoLimitRowView: View {
+	let title: ExpenseTitle
+	let onTap: () -> Void
+
+	var body: some View {
+		Button(action: onTap) {
+			HStack {
+				Text(title.name)
+					.font(Theme.Typography.title17)
+					.foregroundStyle(Theme.Colors.ink)
+				Spacer()
+				Text(String(localized: "No limit"))
+					.font(Theme.Typography.body13)
+					.foregroundStyle(Theme.Colors.textPlaceholder)
+			}
+			.padding(Theme.Spacing.lg)
+			.background(Theme.Colors.card)
+			.clipShape(.rect(cornerRadius: Theme.Radius.lg))
+			.overlay {
+				RoundedRectangle(cornerRadius: Theme.Radius.lg)
+					.stroke(Theme.Colors.borderHairline, lineWidth: 1)
+			}
+		}
+		.buttonStyle(.plain)
+	}
+}

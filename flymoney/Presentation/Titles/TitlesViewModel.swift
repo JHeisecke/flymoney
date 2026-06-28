@@ -12,6 +12,7 @@ import Observation
 @Observable
 final class TitlesViewModel {
 	private(set) var titles: [ExpenseTitle] = []
+	private(set) var spentByTitle: [UUID: Money] = [:]
 	private(set) var isLoading = false
 	var loadError: String?
 	var deleteBlocked: LocalizedStringResource?
@@ -20,15 +21,21 @@ final class TitlesViewModel {
 	private let fetchTitles: any FetchExpenseTitlesUseCase
 	private let upsertTitle: any UpsertExpenseTitleUseCase
 	private let deleteTitle: any DeleteExpenseTitleUseCase
+	private let fetchExpenses: any FetchExpensesForMonthUseCase
+	private let calendar: Calendar
 	private let currencyCode: String
 
 	init(fetchTitles: any FetchExpenseTitlesUseCase,
 		 upsertTitle: any UpsertExpenseTitleUseCase,
 		 deleteTitle: any DeleteExpenseTitleUseCase,
+		 fetchExpenses: any FetchExpensesForMonthUseCase,
+		 calendar: Calendar = .current,
 		 currencyCode: String) {
 		self.fetchTitles = fetchTitles
 		self.upsertTitle = upsertTitle
 		self.deleteTitle = deleteTitle
+		self.fetchExpenses = fetchExpenses
+		self.calendar = calendar
 		self.currencyCode = currencyCode
 	}
 
@@ -36,8 +43,13 @@ final class TitlesViewModel {
 		isLoading = true
 		defer { isLoading = false }
 		do {
-			titles = try await fetchTitles.execute()
-			loadError = nil
+			async let titlesTask = fetchTitles.execute()
+			async let expensesTask = fetchExpenses.execute(
+				CalendarMonth.containing(.now, using: calendar))
+			let (titles, expenses) = try await (titlesTask, expensesTask)
+			self.titles = titles
+			self.spentByTitle = computeSpent(expenses, defaultCode: currencyCode)
+			self.loadError = nil
 		} catch {
 			loadError = String(localized: "Couldn\u{2019}t load titles.")
 		}
@@ -72,5 +84,14 @@ final class TitlesViewModel {
 		} catch {
 			loadError = String(localized: "Couldn\u{2019}t delete. Try again.")
 		}
+	}
+
+	private func computeSpent(_ expenses: [Expense], defaultCode: String) -> [UUID: Money] {
+		var bucket: [UUID: Money] = [:]
+		for expense in expenses {
+			let prior = bucket[expense.titleID] ?? Money.zero(expense.amount.currencyCode)
+			bucket[expense.titleID] = (try? prior.adding(expense.amount)) ?? prior
+		}
+		return bucket
 	}
 }

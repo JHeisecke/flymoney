@@ -13,6 +13,12 @@ import Testing
 @Suite("TitlesViewModel")
 struct TitlesViewModelTests {
 
+	private static let utc: Calendar = {
+		var c = Calendar(identifier: .gregorian)
+		c.timeZone = TimeZone(identifier: "UTC")!
+		return c
+	}()
+
 	private func makeVM(
 		titles: InMemoryExpenseTitleRepository = InMemoryExpenseTitleRepository(),
 		expenses: InMemoryExpenseRepository = InMemoryExpenseRepository()
@@ -21,6 +27,8 @@ struct TitlesViewModelTests {
 			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: titles),
 			upsertTitle: UpsertExpenseTitleUseCaseImpl(titles: titles),
 			deleteTitle: DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses),
+			fetchExpenses: FetchExpensesForMonthUseCaseImpl(expenses: expenses, calendar: Self.utc),
+			calendar: Self.utc,
 			currencyCode: "USD"
 		)
 	}
@@ -155,5 +163,35 @@ struct TitlesViewModelTests {
 		await vm.save(editor)
 
 		#expect(editor.nameError != nil)
+	}
+
+	@Test("spentByTitle populated with current-month expenses", .tags(.viewModel))
+	func spentByTitlePopulated() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let expenses = InMemoryExpenseRepository()
+		let title = ExpenseTitle(name: "Coffee", limit: Money(minorUnits: 1000, currencyCode: "USD"))
+		try await titles.upsert(title)
+		try await expenses.add(Expense(amount: Money(minorUnits: 300, currencyCode: "USD"), titleID: title.id, date: Date()))
+
+		let vm = makeVM(titles: titles, expenses: expenses)
+		await vm.load()
+
+		let spent = vm.spentByTitle[title.id]
+		#expect(spent?.minorUnits == 300)
+	}
+
+	@Test("meter shows 100% when spent equals limit", .tags(.viewModel))
+	func spentEqualsLimit() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let expenses = InMemoryExpenseRepository()
+		let title = ExpenseTitle(name: "Coffee", limit: Money(minorUnits: 500, currencyCode: "USD"))
+		try await titles.upsert(title)
+		try await expenses.add(Expense(amount: Money(minorUnits: 500, currencyCode: "USD"), titleID: title.id, date: Date()))
+
+		let vm = makeVM(titles: titles, expenses: expenses)
+		await vm.load()
+
+		let spent = vm.spentByTitle[title.id]
+		#expect(spent?.minorUnits == 500)
 	}
 }

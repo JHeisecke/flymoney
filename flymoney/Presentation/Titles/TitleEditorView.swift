@@ -14,56 +14,76 @@ struct TitleEditorView: View {
 
 	var body: some View {
 		NavigationStack {
-			Form {
-				Section {
+			VStack(spacing: Theme.Spacing.s18) {
+				VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+					Text(String(localized: "Name"))
+						.font(Theme.Typography.caption12)
+						.foregroundStyle(Theme.Colors.textSubtle)
 					TextField(String(localized: "Name"), text: $model.name)
-						.font(Theme.Typography.body)
+						.font(Theme.Typography.body17)
+						.tint(Theme.Colors.accent)
+						.textFieldStyle(.plain)
+						.padding(.horizontal, Theme.Spacing.lg)
+						.frame(height: 56)
+						.background(Theme.Colors.card)
+						.clipShape(.rect(cornerRadius: Theme.Radius.md))
+						.overlay {
+							RoundedRectangle(cornerRadius: Theme.Radius.md)
+								.stroke(Theme.Colors.accent, lineWidth: 1.5)
+						}
+						.shadow(Theme.Shadow.subtle)
 					if let nameError = model.nameError {
 						Text(nameError)
-							.font(Theme.Typography.caption)
+							.font(Theme.Typography.body13)
 							.foregroundStyle(Theme.Colors.danger)
 					}
-				} header: {
-					Text(String(localized: "Name"))
 				}
 
-			Section {
-				TextField(String(localized: "Monthly limit"), value: $model.limitDecimal, format: .currency(code: model.currencyCode))
-					.keyboardType(.decimalPad)
-					.font(Theme.Typography.body)
-			} header: {
+				VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
 					Text(String(localized: "Monthly limit"))
-				} footer: {
-					Text(model.currencyCode)
-						.font(Theme.Typography.caption)
-						.foregroundStyle(Theme.Colors.textTertiary)
+						.font(Theme.Typography.caption12)
+						.foregroundStyle(Theme.Colors.textSubtle)
+					TextField(String(localized: "Monthly limit"), value: $model.limitDecimal, format: .number.grouping(.never).precision(.fractionLength(0...2)))
+						.keyboardType(.decimalPad)
+						.font(Theme.Typography.body17)
+						.tint(Theme.Colors.accent)
+						.textFieldStyle(.plain)
+						.padding(.horizontal, Theme.Spacing.lg)
+						.frame(height: 56)
+						.background(Theme.Colors.card)
+						.clipShape(.rect(cornerRadius: Theme.Radius.md))
+						.overlay {
+							RoundedRectangle(cornerRadius: Theme.Radius.md)
+								.stroke(Theme.Colors.accent, lineWidth: 1.5)
+						}
+						.shadow(Theme.Shadow.subtle)
 				}
 
 				if let saveError = model.saveError {
-					Section {
-						Text(saveError)
-							.font(Theme.Typography.body)
-							.foregroundStyle(Theme.Colors.danger)
-					}
+					Text(saveError)
+						.font(Theme.Typography.body14)
+						.foregroundStyle(Theme.Colors.danger)
 				}
+
+				Spacer()
+
+				SaveButton(
+					title: "Save",
+					isLoading: false,
+					isDisabled: model.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
+						Task { await onSave() }
+					}
 			}
-			.scrollDismissesKeyboard(.interactively)
+			.padding(.horizontal, Theme.Spacing.xxl)
+			.padding(.top, Theme.Spacing.lg)
+			.background(Theme.Colors.surface)
 			.navigationTitle(Text(model.isEditing ? Lexicon.editTitle : Lexicon.newTitle))
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
 					Button(String(localized: "Cancel"), action: onCancel)
 				}
-				ToolbarItem(placement: .topBarTrailing) {
-					Button(String(localized: "Save")) {
-						Task {
-							await onSave()
-						}
-					}
-					.disabled(model.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-				}
 			}
-		.tint(Theme.Colors.accent)
-		.dismissKeyboardOnTap()
-	}
+			.tint(Theme.Colors.accent)
+		}
 	}
 }

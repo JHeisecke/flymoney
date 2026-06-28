@@ -749,6 +749,56 @@
           }
         }
       }
+    },
+    "Budget used": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Presupuesto usado"
+          }
+        }
+      }
+    },
+    "mo": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mes"
+          }
+        }
+      }
+    },
+    "spent": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gastado"
+          }
+        }
+      }
+    },
+    "Edit title": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar título"
+          }
+        }
+      }
+    },
+    "Delete title": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar título"
+          }
+        }
+      }
     }
   },
   "version": "1.1"

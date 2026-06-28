@@ -68,6 +68,7 @@ final class AppAssembly {
 			fetchTitles: makeFetchExpenseTitlesUseCase(),
 			upsertTitle: makeUpsertExpenseTitleUseCase(),
 			deleteTitle: makeDeleteExpenseTitleUseCase(),
+			fetchExpenses: makeFetchExpensesForMonthUseCase(),
 			currencyCode: currencyProvider.defaultCurrencyCode)
 	}
 
