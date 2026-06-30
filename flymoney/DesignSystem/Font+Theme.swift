@@ -14,6 +14,7 @@ extension Theme {
 		static let display42 = sora(.bold, size: 42, relativeTo: .largeTitle)
 		static let display32 = sora(.medium, size: 32, relativeTo: .title)
 		static let display27 = sora(.heavy, size: 27, relativeTo: .title)
+		static let display26 = sora(.medium, size: 26, relativeTo: .title2)
 		static let display24 = sora(.bold, size: 24, relativeTo: .title2)
 
 		static let title17 = sora(.bold, size: 17, relativeTo: .headline)

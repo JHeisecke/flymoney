@@ -10,21 +10,38 @@ import SwiftUI
 struct MonthHeaderView: View {
 	@Binding var month: CalendarMonth
 	let calendar: Calendar
+	let onPrevious: () -> Void
+	let onNext: () -> Void
 
 	@State private var isPickerPresented = false
 
 	var body: some View {
-		Button {
-			isPickerPresented = true
-		} label: {
-			Text(label)
-				.font(Theme.Typography.title16)
-				.foregroundStyle(Theme.Colors.inkSecondary)
+		HStack(spacing: Theme.Spacing.s18) {
+			Button("Previous month", systemImage: "chevron.left") {
+				onPrevious()
+			}
+			.labelStyle(.iconOnly)
+			.foregroundStyle(Theme.Colors.inkQuaternary)
+
+			Button {
+				isPickerPresented = true
+			} label: {
+				Text(label)
+					.font(Theme.Typography.title16)
+					.foregroundStyle(Theme.Colors.inkSecondary)
+			}
+			.buttonStyle(.plain)
+
+			Button("Next month", systemImage: "chevron.right") {
+				onNext()
+			}
+			.labelStyle(.iconOnly)
+			.foregroundStyle(Theme.Colors.inkSecondary)
 		}
-		.buttonStyle(.plain)
 		.popover(isPresented: $isPickerPresented, attachmentAnchor: .point(.bottom)) {
 			DatePicker(String(localized: "Month"), selection: anchorBinding, displayedComponents: .date)
 				.datePickerStyle(.graphical)
+                .frame(minWidth: 320)
 				.padding(Theme.Spacing.lg)
 				.presentationCompactAdaptation(.popover)
 		}

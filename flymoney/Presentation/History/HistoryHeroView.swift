@@ -11,25 +11,33 @@ struct HistoryHeroView: View {
 	let total: Money?
 	let titleCount: Int
 
+	private var currencyCode: String {
+		total?.currencyCode ?? Locale.current.currency?.identifier.uppercased() ?? "USD"
+	}
+
 	var body: some View {
 		VStack(alignment: .leading, spacing: Theme.Spacing.s6) {
-			Text(amountLabel)
-				.font(Theme.Typography.display42)
-				.foregroundStyle(total == nil ? Theme.Colors.inkQuaternary : Theme.Colors.ink)
-				.monospacedDigit()
-				.tracking(-1)
+			HStack(alignment: .top, spacing: 2) {
+				Text(Theme.Currency.symbol(for: currencyCode))
+					.font(Theme.Typography.display26)
+					.foregroundStyle(Theme.Colors.inkQuaternary)
+				Text(numberLabel)
+					.font(Theme.Typography.display42)
+					.foregroundStyle(total == nil ? Theme.Colors.inkQuaternary : Theme.Colors.ink)
+					.monospacedDigit()
+					.tracking(-1)
+			}
 			Text(subtitle)
 				.font(Theme.Typography.body13)
 				.foregroundStyle(Theme.Colors.inkTertiary)
 		}
 	}
 
-	private var amountLabel: String {
+	private var numberLabel: String {
 		if let total {
-			return total.formatted()
+			return total.formattedNumber(locale: .current)
 		}
-		let code = Locale.current.currency?.identifier.uppercased() ?? "USD"
-		return Money.zero(code).formatted()
+		return Money.zero(currencyCode).formattedNumber(locale: .current)
 	}
 
 	private var subtitle: String {

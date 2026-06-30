@@ -11,7 +11,7 @@ struct ExpenseRowView: View {
 	let row: HistoryRow
 
 	var body: some View {
-		HStack(alignment: .firstTextBaseline) {
+		HStack(alignment: .center) {
 			VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
 				Text(row.titleName)
 					.font(Theme.Typography.body16)

@@ -22,7 +22,12 @@ struct HistoryView: View {
 			header
 				.padding(.horizontal, Theme.Spacing.xxl)
 				.padding(.top, Theme.Spacing.s18)
-			MonthHeaderView(month: $viewModel.month, calendar: viewModel.calendar)
+			MonthHeaderView(
+				month: $viewModel.month,
+				calendar: viewModel.calendar,
+				onPrevious: { viewModel.previousMonth() },
+				onNext: { viewModel.nextMonth() }
+			)
 				.padding(.horizontal, Theme.Spacing.xxl)
 				.padding(.top, Theme.Spacing.md)
 			HistoryHeroView(total: viewModel.totalSpent, titleCount: viewModel.titleCount)
