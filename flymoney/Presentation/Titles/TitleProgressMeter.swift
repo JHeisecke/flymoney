@@ -17,7 +17,7 @@ struct TitleProgressMeter: View {
 				RoundedRectangle(cornerRadius: Theme.Radius.xxs)
 					.fill(Theme.Colors.neutralTint)
 				RoundedRectangle(cornerRadius: Theme.Radius.xxs)
-					.fill(isOver ? Theme.Colors.danger : Theme.Colors.accent)
+					.fill(BudgetStatus(spent: spent, limit: limit).color)
 					.frame(width: max(0, min(1, ratio)) * geo.size.width)
 			}
 		}
@@ -30,6 +30,4 @@ struct TitleProgressMeter: View {
 		guard limit.minorUnits > 0 else { return 0 }
 		return Double(spent.minorUnits) / Double(limit.minorUnits)
 	}
-
-	private var isOver: Bool { spent.minorUnits >= limit.minorUnits }
 }

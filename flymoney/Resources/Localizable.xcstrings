@@ -575,6 +575,7 @@
       }
     },
     "No limit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {

@@ -75,8 +75,12 @@ struct TitlesView: View {
 										Label(String(localized: "Delete title"), systemImage: "trash")
 									}
 								}
-						} else {
-							TitleNoLimitRowView(title: title) { viewModel.beginEdit(title) }
+					} else {
+						let noLimitCurrency = viewModel.spentByTitle[title.id]?.currencyCode ?? viewModel.currencyCode
+						TitleNoLimitRowView(
+							title: title,
+							spent: viewModel.spentByTitle[title.id] ?? Money.zero(noLimitCurrency)
+						) { viewModel.beginEdit(title) }
 								.contextMenu {
 									Button {
 										viewModel.beginEdit(title)

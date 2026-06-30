@@ -56,21 +56,16 @@ struct TitleCardView: View {
 		guard limit.minorUnits > 0 else { return 0 }
 		return Double(spent.minorUnits) / Double(limit.minorUnits)
 	}
-	private var isOver: Bool { spent.minorUnits > limit.minorUnits }
-	private var isNearLimit: Bool { ratio >= 0.9 && !isOver }
+	private var status: BudgetStatus { BudgetStatus(spent: spent, limit: limit) }
 
-	private var captionColor: Color {
-		if isOver { return Theme.Colors.danger }
-		if isNearLimit { return Theme.Colors.warning }
-		return Theme.Colors.success
-	}
+	private var captionColor: Color { status.color }
 
 	private var captionText: String {
 		let remainingUnits = limit.minorUnits - spent.minorUnits
 		let remaining = Money(
 			minorUnits: abs(remainingUnits),
 			currencyCode: limit.currencyCode)
-		return isOver
+		return status == .over
 			? String(localized: "Over \(remaining.formatted())")
 			: String(localized: "Left \(remaining.formatted())")
 	}

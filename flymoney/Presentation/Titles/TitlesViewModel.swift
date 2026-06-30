@@ -23,7 +23,7 @@ final class TitlesViewModel {
 	private let deleteTitle: any DeleteExpenseTitleUseCase
 	private let fetchExpenses: any FetchExpensesForMonthUseCase
 	private let calendar: Calendar
-	private let currencyCode: String
+	let currencyCode: String
 
 	init(fetchTitles: any FetchExpenseTitlesUseCase,
 		 upsertTitle: any UpsertExpenseTitleUseCase,

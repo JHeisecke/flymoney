@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TitleNoLimitRowView: View {
 	let title: ExpenseTitle
+	let spent: Money
 	let onTap: () -> Void
 
 	var body: some View {
@@ -18,9 +19,10 @@ struct TitleNoLimitRowView: View {
 					.font(Theme.Typography.title17)
 					.foregroundStyle(Theme.Colors.ink)
 				Spacer()
-				Text(String(localized: "No limit"))
+				Text(verbatim: "\(spent.formatted()) \(String(localized: "spent"))")
 					.font(Theme.Typography.body13)
-					.foregroundStyle(Theme.Colors.textPlaceholder)
+					.foregroundStyle(Theme.Colors.inkQuaternary)
+					.monospacedDigit()
 			}
 			.padding(Theme.Spacing.lg)
 			.background(Theme.Colors.card)
