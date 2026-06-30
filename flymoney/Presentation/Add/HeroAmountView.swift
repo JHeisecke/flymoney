@@ -22,11 +22,10 @@ struct HeroAmountView: View {
 
 	var body: some View {
 		VStack(spacing: Theme.Spacing.xl) {
-			HStack(alignment: .firstTextBaseline, spacing: 0) {
+			HStack(alignment: .top, spacing: 2) {
 				Text(currencySymbol)
-					.font(Theme.Typography.display24)
+					.font(Theme.Typography.display32)
 					.foregroundStyle(Theme.Colors.inkQuaternary)
-					.baselineOffset(-Theme.Spacing.md)
 				TextField("0", text: $amountText)
 					.font(Theme.Typography.display66)
 					.foregroundStyle(form.amountDecimal > 0 ? Theme.Colors.ink : Theme.Colors.inkQuaternary)
@@ -34,15 +33,17 @@ struct HeroAmountView: View {
 					.keyboardType(.decimalPad)
 					.focused($isFocused)
 					.textFieldStyle(.plain)
-					.multilineTextAlignment(.leading)
+					.multilineTextAlignment(.center)
 					.lineLimit(1)
 					.monospacedDigit()
 					.tracking(-1.5)
+					.fixedSize(horizontal: true, vertical: false)
 					.onChange(of: amountText) { _, newValue in
 						formatAsYouType(newValue)
 					}
-                    .minimumScaleFactor(0.6)
 			}
+			.fixedSize()
+			.frame(maxWidth: .infinity)
 			Rectangle()
 				.fill(Theme.Colors.accent)
 				.frame(width: 52, height: 3)

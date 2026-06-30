@@ -99,6 +99,7 @@ private struct SuggestionRowView: View {
 			.padding(.horizontal, Theme.Spacing.lg)
 			.frame(height: 52)
 			.background(isSelected ? Theme.Colors.accentTint : Color.clear)
+            .contentShape(.rect)
 		}
 		.buttonStyle(.plain)
 	}

@@ -12,6 +12,7 @@ extension Theme {
 	enum Typography {
 		static let display66 = sora(.bold, size: 66, relativeTo: .largeTitle)
 		static let display42 = sora(.bold, size: 42, relativeTo: .largeTitle)
+		static let display32 = sora(.medium, size: 32, relativeTo: .title)
 		static let display27 = sora(.heavy, size: 27, relativeTo: .title)
 		static let display24 = sora(.bold, size: 24, relativeTo: .title2)
 
