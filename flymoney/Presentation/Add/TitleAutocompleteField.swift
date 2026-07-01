@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TitleAutocompleteField: View {
 	@Bindable var form: AddExpenseFormModel
+	@Binding var showSuggestions: Bool
 	let suggestions: [ExpenseTitle]
 	let selectedID: UUID?
 	let selectedSummary: MonthSummary?
@@ -17,14 +18,24 @@ struct TitleAutocompleteField: View {
 
 	@FocusState private var isFocused: Bool
 
+	private let rowHeight: CGFloat = 52
+	private let maxVisibleRows = 4
+	private let fieldHeight: CGFloat = 56
+
 	var body: some View {
-		VStack(spacing: Theme.Spacing.sm) {
-			field
-			if isFocused, !suggestions.isEmpty {
-				dropdown
-					.transition(.opacity)
+		field
+			.zIndex(1)
+			.overlay(alignment: .topLeading) {
+				if showSuggestions, !suggestions.isEmpty {
+					dropdown
+						.frame(maxWidth: .infinity)
+						.offset(y: fieldHeight + Theme.Spacing.sm)
+						.transition(.opacity)
+				}
 			}
-		}
+			.onChange(of: isFocused) { _, focused in
+				if focused { showSuggestions = true }
+			}
 	}
 
 	private var field: some View {
@@ -49,26 +60,37 @@ struct TitleAutocompleteField: View {
 		}
 		.shadow(isFocused ? Theme.Shadow.focusGlow : Theme.Shadow.subtle)
 		.onChange(of: form.titleName) { _, newValue in
+			showSuggestions = true
 			onQueryChange(newValue)
 		}
 	}
 
 	private var dropdown: some View {
-		VStack(spacing: 0) {
-			ForEach(suggestions) { title in
-				SuggestionRowView(
-					title: title,
-					isSelected: title.id == selectedID,
-					summary: title.id == selectedID ? selectedSummary : nil
-				) {
-					Task { await onSelect(title) }
-					isFocused = false
-				}
-				if title.id != suggestions.last?.id {
-					Divider().background(Theme.Colors.borderDivider)
+		let count = suggestions.count
+		let contentHeight = CGFloat(count) * rowHeight + CGFloat(max(0, count - 1))
+		let cappedHeight = min(contentHeight, CGFloat(maxVisibleRows) * rowHeight)
+
+		return ScrollView {
+			VStack(spacing: 0) {
+				ForEach(suggestions) { title in
+					SuggestionRowView(
+						title: title,
+						isSelected: title.id == selectedID,
+						summary: title.id == selectedID ? selectedSummary : nil
+					) {
+						showSuggestions = false
+						isFocused = false
+						Task { await onSelect(title) }
+					}
+					if title.id != suggestions.last?.id {
+						Divider().background(Theme.Colors.borderDivider)
+					}
 				}
 			}
 		}
+		.frame(height: cappedHeight)
+		.scrollBounceBehavior(.basedOnSize)
+		.scrollDismissesKeyboard(.immediately)
 		.background(Theme.Colors.card)
 		.clipShape(.rect(cornerRadius: Theme.Radius.md))
 		.overlay {

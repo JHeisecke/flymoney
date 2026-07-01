@@ -10,9 +10,9 @@ import UIKit
 @MainActor
 final class HapticsManager: HapticsFeedback {
 	private var isEnabled: Bool
-	private let impact = UIImpactFeedbackGenerator(style: .light)
-	private let selection = UISelectionFeedbackGenerator()
-	private let notification = UINotificationFeedbackGenerator()
+	private let impactGenerator = UIImpactFeedbackGenerator(style: .light)
+	private let selectionGenerator = UISelectionFeedbackGenerator()
+	private let notificationGenerator = UINotificationFeedbackGenerator()
 
 	init(isEnabled: Bool = true) {
 		self.isEnabled = isEnabled
@@ -20,33 +20,33 @@ final class HapticsManager: HapticsFeedback {
 
 	func tap() {
 		guard isEnabled else { return }
-		impact.impactOccurred()
+		impactGenerator.impactOccurred()
 	}
 
 	func selection() {
 		guard isEnabled else { return }
-		selection.selectionChanged()
+		selectionGenerator.selectionChanged()
 	}
 
 	func success() {
 		guard isEnabled else { return }
-		notification.notificationOccurred(.success)
+		notificationGenerator.notificationOccurred(.success)
 	}
 
 	func warning() {
 		guard isEnabled else { return }
-		notification.notificationOccurred(.warning)
+		notificationGenerator.notificationOccurred(.warning)
 	}
 
 	func error() {
 		guard isEnabled else { return }
-		notification.notificationOccurred(.error)
+		notificationGenerator.notificationOccurred(.error)
 	}
 
 	func prepare() {
 		guard isEnabled else { return }
-		impact.prepare()
-		selection.prepare()
-		notification.prepare()
+		impactGenerator.prepare()
+		selectionGenerator.prepare()
+		notificationGenerator.prepare()
 	}
 }

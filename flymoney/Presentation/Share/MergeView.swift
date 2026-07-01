@@ -18,31 +18,33 @@ struct MergeView: View {
 	}
 
 	var body: some View {
-		if case .awaitingMerge(let imported) = viewModel.phase {
-			VStack(spacing: 0) {
-				ShareSheetHeader(
-					title: "Merge month",
-					onCancel: onDismiss)
+		Group {
+			if case .awaitingMerge(let imported) = viewModel.phase {
+				VStack(spacing: 0) {
+					ShareSheetHeader(
+						title: "Merge month",
+						onCancel: onDismiss)
 
-				ScrollView {
-					VStack(spacing: Theme.Spacing.md) {
-						ForEach(imported.titles, id: \.id) { title in
-							let spent = spentFor(title.id, in: imported)
-							MergeRowView(
-								importedTitle: title,
-								importedSpent: spent,
-								localTitles: viewModel.localTitles,
-								fuzzyMatches: viewModel.fuzzyMatches[title.id] ?? [],
-								resolution: resolutionBinding(for: title.id))
+					ScrollView {
+						VStack(spacing: Theme.Spacing.md) {
+							ForEach(imported.titles, id: \.id) { title in
+								let spent = spentFor(title.id, in: imported)
+								MergeRowView(
+									importedTitle: title,
+									importedSpent: spent,
+									localTitles: viewModel.localTitles,
+									fuzzyMatches: viewModel.fuzzyMatches[title.id] ?? [],
+									resolution: resolutionBinding(for: title.id))
+							}
 						}
+						.padding(.horizontal, Theme.Spacing.s18)
+						.padding(.bottom, Theme.Spacing.lg)
 					}
-					.padding(.horizontal, Theme.Spacing.s18)
-					.padding(.bottom, Theme.Spacing.lg)
-				}
 
-				combinedTotalBar
+					combinedTotalBar
+				}
+				.background(Theme.Colors.surface)
 			}
-			.background(Theme.Colors.surface)
 		}
 		.onChange(of: viewModel.phase) { _, phase in
 			switch phase {

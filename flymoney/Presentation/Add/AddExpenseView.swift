@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AddExpenseView: View {
 	@State private var viewModel: AddExpenseViewModel
+	@State private var showSuggestions = false
 	@Environment(\.haptics) private var haptics
 
 	init(viewModel: AddExpenseViewModel) {
@@ -32,11 +33,13 @@ struct AddExpenseView: View {
 
 			TitleAutocompleteField(
 				form: viewModel.form,
+				showSuggestions: $showSuggestions,
 				suggestions: viewModel.suggestions,
 				selectedID: viewModel.selectedTitleID,
 				selectedSummary: viewModel.budget,
 				onQueryChange: { viewModel.search($0) },
 				onSelect: { await viewModel.select($0) })
+				.zIndex(1)
 
 			if let titleError = viewModel.form.titleError {
 				Text(titleError)
@@ -54,6 +57,7 @@ struct AddExpenseView: View {
 				title: "Save expense",
 				isLoading: viewModel.isSaving,
 				isDisabled: !viewModel.form.canSave) {
+					showSuggestions = false
 					Task { await viewModel.save() }
 				}
 				.padding(.bottom, Theme.Spacing.xxl)
@@ -63,11 +67,14 @@ struct AddExpenseView: View {
 		}
 		.padding(.horizontal, Theme.Spacing.xxl)
 		.background(Theme.Colors.surface)
-		.simultaneousGesture(
-			TapGesture().onEnded {
-				UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-			}
-		)
+		.background {
+			Color.clear
+				.contentShape(.rect)
+				.onTapGesture {
+					showSuggestions = false
+					UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+				}
+		}
 		.onChange(of: viewModel.didJustSave) { _, isTrue in
 			if isTrue {
 				haptics.success()

@@ -90,14 +90,14 @@ struct TitlesView: View {
 								} label: {
 									Label(String(localized: Lexicon.editTerm), systemImage: "pencil")
 								}
-							Button(role: .destructive) {
-								haptics.warning()
-								Task { await viewModel.delete(title) }
-							} label: {
-								Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
+								Button(role: .destructive) {
+									haptics.warning()
+									Task { await viewModel.delete(title) }
+								} label: {
+									Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
+								}
 							}
-						}
-					} else {
+						} else {
 							let noLimitCurrency = viewModel.spentByTitle[title.id]?.currencyCode ?? viewModel.currencyCode
 							TitleNoLimitRowView(
 								title: title,
@@ -109,11 +109,12 @@ struct TitlesView: View {
 								} label: {
 									Label(String(localized: Lexicon.editTerm), systemImage: "pencil")
 								}
-							Button(role: .destructive) {
-								haptics.warning()
-								Task { await viewModel.delete(title) }
-							} label: {
-								Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
+								Button(role: .destructive) {
+									haptics.warning()
+									Task { await viewModel.delete(title) }
+								} label: {
+									Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
+								}
 							}
 						}
 					}

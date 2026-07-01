@@ -63,8 +63,8 @@ struct HeroAmountView: View {
 				.monospacedDigit()
 				.tracking(-1.5)
 				.fixedSize(horizontal: true, vertical: false)
-				.onChange(of: amountText) { _, newValue in
-					formatAsYouType(newValue)
+				.onChange(of: amountText) { oldValue, newValue in
+					formatAsYouType(newValue, previous: oldValue)
 				}
 		}
 		.fixedSize()
@@ -80,8 +80,8 @@ struct HeroAmountView: View {
 		return min(1, containerWidth / contentWidth)
 	}
 
-	private func formatAsYouType(_ newValue: String) {
-		let result = formatter.format(newValue)
+	private func formatAsYouType(_ newValue: String, previous: String) {
+		let result = formatter.format(newValue, previousText: previous)
 		amountText = result.display
 		form.amountDecimal = result.value
 	}
