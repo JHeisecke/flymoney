@@ -60,7 +60,7 @@ struct TitleAutocompleteField: View {
 		}
 		.shadow(isFocused ? Theme.Shadow.focusGlow : Theme.Shadow.subtle)
 		.onChange(of: form.titleName) { _, newValue in
-			showSuggestions = true
+			if isFocused { showSuggestions = true }
 			onQueryChange(newValue)
 		}
 	}

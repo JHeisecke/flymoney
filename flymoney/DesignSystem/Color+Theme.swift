@@ -44,26 +44,5 @@ extension Theme {
 
 		static let segmentedTrack = Color(.segmentedTrack)
 		static let segmentedThumb = Color(.segmentedThumb)
-
-		@available(*, deprecated, renamed: "inkSecondary")
-		static let textSecondary = Color(.inkSecondary)
-
-		@available(*, deprecated, renamed: "inkTertiary")
-		static let textTertiary = Color(.inkTertiary)
-
-		@available(*, deprecated, renamed: "borderHairline")
-		static let border = Color(.borderHairline)
-
-		@available(*, deprecated, renamed: "borderDivider")
-		static let fill = Color(.borderDivider)
-
-		@available(*, deprecated, renamed: "successTint")
-		static let successBg = Color(.successTint)
-
-		@available(*, deprecated, renamed: "warningTint")
-		static let warningBg = Color(.warningTint)
-
-		@available(*, deprecated, renamed: "surface")
-		static let background = Color(.surface)
 	}
 }

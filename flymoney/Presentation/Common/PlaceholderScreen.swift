@@ -12,9 +12,9 @@ struct PlaceholderScreen: View {
 
 	var body: some View {
 		ZStack {
-			Theme.Colors.background.ignoresSafeArea()
+			Theme.Colors.surface.ignoresSafeArea()
 			Text(title)
-				.font(Theme.Typography.title)
+				.font(Theme.Typography.display27)
 				.foregroundStyle(Theme.Colors.ink)
 		}
 	}

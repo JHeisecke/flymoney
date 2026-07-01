@@ -29,7 +29,7 @@ struct RootView: View {
 			}
 		}
 		.tint(Theme.Colors.accent)
-		.preferredColorScheme(.light)
+//		.preferredColorScheme(.light)
 		.buttonStyle(.hapticPlain)
 		.environment(\.haptics, HapticsManager())
 		.onAppear { haptics.prepare() }

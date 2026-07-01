@@ -44,16 +44,16 @@ private struct ContentView: View {
 					.font(.largeTitle)
 					.foregroundStyle(Theme.Colors.danger)
 				Text("Storage Unavailable")
-					.font(Theme.Typography.title)
+					.font(Theme.Typography.display27)
 					.foregroundStyle(Theme.Colors.ink)
 				Text("Unable to access the database. Please restart the app.")
-					.font(Theme.Typography.body)
-					.foregroundStyle(Theme.Colors.textSecondary)
+					.font(Theme.Typography.body16)
+					.foregroundStyle(Theme.Colors.inkSecondary)
 					.multilineTextAlignment(.center)
 			}
 			.padding()
 			.frame(maxWidth: .infinity, maxHeight: .infinity)
-			.background(Theme.Colors.background)
+			.background(Theme.Colors.surface)
 		}
 	}
 }

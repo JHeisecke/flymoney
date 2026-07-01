@@ -36,7 +36,7 @@ struct HeroAmountView: View {
 		.onGeometryChange(for: CGFloat.self) { proxy in
 			proxy.size.width
 		} action: { width in
-			containerWidth = width
+			containerWidth = width - 150
 		}
 		.contentShape(.rect)
 		.onTapGesture { isFocused = true }
