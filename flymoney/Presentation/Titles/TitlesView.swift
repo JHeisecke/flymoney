@@ -17,10 +17,20 @@ struct TitlesView: View {
 	var body: some View {
 		VStack(alignment: .leading, spacing: 0) {
 			header
+			MonthHeaderView(
+				month: viewModel.month,
+				calendar: viewModel.calendar,
+				onPrevious: { viewModel.previousMonth() },
+				onNext: { viewModel.nextMonth() })
+				.padding(.horizontal, Theme.Spacing.xxl)
+				.padding(.bottom, Theme.Spacing.md)
 			content
 		}
 		.background(Theme.Colors.surface)
 		.task { await viewModel.load() }
+		.onChange(of: viewModel.month) { _, _ in
+			Task { await viewModel.load() }
+		}
 		.sheet(item: $viewModel.editor) { model in
 			TitleEditorView(
 				model: model,
@@ -50,23 +60,27 @@ struct TitlesView: View {
 	}
 
 	@ViewBuilder private var content: some View {
-		if viewModel.titles.isEmpty && !viewModel.isLoading {
+		if viewModel.isLoading {
+			EmptyView()
+		} else if viewModel.titles.isEmpty {
 			empty
+		} else if viewModel.visibleTitles.isEmpty {
+			monthEmpty
 		} else {
 			ScrollView {
 				VStack(spacing: Theme.Spacing.md) {
-					ForEach(viewModel.titles) { title in
-						let currency = title.limit?.currencyCode ?? "USD"
+					ForEach(viewModel.visibleTitles) { title in
+						let currency = title.limit?.currencyCode ?? viewModel.currencyCode
 						if let limit = title.limit {
 							TitleCardView(
 								title: title,
 								spent: viewModel.spentByTitle[title.id] ?? Money.zero(currency),
 								limit: limit
 							) { viewModel.beginEdit(title) }
-								.contextMenu {
-									Button {
-										viewModel.beginEdit(title)
-									} label: {
+							.contextMenu {
+								Button {
+									viewModel.beginEdit(title)
+								} label: {
 									Label(String(localized: Lexicon.editTerm), systemImage: "pencil")
 								}
 								Button(role: .destructive) {
@@ -75,12 +89,12 @@ struct TitlesView: View {
 									Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
 								}
 							}
-				} else {
-					let noLimitCurrency = viewModel.spentByTitle[title.id]?.currencyCode ?? viewModel.currencyCode
-					TitleNoLimitRowView(
-						title: title,
-						spent: viewModel.spentByTitle[title.id] ?? Money.zero(noLimitCurrency)
-					) { viewModel.beginEdit(title) }
+						} else {
+							let noLimitCurrency = viewModel.spentByTitle[title.id]?.currencyCode ?? viewModel.currencyCode
+							TitleNoLimitRowView(
+								title: title,
+								spent: viewModel.spentByTitle[title.id] ?? Money.zero(noLimitCurrency)
+							) { viewModel.beginEdit(title) }
 							.contextMenu {
 								Button {
 									viewModel.beginEdit(title)
@@ -115,6 +129,18 @@ struct TitlesView: View {
 			Text(Lexicon.emptyStatePrompt)
 				.font(Theme.Typography.body14)
 				.foregroundStyle(Theme.Colors.inkQuaternary)
+		}
+	}
+
+	private var monthEmpty: some View {
+		ContentUnavailableView {
+			Label {
+				Text(Lexicon.noneThisMonth)
+					.font(Theme.Typography.title17)
+			} icon: {
+				Image(systemName: "tag")
+					.foregroundStyle(Theme.Colors.accent)
+			}
 		}
 	}
 

@@ -21,7 +21,8 @@ struct TitlesViewModelTests {
 
 	private func makeVM(
 		titles: InMemoryExpenseTitleRepository = InMemoryExpenseTitleRepository(),
-		expenses: InMemoryExpenseRepository = InMemoryExpenseRepository()
+		expenses: InMemoryExpenseRepository = InMemoryExpenseRepository(),
+		now: Date = Date()
 	) -> TitlesViewModel {
 		TitlesViewModel(
 			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: titles),
@@ -29,6 +30,7 @@ struct TitlesViewModelTests {
 			deleteTitle: DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses),
 			fetchExpenses: FetchExpensesForMonthUseCaseImpl(expenses: expenses, calendar: Self.utc),
 			calendar: Self.utc,
+			now: now,
 			currencyCode: "USD"
 		)
 	}
@@ -193,5 +195,95 @@ struct TitlesViewModelTests {
 
 		let spent = vm.spentByTitle[title.id]
 		#expect(spent?.minorUnits == 500)
+	}
+
+	@Test("visibleTitles only includes titles with an expense in the selected month", .tags(.viewModel))
+	func visibleTitlesFiltersToMonthActive() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let expenses = InMemoryExpenseRepository()
+		let active = ExpenseTitle(name: "Coffee")
+		let inactive = ExpenseTitle(name: "Unused")
+		try await titles.upsert(active)
+		try await titles.upsert(inactive)
+		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: active.id, date: date(day: 15, month: 1, year: 2026)))
+
+		let vm = makeVM(titles: titles, expenses: expenses, now: date(day: 15, month: 1, year: 2026))
+		await vm.load()
+
+		#expect(vm.titles.count == 2)
+		#expect(vm.visibleTitles.count == 1)
+		#expect(vm.visibleTitles.first?.id == active.id)
+	}
+
+	@Test("navigating months updates visibleTitles", .tags(.viewModel))
+	func monthNavigationUpdatesVisibleTitles() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let expenses = InMemoryExpenseRepository()
+		let janTitle = ExpenseTitle(name: "Coffee")
+		let febTitle = ExpenseTitle(name: "Lunch")
+		try await titles.upsert(janTitle)
+		try await titles.upsert(febTitle)
+		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: janTitle.id, date: date(day: 10, month: 1, year: 2026)))
+		try await expenses.add(Expense(amount: Money(minorUnits: 200, currencyCode: "USD"), titleID: febTitle.id, date: date(day: 10, month: 2, year: 2026)))
+
+		let vm = makeVM(titles: titles, expenses: expenses, now: date(day: 10, month: 1, year: 2026))
+		await vm.load()
+		#expect(vm.visibleTitles.count == 1)
+		#expect(vm.visibleTitles.first?.id == janTitle.id)
+
+		vm.nextMonth()
+		await vm.load()
+		#expect(vm.visibleTitles.count == 1)
+		#expect(vm.visibleTitles.first?.id == febTitle.id)
+
+		vm.previousMonth()
+		await vm.load()
+		#expect(vm.visibleTitles.count == 1)
+		#expect(vm.visibleTitles.first?.id == janTitle.id)
+	}
+
+	@Test("month with no expenses shows empty visibleTitles while titles is non-empty", .tags(.viewModel))
+	func monthEmptyVisibleTitles() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let expenses = InMemoryExpenseRepository()
+		let title = ExpenseTitle(name: "Coffee")
+		try await titles.upsert(title)
+		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: title.id, date: date(day: 10, month: 1, year: 2026)))
+
+		let vm = makeVM(titles: titles, expenses: expenses, now: date(day: 10, month: 2, year: 2026))
+		await vm.load()
+
+		#expect(vm.titles.count == 1)
+		#expect(vm.visibleTitles.isEmpty)
+	}
+
+	@Test("save duplicate-name validation still uses full titles list", .tags(.viewModel))
+	func saveDuplicateNameUsesFullTitles() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let expenses = InMemoryExpenseRepository()
+		let existing = ExpenseTitle(name: "Coffee")
+		try await titles.upsert(existing)
+		// Expense in a different month so existing title is not visible this month
+		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: existing.id, date: date(day: 10, month: 1, year: 2026)))
+
+		let vm = makeVM(titles: titles, expenses: expenses, now: date(day: 10, month: 2, year: 2026))
+		await vm.load()
+		#expect(vm.visibleTitles.isEmpty)
+
+		vm.beginCreate()
+		let editor = try #require(vm.editor)
+		editor.name = "Coffee"
+		await vm.save(editor)
+
+		#expect(editor.nameError != nil)
+	}
+
+	private func date(day: Int, month: Int, year: Int) -> Date {
+		var comps = DateComponents()
+		comps.day = day
+		comps.month = month
+		comps.year = year
+		comps.timeZone = Self.utc.timeZone
+		return Self.utc.date(from: comps) ?? Date()
 	}
 }

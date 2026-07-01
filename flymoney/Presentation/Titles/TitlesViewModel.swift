@@ -14,15 +14,21 @@ final class TitlesViewModel {
 	private(set) var titles: [ExpenseTitle] = []
 	private(set) var spentByTitle: [UUID: Money] = [:]
 	private(set) var isLoading = false
+
+	var visibleTitles: [ExpenseTitle] {
+		titles.filter { spentByTitle[$0.id] != nil }
+	}
 	var loadError: String?
 	var deleteBlocked: LocalizedStringResource?
 	var editor: TitleEditorModel?
+
+	var month: CalendarMonth
 
 	private let fetchTitles: any FetchExpenseTitlesUseCase
 	private let upsertTitle: any UpsertExpenseTitleUseCase
 	private let deleteTitle: any DeleteExpenseTitleUseCase
 	private let fetchExpenses: any FetchExpensesForMonthUseCase
-	private let calendar: Calendar
+	let calendar: Calendar
 	let currencyCode: String
 
 	init(fetchTitles: any FetchExpenseTitlesUseCase,
@@ -30,6 +36,7 @@ final class TitlesViewModel {
 		 deleteTitle: any DeleteExpenseTitleUseCase,
 		 fetchExpenses: any FetchExpensesForMonthUseCase,
 		 calendar: Calendar = .current,
+		 now: Date = .now,
 		 currencyCode: String) {
 		self.fetchTitles = fetchTitles
 		self.upsertTitle = upsertTitle
@@ -37,6 +44,15 @@ final class TitlesViewModel {
 		self.fetchExpenses = fetchExpenses
 		self.calendar = calendar
 		self.currencyCode = currencyCode
+		self.month = CalendarMonth.containing(now, using: calendar)
+	}
+
+	func previousMonth() {
+		month = month.previous(using: calendar)
+	}
+
+	func nextMonth() {
+		month = month.next(using: calendar)
 	}
 
 	func load() async {
@@ -44,8 +60,7 @@ final class TitlesViewModel {
 		defer { isLoading = false }
 		do {
 			async let titlesTask = fetchTitles.execute()
-			async let expensesTask = fetchExpenses.execute(
-				CalendarMonth.containing(.now, using: calendar))
+			async let expensesTask = fetchExpenses.execute(month)
 			let (titles, expenses) = try await (titlesTask, expensesTask)
 			self.titles = titles
 			self.spentByTitle = computeSpent(expenses, defaultCode: currencyCode)

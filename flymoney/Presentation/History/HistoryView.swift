@@ -23,7 +23,7 @@ struct HistoryView: View {
 				.padding(.horizontal, Theme.Spacing.xxl)
 				.padding(.top, Theme.Spacing.s18)
 			MonthHeaderView(
-				month: $viewModel.month,
+				month: viewModel.month,
 				calendar: viewModel.calendar,
 				onPrevious: { viewModel.previousMonth() },
 				onNext: { viewModel.nextMonth() }

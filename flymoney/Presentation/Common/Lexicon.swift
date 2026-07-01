@@ -33,6 +33,7 @@ enum Lexicon {
 	static var duplicateName: LocalizedStringResource { "A category with this name already exists." }
 	static var loadFailed: LocalizedStringResource    { "Couldn\u{2019}t load categories." }
 	static var noneYet: LocalizedStringResource       { "No categories yet" }
+	static var noneThisMonth: LocalizedStringResource { "No categories with expenses this month" }
 	static var emptyStatePrompt: LocalizedStringResource {
 		"Add your first category to start setting monthly limits."
 	}
