@@ -12,16 +12,21 @@ enum DeleteTitleError: Error, Equatable, Sendable {
 }
 
 protocol DeleteExpenseTitleUseCase: Sendable {
-	func execute(id: UUID) async throws
+	func execute(id: UUID, cascade: Bool) async throws
 }
 
 struct DeleteExpenseTitleUseCaseImpl: DeleteExpenseTitleUseCase {
 	let titles: ExpenseTitleRepository
 	let expenses: ExpenseRepository
 
-	func execute(id: UUID) async throws {
-		let used = try await expenses.count(forTitleID: id)
-		guard used == 0 else { throw DeleteTitleError.inUse(count: used) }
-		try await titles.delete(id: id)
+	func execute(id: UUID, cascade: Bool = false) async throws {
+		if cascade {
+			try await expenses.deleteAll(forTitleID: id)
+			try await titles.delete(id: id)
+		} else {
+			let used = try await expenses.count(forTitleID: id)
+			guard used == 0 else { throw DeleteTitleError.inUse(count: used) }
+			try await titles.delete(id: id)
+		}
 	}
 }

@@ -8,14 +8,18 @@
 import Foundation
 import SwiftData
 
-actor SwiftDataExpenseTitleRepository: ExpenseTitleRepository {
-	private let context: ModelContext
+actor SwiftDataExpenseTitleRepository: ExpenseTitleRepository, ModelActor {
+	nonisolated let modelContainer: ModelContainer
+	nonisolated let modelExecutor: any ModelExecutor
 	private let defaultCurrencyCode: String
 
 	init(modelContainer: ModelContainer, defaultCurrencyCode: String) {
-		self.context = ModelContext(modelContainer)
+		self.modelContainer = modelContainer
+		self.modelExecutor = DefaultSerialModelExecutor(modelContext: ModelContext(modelContainer))
 		self.defaultCurrencyCode = defaultCurrencyCode
 	}
+
+	private var context: ModelContext { modelContext }
 
 	func upsert(_ title: ExpenseTitle) async throws {
 		let id = title.id

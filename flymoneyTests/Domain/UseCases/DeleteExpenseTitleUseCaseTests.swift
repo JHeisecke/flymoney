@@ -20,7 +20,7 @@ struct DeleteExpenseTitleUseCaseTests {
 		try await titles.upsert(ExpenseTitle(id: id, name: "Coffee"))
 
 		let useCase = DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses)
-		try await useCase.execute(id: id)
+		try await useCase.execute(id: id, cascade: false)
 
 		let fetched = try await titles.title(id: id)
 		#expect(fetched == nil)
@@ -37,10 +37,26 @@ struct DeleteExpenseTitleUseCaseTests {
 		let useCase = DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses)
 
 		await #expect(throws: DeleteTitleError.self) {
-			try await useCase.execute(id: id)
+			try await useCase.execute(id: id, cascade: false)
 		}
 
 		let fetched = try await titles.title(id: id)
 		#expect(fetched != nil)
+	}
+
+	@Test("cascade true deletes title and its expenses")
+	func cascadeDeletesTitleAndExpenses() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let expenses = InMemoryExpenseRepository()
+		let id = UUID()
+		try await titles.upsert(ExpenseTitle(id: id, name: "Coffee"))
+		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: id, date: Date.now))
+
+		let useCase = DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses)
+		try await useCase.execute(id: id, cascade: true)
+
+		let fetched = try await titles.title(id: id)
+		#expect(fetched == nil)
+		#expect(try await expenses.count(forTitleID: id) == 0)
 	}
 }

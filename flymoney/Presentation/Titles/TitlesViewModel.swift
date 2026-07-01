@@ -92,7 +92,7 @@ final class TitlesViewModel {
 
 	func delete(_ t: ExpenseTitle) async {
 		do {
-			try await deleteTitle.execute(id: t.id)
+			try await deleteTitle.execute(id: t.id, cascade: false)
 			await load()
 		} catch let DeleteTitleError.inUse(count) {
 			deleteBlocked = Lexicon.cannotDeleteInUse(count: count)

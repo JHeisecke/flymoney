@@ -27,6 +27,10 @@ actor InMemoryExpenseRepository: ExpenseRepository {
 		}
 	}
 
+	func deleteAll(forTitleID titleID: UUID) async throws {
+		storage.removeAll { $0.titleID == titleID }
+	}
+
 	func count(forTitleID titleID: UUID) async throws -> Int {
 		storage.filter { $0.titleID == titleID }.count
 	}

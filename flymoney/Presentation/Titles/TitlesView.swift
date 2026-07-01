@@ -9,10 +9,13 @@ import SwiftUI
 
 struct TitlesView: View {
 	@State private var viewModel: TitlesViewModel
+    @State private var showAllTitles = false
 	@Environment(\.haptics) private var haptics
+    let assembly: AppAssembly
 
-	init(viewModel: TitlesViewModel) {
-		_viewModel = State(initialValue: viewModel)
+    init(viewModel: TitlesViewModel, assembly: AppAssembly) {
+        self.viewModel = viewModel
+        self.assembly = assembly
 	}
 
 	var body: some View {
@@ -49,14 +52,23 @@ struct TitlesView: View {
 			   presenting: viewModel.deleteBlocked) { _ in
 			Button(String(localized: "OK"), role: .cancel) {}
 		} message: { Text($0) }
+            .sheet(isPresented: $showAllTitles, onDismiss: {
+                Task { await viewModel.load() }
+            }) {
+                AllTitlesManagementView(viewModel: assembly.makeAllTitlesManagementViewModel())
+            }
 	}
 
 	private var header: some View {
 		HStack {
-			Text(Lexicon.Term.plural.text)
-				.font(Theme.Typography.display27)
-				.tracking(-0.5)
-				.foregroundStyle(Theme.Colors.ink)
+            Button {
+                showAllTitles = true
+            } label: {
+                Text(Lexicon.Term.plural.text)
+                    .font(Theme.Typography.display27)
+                    .tracking(-0.5)
+                    .foregroundStyle(Theme.Colors.ink)
+            }
 			Spacer()
 			PillButton(title: "New", systemImage: "plus") {
 				viewModel.beginCreate()

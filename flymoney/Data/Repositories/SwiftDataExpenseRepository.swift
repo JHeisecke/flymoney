@@ -47,6 +47,14 @@ actor SwiftDataExpenseRepository: ExpenseRepository {
 		return try modelContext.fetch(descriptor).map { $0.toEntity() }
 	}
 
+	func deleteAll(forTitleID titleID: UUID) async throws {
+		let descriptor = FetchDescriptor<ExpenseModel>(predicate: #Predicate { $0.titleID == titleID })
+		for model in try modelContext.fetch(descriptor) {
+			modelContext.delete(model)
+		}
+		try modelContext.save()
+	}
+
 	func count(forTitleID titleID: UUID) async throws -> Int {
 		let descriptor = FetchDescriptor<ExpenseModel>(predicate: #Predicate { $0.titleID == titleID })
 		return try modelContext.fetchCount(descriptor)

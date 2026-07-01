@@ -30,8 +30,10 @@ struct AmountFormatter {
 				!decimalSeparator.contains(char)
 			}
 			let integerString = String(prefix).filter { $0.isNumber }
-			guard !integerString.isEmpty,
-				  let integerValue = Decimal(string: integerString, locale: locale),
+			guard !integerString.isEmpty else {
+				return ("", 0)
+			}
+			guard let integerValue = Decimal(string: integerString, locale: locale),
 				  integerValue < 1_000_000_000 else {
 				return (previousText, parse(previousText))
 			}

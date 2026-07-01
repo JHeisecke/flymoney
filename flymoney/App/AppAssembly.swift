@@ -63,6 +63,13 @@ final class AppAssembly {
 		DeleteExpenseTitleUseCaseImpl(titles: titleRepo, expenses: expenseRepo)
 	}
 
+	func makeAllTitlesManagementViewModel() -> AllTitlesManagementViewModel {
+		AllTitlesManagementViewModel(
+			fetchTitles: makeFetchExpenseTitlesUseCase(),
+			deleteTitle: makeDeleteExpenseTitleUseCase(),
+			expenses: expenseRepo)
+	}
+
 	func makeTitlesViewModel() -> TitlesViewModel {
 		TitlesViewModel(
 			fetchTitles: makeFetchExpenseTitlesUseCase(),
