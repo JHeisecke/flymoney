@@ -65,14 +65,11 @@ actor SwiftDataExpenseTitleRepository: ExpenseTitleRepository {
 	}
 
 	func search(matching query: String) async throws -> [ExpenseTitle] {
-		let models = try context.fetch(FetchDescriptor<ExpenseTitleModel>())
-		let filtered: [ExpenseTitleModel]
-		if query.isEmpty {
-			filtered = models
-		} else {
-			filtered = models.filter { $0.name.localizedStandardContains(query) }
+		var descriptor = FetchDescriptor<ExpenseTitleModel>()
+		if !query.isEmpty {
+			descriptor.predicate = #Predicate { $0.name.localizedStandardContains(query) }
 		}
-		return filtered
+		return try context.fetch(descriptor)
 			.sorted { ($0.lastUsedAt ?? $0.createdAt) > ($1.lastUsedAt ?? $1.createdAt) }
 			.map { $0.toEntity() }
 	}
