@@ -31,3 +31,21 @@ struct TitleProgressMeter: View {
 		return Double(spent.minorUnits) / Double(limit.minorUnits)
 	}
 }
+
+#Preview("Meter – Fixed States") {
+	VStack(spacing: Theme.Spacing.lg) {
+		TitleProgressMeter(
+			spent: Money(majorUnits: Decimal(40), currencyCode: "USD"),
+			limit: Money(majorUnits: Decimal(100), currencyCode: "USD")
+		)
+		TitleProgressMeter(
+			spent: Money(majorUnits: Decimal(95), currencyCode: "USD"),
+			limit: Money(majorUnits: Decimal(100), currencyCode: "USD")
+		)
+		TitleProgressMeter(
+			spent: Money(majorUnits: Decimal(120), currencyCode: "USD"),
+			limit: Money(majorUnits: Decimal(100), currencyCode: "USD")
+		)
+	}
+	.padding()
+}

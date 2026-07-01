@@ -70,3 +70,49 @@ struct TitleCardView: View {
 			: String(localized: "Left \(remaining.formatted())")
 	}
 }
+
+#Preview("Card – Fixed States") {
+	ScrollView {
+		VStack(spacing: Theme.Spacing.md) {
+			TitleCardView(
+				title: ExpenseTitle(name: "Groceries", limit: Money(majorUnits: Decimal(500), currencyCode: "USD")),
+				spent: Money(majorUnits: Decimal(200), currencyCode: "USD"),
+				limit: Money(majorUnits: Decimal(500), currencyCode: "USD")
+			) {}
+			TitleCardView(
+				title: ExpenseTitle(name: "Transport", limit: Money(majorUnits: Decimal(100), currencyCode: "USD")),
+				spent: Money(majorUnits: Decimal(95), currencyCode: "USD"),
+				limit: Money(majorUnits: Decimal(100), currencyCode: "USD")
+			) {}
+			TitleCardView(
+				title: ExpenseTitle(name: "Dining", limit: Money(majorUnits: Decimal(300), currencyCode: "USD")),
+				spent: Money(majorUnits: Decimal(350), currencyCode: "USD"),
+				limit: Money(majorUnits: Decimal(300), currencyCode: "USD")
+			) {}
+		}
+		.padding()
+	}
+	.background(Theme.Colors.surface)
+}
+
+#Preview("Card – Interactive Slider") {
+	@Previewable @State var ratio = 0.75
+	let limit = Money(majorUnits: Decimal(1000), currencyCode: "USD")
+	let spent = Money(
+		minorUnits: Int((Double(limit.minorUnits) * ratio).rounded()),
+		currencyCode: limit.currencyCode)
+
+	VStack(spacing: Theme.Spacing.md) {
+		TitleCardView(
+			title: ExpenseTitle(name: "Interactive Title", limit: limit),
+			spent: spent,
+			limit: limit
+		) {}
+		Slider(value: $ratio, in: 0 ... 1.2, step: 0.01)
+		Text(verbatim: "\(Int((ratio * 100).rounded()))% used")
+			.font(Theme.Typography.body13)
+			.foregroundStyle(Theme.Colors.textSubtle)
+	}
+	.padding()
+	.background(Theme.Colors.surface)
+}

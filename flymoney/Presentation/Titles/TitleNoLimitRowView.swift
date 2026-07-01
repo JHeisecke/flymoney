@@ -35,3 +35,18 @@ struct TitleNoLimitRowView: View {
 		.buttonStyle(.plain)
 	}
 }
+
+#Preview("No Limit Row") {
+	VStack(spacing: Theme.Spacing.md) {
+		TitleNoLimitRowView(
+			title: ExpenseTitle(name: "Subscriptions"),
+			spent: Money(majorUnits: Decimal(79.50), currencyCode: "USD")
+		) {}
+		TitleNoLimitRowView(
+			title: ExpenseTitle(name: "Gifts"),
+			spent: Money(minorUnits: 0, currencyCode: "USD")
+		) {}
+	}
+	.padding()
+	.background(Theme.Colors.surface)
+}
