@@ -84,4 +84,56 @@ struct ChunkedTransferTests {
 			_ = try reassembler.ingest(decryptedFrame: Data([0x00, 0x01, 0x02]))
 		}
 	}
+
+	@Test("receivedCount starts at zero")
+	func receivedCountStartsAtZero() {
+		let reassembler = ChunkedTransfer.Reassembler()
+		#expect(reassembler.receivedCount == 0)
+	}
+
+	@Test("receivedCount grows with each unique ingested frame")
+	func receivedCountGrowsWithFrames() throws {
+		let payload = Data(repeating: 0x42, count: 200)
+		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let reassembler = ChunkedTransfer.Reassembler()
+		for (i, chunk) in chunks.enumerated() {
+			_ = try reassembler.ingest(decryptedFrame: chunk)
+			#expect(reassembler.receivedCount == i + 1)
+		}
+	}
+
+	@Test("receivedCount does not increase on duplicate frame")
+	func receivedCountIgnoresDuplicates() throws {
+		let payload = Data(repeating: 0x42, count: 200)
+		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let reassembler = ChunkedTransfer.Reassembler()
+		_ = try reassembler.ingest(decryptedFrame: chunks[0])
+		#expect(reassembler.receivedCount == 1)
+		_ = try reassembler.ingest(decryptedFrame: chunks[0])
+		#expect(reassembler.receivedCount == 1)
+	}
+
+	@Test("missingSeqs returns all sequences when nothing ingested")
+	func missingSeqsWhenEmpty() {
+		let payload = Data(repeating: 0x42, count: 200)
+		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let reassembler = ChunkedTransfer.Reassembler()
+		_ = try? reassembler.ingest(decryptedFrame: chunks[0])
+		let missing = reassembler.missingSeqs()
+		#expect(missing.count == chunks.count - 1)
+		#expect(!missing.contains(0))
+	}
+
+	@Test("receivedCount reset after complete assembly")
+	func receivedCountResetsAfterComplete() throws {
+		let payload = Data(repeating: 0x42, count: 10)
+		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let reassembler = ChunkedTransfer.Reassembler()
+		let result = try reassembler.ingest(decryptedFrame: chunks[0])
+		guard case .complete = result else {
+			#expect(Bool(false))
+			return
+		}
+		#expect(reassembler.receivedCount == 0)
+	}
 }

@@ -20,9 +20,6 @@ final class BLEQRSharingTransport {
 	private var scanResult: String?
 	private var scanContinuation: CheckedContinuation<String, Never>?
 	private var isCancelled = false
-
-	private static let handshakeTimeout: Duration = .seconds(30)
-	private static let idleChunkTimeout: Duration = .seconds(10)
 }
 
 extension BLEQRSharingTransport: SharingTransport {
@@ -81,19 +78,35 @@ extension BLEQRSharingTransport: SharingTransport {
 
 			var sealedFrames: [Data] = []
 			var totalChunks: UInt16 = 0
-			let deadline = ContinuousClock.now + Self.handshakeTimeout
+			var retryBudget = RetryBudget()
+			let watchdog = TransferWatchdog()
+			var watchdogTask: Task<Void, Never>?
+			defer { watchdogTask?.cancel() }
+			watchdogTask = Task {
+				await watchdog.run {
+					p.stop()
+					self.isCancelled = true
+					continuation.yield(.failed(reason: "Handshake timed out"))
+				}
+			}
 
 			for await event in events {
 				if isCancelled { continuation.yield(.failed(reason: "Cancelled")); return }
-				if ContinuousClock.now > deadline { continuation.yield(.failed(reason: "Handshake timed out")); return }
+				watchdog.touch()
 				switch event {
 				case .ready:
 					break
 				case .subscribed:
 					continuation.yield(.transferring(progress: 0))
+					watchdog.setPhase(.transfer)
 				case .controlWrite(let data):
 					guard let key = senderKey else { continue }
 					if let tag = ControlTag(rawValue: data.first ?? 0xFF), tag == .retry, !sealedFrames.isEmpty {
+						retryBudget.recordAttempt()
+						if retryBudget.isExhausted {
+							continuation.yield(.failed(reason: "Transfer stalled"))
+							return
+						}
 						let payload = data.dropFirst()
 						for i in stride(from: 0, to: payload.count, by: 2) where i + 1 < payload.count {
 							let seq = Int(UInt16(payload[i]) << 8 | UInt16(payload[i + 1]))
@@ -115,6 +128,7 @@ extension BLEQRSharingTransport: SharingTransport {
 							p.notifyData(frame)
 							continuation.yield(.transferring(progress: Double(i + 1) / Double(totalChunks)))
 						}
+						p.notifyStatus(Data([StatusCode.complete]))
 					}
 				case .unsubscribed:
 					continuation.yield(.failed(reason: "Receiver disconnected"))
@@ -153,12 +167,22 @@ extension BLEQRSharingTransport: SharingTransport {
 			c.start(serviceUUID: qr.svc)
 
 			let reassembler = ChunkedTransfer.Reassembler()
-			var lastChunkTime = ContinuousClock.now
-			let deadline = ContinuousClock.now + Self.handshakeTimeout
+			var retryBudget = RetryBudget()
+			var previousReceivedCount = 0
+			let watchdog = TransferWatchdog()
+			var watchdogTask: Task<Void, Never>?
+			defer { watchdogTask?.cancel() }
+			watchdogTask = Task {
+				await watchdog.run {
+					c.stop()
+					self.isCancelled = true
+					continuation.yield(.failed(reason: "Transfer timed out"))
+				}
+			}
 
 			for await event in events {
 				if isCancelled { continuation.yield(.failed(reason: "Cancelled")); return }
-				if ContinuousClock.now > deadline { continuation.yield(.failed(reason: "Transfer timed out")); return }
+				watchdog.touch()
 				switch event {
 				case .connected:
 					continuation.yield(.handshaking)
@@ -167,6 +191,7 @@ extension BLEQRSharingTransport: SharingTransport {
 					msg.append(key.publicKey.rawRepresentation)
 					c.writeControl(msg)
 				case .data(let frame):
+					watchdog.setPhase(.transfer)
 					guard frame.count >= 5 else {
 						continuation.yield(.failed(reason: "Bad frame")); return
 					}
@@ -177,7 +202,11 @@ extension BLEQRSharingTransport: SharingTransport {
 						switch try reassembler.ingest(decryptedFrame: decrypted) {
 						case .partial(let p):
 							continuation.yield(.transferring(progress: p))
-							lastChunkTime = ContinuousClock.now
+							let currentCount = reassembler.receivedCount
+							if currentCount > previousReceivedCount {
+								retryBudget.reset()
+								previousReceivedCount = currentCount
+							}
 						case .complete(let data):
 							let payload = try SharePayloadCodec.decode(data)
 							continuation.yield(.received(payload))
@@ -188,44 +217,34 @@ extension BLEQRSharingTransport: SharingTransport {
 					} catch {
 						let missing = reassembler.missingSeqs()
 						if !missing.isEmpty {
+							retryBudget.recordAttempt()
+							if retryBudget.isExhausted {
+								continuation.yield(.failed(reason: "Transfer stalled"))
+								return
+							}
 							var retry = Data([1])
 							for seq in missing {
 								retry.append(UInt8(seq >> 8))
 								retry.append(UInt8(seq & 0xFF))
 							}
 							c.writeControl(retry)
-							lastChunkTime = ContinuousClock.now
 						} else {
 							continuation.yield(.failed(reason: error.localizedDescription))
 							return
 						}
 					}
-				case .status:
-					continuation.yield(.completed)
-					c.stop()
-					return
+				case .status(let data):
+					if data.first == StatusCode.complete {
+						continuation.yield(.completed)
+						c.stop()
+						return
+					}
 				case .disconnected(let reason):
 					continuation.yield(.failed(reason: reason ?? "Disconnected"))
 					return
 				case .error(let msg):
 					continuation.yield(.failed(reason: msg))
 					return
-				}
-
-				if ContinuousClock.now - lastChunkTime > Self.idleChunkTimeout {
-					let missing = reassembler.missingSeqs()
-					if !missing.isEmpty {
-						var retry = Data([1])
-						for seq in missing {
-							retry.append(UInt8(seq >> 8))
-							retry.append(UInt8(seq & 0xFF))
-						}
-						c.writeControl(retry)
-						lastChunkTime = ContinuousClock.now
-					} else {
-						continuation.yield(.failed(reason: "Transfer stalled"))
-						return
-					}
 				}
 			}
 		} catch {
@@ -244,4 +263,8 @@ extension BLEQRSharingTransport: SharingTransport {
 private enum ControlTag: UInt8 {
 	case pubkey = 0
 	case retry = 1
+}
+
+private enum StatusCode {
+	static let complete: UInt8 = 1
 }

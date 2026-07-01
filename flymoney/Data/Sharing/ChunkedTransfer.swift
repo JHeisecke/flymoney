@@ -36,6 +36,8 @@ struct ChunkedTransfer {
 		private(set) var total: UInt16?
 		private(set) var receivedLast = false
 
+		var receivedCount: Int { slots.count }
+
 		func ingest(decryptedFrame frame: Data) throws -> Result {
 			guard frame.count >= ChunkedTransfer.headerSize else { throw ChunkError.shortFrame }
 			let bytes = [UInt8](frame)
