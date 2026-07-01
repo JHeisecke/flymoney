@@ -24,20 +24,25 @@ final class AddExpenseViewModel {
 	private let searchTitles: any SearchExpenseTitlesUseCase
 	private let remainingBudget: any RemainingBudgetUseCase
 	private let calendar: Calendar
+	private let searchDebounce: Duration
+	private var searchTask: Task<Void, Never>?
 
 	init(addExpense: any AddExpenseUseCase,
 		 searchTitles: any SearchExpenseTitlesUseCase,
 		 remainingBudget: any RemainingBudgetUseCase,
 		 currencyCode: String,
-		 calendar: Calendar = .current) {
+		 calendar: Calendar = .current,
+		 searchDebounce: Duration = .milliseconds(200)) {
 		self.addExpense = addExpense
 		self.searchTitles = searchTitles
 		self.remainingBudget = remainingBudget
 		self.calendar = calendar
+		self.searchDebounce = searchDebounce
 		self.form = AddExpenseFormModel(currencyCode: currencyCode)
 	}
 
-	func search(_ query: String) async {
+	func search(_ query: String) {
+		searchTask?.cancel()
 		let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
 		guard !trimmed.isEmpty else {
 			suggestions = []
@@ -45,12 +50,20 @@ final class AddExpenseViewModel {
 			budget = nil
 			return
 		}
+		searchTask = Task { [searchDebounce, trimmed] in
+			try? await Task.sleep(for: searchDebounce)
+			guard !Task.isCancelled else { return }
+			await performSearch(trimmed)
+		}
+	}
+
+	private func performSearch(_ query: String) async {
 		do {
-			suggestions = try await searchTitles.execute(query: trimmed)
+			suggestions = try await searchTitles.execute(query: query)
 		} catch {
 			suggestions = []
 		}
-		await updateBinding(forText: trimmed)
+		await updateBinding(forText: query)
 	}
 
 	func select(_ title: ExpenseTitle) async {

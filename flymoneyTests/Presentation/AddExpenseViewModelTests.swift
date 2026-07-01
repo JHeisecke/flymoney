@@ -21,7 +21,8 @@ struct AddExpenseViewModelTests {
 
 	private func makeVM(
 		expenses: InMemoryExpenseRepository = InMemoryExpenseRepository(),
-		titles: InMemoryExpenseTitleRepository = InMemoryExpenseTitleRepository()
+		titles: InMemoryExpenseTitleRepository = InMemoryExpenseTitleRepository(),
+		searchDebounce: Duration = .milliseconds(1)
 	) -> AddExpenseViewModel {
 		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
 		let search = SearchExpenseTitlesUseCaseImpl(titles: titles)
@@ -31,8 +32,14 @@ struct AddExpenseViewModelTests {
 			searchTitles: search,
 			remainingBudget: budget,
 			currencyCode: "USD",
-			calendar: Self.utc)
+			calendar: Self.utc,
+			searchDebounce: searchDebounce)
 		return vm
+	}
+
+	private func awaitSearch() async {
+		await Task.yield()
+		try? await Task.sleep(for: .milliseconds(50))
 	}
 
 	@Test("happy path persists expense and resets form", .tags(.viewModel))
@@ -156,7 +163,8 @@ struct AddExpenseViewModelTests {
 		}
 
 		let vm = makeVM(titles: titles)
-		await vm.search("Coffee")
+		vm.search("Coffee")
+		await awaitSearch()
 
 		#expect(vm.suggestions.count == 5)
 		#expect(vm.suggestions.first?.name == "Coffee7")
@@ -165,7 +173,7 @@ struct AddExpenseViewModelTests {
 	@Test("search empty query clears state", .tags(.viewModel))
 	func searchEmptyQuery() async {
 		let vm = makeVM()
-		await vm.search("")
+		vm.search("")
 
 		#expect(vm.suggestions.isEmpty)
 		#expect(vm.selectedTitleID == nil)
@@ -233,7 +241,8 @@ struct AddExpenseViewModelTests {
 		try await titles.upsert(title)
 
 		let vm = makeVM(titles: titles)
-		await vm.search("coffee")
+		vm.search("coffee")
+		await awaitSearch()
 
 		#expect(vm.selectedTitleID == title.id)
 	}
@@ -244,10 +253,12 @@ struct AddExpenseViewModelTests {
 		try await titles.upsert(ExpenseTitle(name: "Coffee"))
 
 		let vm = makeVM(titles: titles)
-		await vm.search("Coffee")
+		vm.search("Coffee")
+		await awaitSearch()
 		#expect(vm.selectedTitleID != nil)
 
-		await vm.search("CoffeeX")
+		vm.search("CoffeeX")
+		await awaitSearch()
 		#expect(vm.selectedTitleID == nil)
 		#expect(vm.budget == nil)
 	}
@@ -258,7 +269,8 @@ struct AddExpenseViewModelTests {
 		try await titles.upsert(ExpenseTitle(name: "Coffee"))
 
 		let vm = makeVM(titles: titles)
-		await vm.search("Coffee")
+		vm.search("Coffee")
+		await awaitSearch()
 		vm.form.titleName = "Coffee"
 		vm.form.amountDecimal = 5
 		await vm.save()
@@ -282,5 +294,74 @@ struct AddExpenseViewModelTests {
 		await vm.select(title)
 
 		#expect(vm.budget?.spent.minorUnits == 400)
+	}
+
+	@Test("debounce coalesces rapid queries to a single search", .tags(.viewModel))
+	func debounceCoalesces() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		try await titles.upsert(ExpenseTitle(name: "Coffee", createdAt: Date(timeIntervalSince1970: 1)))
+		try await titles.upsert(ExpenseTitle(name: "Coffin", createdAt: Date(timeIntervalSince1970: 2)))
+		let counter = CountingSearchUseCase(titles: titles)
+		let vm = makeCountingVM(titles: counter, searchDebounce: .milliseconds(100))
+
+		vm.search("C")
+		vm.search("Co")
+		vm.search("Cof")
+		vm.search("Coff")
+
+		try? await Task.sleep(for: .milliseconds(250))
+		let count = await counter.callCount
+		#expect(count == 1)
+		#expect(vm.suggestions.count == 2)
+		#expect(vm.suggestions.map(\.name).contains("Coffee"))
+		#expect(vm.suggestions.map(\.name).contains("Coffin"))
+	}
+
+	@Test("debounce does not trigger search for empty input after non-empty", .tags(.viewModel))
+	func debounceCancelsOnEmpty() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		try await titles.upsert(ExpenseTitle(name: "Coffee"))
+		let counter = CountingSearchUseCase(titles: titles)
+		let vm = makeCountingVM(titles: counter, searchDebounce: .milliseconds(100))
+
+		vm.search("Coff")
+		vm.search("")
+
+		try? await Task.sleep(for: .milliseconds(250))
+		let count = await counter.callCount
+		#expect(count == 0)
+		#expect(vm.suggestions.isEmpty)
+	}
+
+	private func makeCountingVM(
+		titles: CountingSearchUseCase,
+		searchDebounce: Duration
+	) -> AddExpenseViewModel {
+		let expenses = InMemoryExpenseRepository()
+		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: InMemoryExpenseTitleRepository())
+		let budget = RemainingBudgetUseCaseImpl(expenses: expenses, titles: InMemoryExpenseTitleRepository(), calendar: Self.utc)
+		return AddExpenseViewModel(
+			addExpense: useCase,
+			searchTitles: titles,
+			remainingBudget: budget,
+			currencyCode: "USD",
+			calendar: Self.utc,
+			searchDebounce: searchDebounce)
+	}
+}
+
+actor CountingSearchUseCase: SearchExpenseTitlesUseCase {
+	private let titles: any ExpenseTitleRepository
+	var callCount = 0
+	var lastQuery = ""
+
+	init(titles: any ExpenseTitleRepository) {
+		self.titles = titles
+	}
+
+	func execute(query: String) async throws -> [ExpenseTitle] {
+		callCount += 1
+		lastQuery = query
+		return try await titles.search(matching: query)
 	}
 }

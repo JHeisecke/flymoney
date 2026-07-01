@@ -34,7 +34,7 @@ struct AddExpenseView: View {
 				suggestions: viewModel.suggestions,
 				selectedID: viewModel.selectedTitleID,
 				selectedSummary: viewModel.budget,
-				onQueryChange: { await viewModel.search($0) },
+				onQueryChange: { viewModel.search($0) },
 				onSelect: { await viewModel.select($0) })
 
 			if let titleError = viewModel.form.titleError {

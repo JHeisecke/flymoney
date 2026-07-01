@@ -12,7 +12,7 @@ struct TitleAutocompleteField: View {
 	let suggestions: [ExpenseTitle]
 	let selectedID: UUID?
 	let selectedSummary: MonthSummary?
-	let onQueryChange: (String) async -> Void
+	let onQueryChange: (String) -> Void
 	let onSelect: (ExpenseTitle) async -> Void
 
 	@FocusState private var isFocused: Bool
@@ -48,10 +48,8 @@ struct TitleAutocompleteField: View {
 				.stroke(Theme.Colors.accent, lineWidth: 1.5)
 		}
 		.shadow(isFocused ? Theme.Shadow.focusGlow : Theme.Shadow.subtle)
-		.task(id: form.titleName) {
-			try? await Task.sleep(for: .milliseconds(200))
-			guard !Task.isCancelled else { return }
-			await onQueryChange(form.titleName)
+		.onChange(of: form.titleName) { _, newValue in
+			onQueryChange(newValue)
 		}
 	}
 
