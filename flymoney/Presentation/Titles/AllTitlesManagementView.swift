@@ -55,14 +55,14 @@ struct AllTitlesManagementView: View {
 			isPresented: pendingDeletePresented,
 			presenting: viewModel.pendingDelete
 		) { pending in
-			Button(String(localized: "OK"), role: .destructive) {
-				Task { await viewModel.confirmPendingDelete() }
-			}
-			Button(String(localized: "Cancel"), role: .cancel) {
+//			Button(String(localized: "OK"), role: .destructive) {
+//				Task { await viewModel.confirmPendingDelete() }
+//			}
+			Button(String(localized: "OK"), role: .cancel) {
 				viewModel.cancelPendingDelete()
 			}
 		} message: { pending in
-			Text(String(format: String(localized: "This category has %lld expenses. Deleting it would delete all expenses saved under this title."), pending.expenseCount))
+			Text(String(format: String(localized: "This category has %lld expenses. Delete expenses individually first."), pending.expenseCount))
 		}
 		.alert(
 			Text(String(localized: "Couldn\u{2019}t delete. Try again.")),
