@@ -116,4 +116,20 @@ struct AmountFormattingTests {
 		#expect(result.display == "1,234")
 		#expect(result.value == 1234)
 	}
+
+	@Test("JPY 0-digit formatter rejects decimal separator input")
+	func jpyRejectsDecimalSeparator() {
+		let jpy = AmountFormatter(currencyCode: "JPY", locale: locale)
+		let result = jpy.format("1000.50", previousText: "")
+		#expect(result.display == "1,000")
+		#expect(result.value == 1000)
+	}
+
+	@Test("JPY 0-digit formatter re-fetches previous value on separator-only input")
+	func jpyReturnsPreviousOnSeparator() {
+		let jpy = AmountFormatter(currencyCode: "JPY", locale: locale)
+		let result = jpy.format(".", previousText: "1,000")
+		#expect(result.display == "1,000")
+		#expect(result.value == 1000)
+	}
 }

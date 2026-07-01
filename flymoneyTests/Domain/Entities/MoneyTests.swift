@@ -110,4 +110,64 @@ struct MoneyTests {
 			#expect(Bool(false))
 		}
 	}
+
+	@Test("JPY exponent is 0")
+	func jpyExponent() {
+		#expect(Money.exponent(for: "JPY") == 0)
+	}
+
+	@Test("JPY majorUnits init with 1000 produces minorUnits 1000")
+	func jpyMajorUnitsInit() {
+		let m = Money(majorUnits: 1000, currencyCode: "JPY")
+		#expect(m.minorUnits == 1000)
+	}
+
+	@Test("JPY majorUnits round-trip from minorUnits")
+	func jpyMajorUnitsRoundTrip() {
+		let m = Money(minorUnits: 50000, currencyCode: "JPY")
+		#expect(m.majorUnits == 50000)
+	}
+
+	@Test("TND exponent is 3")
+	func tndExponent() {
+		#expect(Money.exponent(for: "TND") == 3)
+	}
+
+	@Test("TND majorUnits init with 1.5 produces minorUnits 1500")
+	func tndMajorUnitsInit() {
+		let m = Money(majorUnits: 1.5, currencyCode: "TND")
+		#expect(m.minorUnits == 1500)
+	}
+
+	@Test("TND majorUnits round-trip from minorUnits")
+	func tndMajorUnitsRoundTrip() {
+		let m = Money(minorUnits: 1500, currencyCode: "TND")
+		#expect(m.majorUnits == 1.5)
+	}
+
+	@Test("USD majorUnits init with 1.5 produces minorUnits 150")
+	func usdMajorUnitsInit() {
+		let m = Money(majorUnits: 1.5, currencyCode: "USD")
+		#expect(m.minorUnits == 150)
+	}
+
+	@Test("USD majorUnits round-trip from minorUnits")
+	func usdMajorUnitsRoundTrip() {
+		let m = Money(minorUnits: 150, currencyCode: "USD")
+		#expect(m.majorUnits == 1.5)
+	}
+
+	@Test("JPY formattedNumber has no fraction digits")
+	func jpyFormattedNumberNoFractions() {
+		let m = Money(minorUnits: 5000, currencyCode: "JPY")
+		let result = m.formattedNumber(locale: Locale(identifier: "en_US"))
+		#expect(!result.contains("."))
+	}
+
+	@Test("JPY formatted contains JPY symbol or 0-fraction representation")
+	func jpyFormatted() {
+		let m = Money(minorUnits: 5000, currencyCode: "JPY")
+		let result = m.formatted(locale: Locale(identifier: "en_US"))
+		#expect(result.contains("5,000") || result.contains("5000"))
+	}
 }
