@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TitleEditorView: View {
 	@Bindable var model: TitleEditorModel
+	@Environment(\.haptics) private var haptics
 	let onSave: @MainActor () async -> Void
 	let onCancel: @MainActor () -> Void
 
@@ -95,6 +96,9 @@ struct TitleEditorView: View {
 				}
 			}
 			.tint(Theme.Colors.accent)
+		}
+		.onChange(of: model.saveError) { _, error in
+			if error != nil { haptics.error() }
 		}
 	}
 }

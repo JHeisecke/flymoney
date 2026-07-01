@@ -32,7 +32,7 @@ struct TitleNoLimitRowView: View {
 					.stroke(Theme.Colors.borderHairline, lineWidth: 1)
 			}
 		}
-		.buttonStyle(.plain)
+		.buttonStyle(.hapticPlain)
 	}
 }
 

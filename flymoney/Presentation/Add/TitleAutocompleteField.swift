@@ -99,7 +99,7 @@ private struct SuggestionRowView: View {
 			.background(isSelected ? Theme.Colors.accentTint : Color.clear)
             .contentShape(.rect)
 		}
-		.buttonStyle(.plain)
+		.buttonStyle(.hapticPlain)
 	}
 
 	@ViewBuilder private var trailingCaption: some View {

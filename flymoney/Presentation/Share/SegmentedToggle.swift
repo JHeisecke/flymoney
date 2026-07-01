@@ -11,6 +11,7 @@ struct SegmentedToggle: View {
 	@Binding var resolution: MergeResolution?
 	let localName: String
 	let localTitleID: UUID
+	@Environment(\.haptics) private var haptics
 
 	var body: some View {
 		HStack(spacing: 0) {
@@ -21,7 +22,7 @@ struct SegmentedToggle: View {
 					.font(Theme.Typography.body13)
 					.frame(maxWidth: .infinity)
 			}
-			.buttonStyle(.plain)
+			.buttonStyle(.hapticPlain)
 			.foregroundStyle(resolution == .keepSeparate ? Theme.Colors.accent : Theme.Colors.inkSecondary)
 			.padding(.vertical, Theme.Spacing.sm)
 			.background(resolution == .keepSeparate ? Theme.Colors.card : Color.clear)
@@ -34,7 +35,7 @@ struct SegmentedToggle: View {
 					.font(Theme.Typography.body13)
 					.frame(maxWidth: .infinity)
 			}
-			.buttonStyle(.plain)
+			.buttonStyle(.hapticPlain)
 			.foregroundStyle(resolution == .mergeInto(localTitleID: localTitleID) ? Theme.Colors.textOnAccent : Theme.Colors.inkSecondary)
 			.padding(.vertical, Theme.Spacing.sm)
 			.background(resolution == .mergeInto(localTitleID: localTitleID) ? Theme.Colors.accent : Color.clear)
@@ -44,5 +45,8 @@ struct SegmentedToggle: View {
 		.padding(3)
 		.background(Theme.Colors.segmentedTrack)
 		.clipShape(.rect(cornerRadius: Theme.Radius.pillSm))
+		.onChange(of: resolution) { _, _ in
+			haptics.selection()
+		}
 	}
 }

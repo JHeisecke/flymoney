@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AddExpenseView: View {
 	@State private var viewModel: AddExpenseViewModel
+	@Environment(\.haptics) private var haptics
 
 	init(viewModel: AddExpenseViewModel) {
 		_viewModel = State(initialValue: viewModel)
@@ -69,12 +70,16 @@ struct AddExpenseView: View {
 		)
 		.onChange(of: viewModel.didJustSave) { _, isTrue in
 			if isTrue {
+				haptics.success()
 				AccessibilityNotification.Announcement(String(localized: "Saved")).post()
 				Task {
 					try? await Task.sleep(for: .seconds(2))
 					viewModel.clearSavedFlag()
 				}
 			}
+		}
+		.onChange(of: viewModel.saveError) { _, error in
+			if error != nil { haptics.error() }
 		}
 	}
 

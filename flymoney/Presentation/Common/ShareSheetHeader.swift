@@ -31,7 +31,7 @@ struct ShareSheetHeader: View {
 						.font(Theme.Typography.body15)
 						.foregroundStyle(onDark ? Theme.Colors.inkQuaternary : Theme.Colors.inkQuaternary)
 				}
-				.buttonStyle(.plain)
+				.buttonStyle(.hapticPlain)
 				.padding(.trailing, Theme.Spacing.xxl)
 				.padding(.top, Theme.Spacing.sm)
 			}

@@ -32,7 +32,7 @@ struct SaveButton: View {
 			.shadow(Theme.Shadow.accentCTA)
 			.opacity(isDisabled ? 0.45 : 1)
 		}
-		.buttonStyle(.plain)
+		.buttonStyle(.hapticPlain)
 		.disabled(isDisabled || isLoading)
 	}
 }

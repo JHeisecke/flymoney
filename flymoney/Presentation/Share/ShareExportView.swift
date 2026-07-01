@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShareExportView: View {
 	@State private var viewModel: SharingViewModel
+	@Environment(\.haptics) private var haptics
 	let onDismiss: () -> Void
 
 	init(viewModel: SharingViewModel, onDismiss: @escaping () -> Void) {
@@ -38,5 +39,12 @@ struct ShareExportView: View {
 		.background(Theme.Colors.surfaceDeepDark)
 		.preferredColorScheme(.dark)
 		.task { await viewModel.start() }
+		.onChange(of: viewModel.phase) { _, phase in
+			switch phase {
+			case .done: haptics.success()
+			case .failed: haptics.error()
+			default: break
+			}
+		}
 	}
 }

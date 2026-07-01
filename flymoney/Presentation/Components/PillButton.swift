@@ -37,6 +37,6 @@ struct PillButton: View {
 				}
 			}
 		}
-		.buttonStyle(.plain)
+		.buttonStyle(.hapticPlain)
 	}
 }

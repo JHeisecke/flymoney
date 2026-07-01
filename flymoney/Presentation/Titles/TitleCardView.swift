@@ -49,7 +49,7 @@ struct TitleCardView: View {
 					.stroke(Theme.Colors.borderHairline, lineWidth: 1)
 			}
 		}
-		.buttonStyle(.plain)
+		.buttonStyle(.hapticPlain)
 	}
 
 	private var ratio: Double {

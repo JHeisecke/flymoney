@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MergeView: View {
 	@State private var viewModel: SharingViewModel
+	@Environment(\.haptics) private var haptics
 	let onDismiss: () -> Void
 
 	init(viewModel: SharingViewModel, onDismiss: @escaping () -> Void) {
@@ -42,6 +43,13 @@ struct MergeView: View {
 				combinedTotalBar
 			}
 			.background(Theme.Colors.surface)
+		}
+		.onChange(of: viewModel.phase) { _, phase in
+			switch phase {
+			case .done: haptics.success()
+			case .failed: haptics.error()
+			default: break
+			}
 		}
 	}
 

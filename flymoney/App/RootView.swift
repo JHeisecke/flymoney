@@ -12,6 +12,8 @@ struct RootView: View {
 	@State private var selection: TabID = .add
 	let assembly: AppAssembly
 
+	@Environment(\.haptics) private var haptics
+
 	var body: some View {
 		TabView(selection: $selection) {
 			Tab("Add", systemImage: "plus.circle", value: TabID.add) {
@@ -27,6 +29,9 @@ struct RootView: View {
 			}
 		}
 		.tint(Theme.Colors.accent)
-        .preferredColorScheme(.light)
+		.preferredColorScheme(.light)
+		.buttonStyle(.hapticPlain)
+		.environment(\.haptics, HapticsManager())
+		.onAppear { haptics.prepare() }
 	}
 }

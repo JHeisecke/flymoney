@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TitlesView: View {
 	@State private var viewModel: TitlesViewModel
+	@Environment(\.haptics) private var haptics
 
 	init(viewModel: TitlesViewModel) {
 		_viewModel = State(initialValue: viewModel)
@@ -30,6 +31,12 @@ struct TitlesView: View {
 		.task { await viewModel.load() }
 		.onChange(of: viewModel.month) { _, _ in
 			Task { await viewModel.load() }
+		}
+		.onChange(of: viewModel.loadError) { _, error in
+			if error != nil { haptics.error() }
+		}
+		.onChange(of: viewModel.deleteBlocked) { _, blocked in
+			if blocked != nil { haptics.error() }
 		}
 		.sheet(item: $viewModel.editor) { model in
 			TitleEditorView(
@@ -83,13 +90,14 @@ struct TitlesView: View {
 								} label: {
 									Label(String(localized: Lexicon.editTerm), systemImage: "pencil")
 								}
-								Button(role: .destructive) {
-									Task { await viewModel.delete(title) }
-								} label: {
-									Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
-								}
+							Button(role: .destructive) {
+								haptics.warning()
+								Task { await viewModel.delete(title) }
+							} label: {
+								Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
 							}
-						} else {
+						}
+					} else {
 							let noLimitCurrency = viewModel.spentByTitle[title.id]?.currencyCode ?? viewModel.currencyCode
 							TitleNoLimitRowView(
 								title: title,
@@ -101,11 +109,11 @@ struct TitlesView: View {
 								} label: {
 									Label(String(localized: Lexicon.editTerm), systemImage: "pencil")
 								}
-								Button(role: .destructive) {
-									Task { await viewModel.delete(title) }
-								} label: {
-									Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
-								}
+							Button(role: .destructive) {
+								haptics.warning()
+								Task { await viewModel.delete(title) }
+							} label: {
+								Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
 							}
 						}
 					}

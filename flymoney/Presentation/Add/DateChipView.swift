@@ -34,7 +34,7 @@ struct DateChipView: View {
 						.stroke(Theme.Colors.borderSubtle, lineWidth: 1)
 				}
 			}
-			.buttonStyle(.plain)
+			.buttonStyle(.hapticPlain)
 			if Calendar.current.isDateInToday(date) {
 				Text(String(localized: "Tap to change date"))
 					.font(Theme.Typography.body13)

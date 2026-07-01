@@ -10,6 +10,7 @@ import SwiftUI
 struct HistoryView: View {
 	@State private var viewModel: HistoryViewModel
 	@State private var sharingRole: SharingRole?
+	@Environment(\.haptics) private var haptics
 	let assembly: AppAssembly
 
 	init(viewModel: HistoryViewModel, assembly: AppAssembly) {
@@ -40,6 +41,9 @@ struct HistoryView: View {
 		.task { await viewModel.load() }
 		.onChange(of: viewModel.month) { _, _ in
 			Task { await viewModel.load() }
+		}
+		.onChange(of: viewModel.loadError) { _, error in
+			if error != nil { haptics.error() }
 		}
 		.alert("Error",
 			   isPresented: errorAlertBinding,

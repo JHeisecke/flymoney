@@ -73,7 +73,7 @@ private struct SuggestionListView<Suggestion: Identifiable>: View {
 						.frame(height: 52)
                         .contentShape(.rect)                        
 				}
-				.buttonStyle(.plain)
+				.buttonStyle(.hapticPlain)
 				if suggestion.id != suggestions.last?.id {
 					Divider().background(Theme.Colors.borderDivider)
 				}

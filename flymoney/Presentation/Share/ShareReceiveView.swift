@@ -11,6 +11,7 @@ struct ShareReceiveView: View {
 	@State private var viewModel: SharingViewModel
 	@State private var cameraDenied = false
 	@State private var hasScanned = false
+	@Environment(\.haptics) private var haptics
 	let onDismiss: () -> Void
 
 	init(viewModel: SharingViewModel, onDismiss: @escaping () -> Void) {
@@ -134,6 +135,13 @@ struct ShareReceiveView: View {
 			cameraDenied = !granted
 			if granted {
 				AccessibilityNotification.Announcement(String(localized: "Scanning for share code")).post()
+			}
+		}
+		.onChange(of: viewModel.phase) { _, phase in
+			switch phase {
+			case .awaitingMerge, .done: haptics.success()
+			case .failed: haptics.error()
+			default: break
 			}
 		}
 	}
