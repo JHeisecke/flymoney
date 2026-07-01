@@ -18,7 +18,7 @@ struct SearchExpenseTitlesUseCaseImpl: SearchExpenseTitlesUseCase {
 
 	func execute(query: String) async throws -> [ExpenseTitle] {
 		let results = try await titles.search(matching: query)
-		let sorted = results.sorted { $0.createdAt > $1.createdAt }
+		let sorted = results.sorted { ($0.lastUsedAt ?? $0.createdAt) > ($1.lastUsedAt ?? $1.createdAt) }
 		return Array(sorted.prefix(maxResults))
 	}
 }

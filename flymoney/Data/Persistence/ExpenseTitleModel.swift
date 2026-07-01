@@ -15,12 +15,14 @@ final class ExpenseTitleModel {
 	var limitMinorUnits: Int?
 	var currencyCode: String
 	var createdAt: Date
+	var lastUsedAt: Date?
 
-	init(id: UUID, name: String, limitMinorUnits: Int?, currencyCode: String, createdAt: Date) {
+	init(id: UUID, name: String, limitMinorUnits: Int?, currencyCode: String, createdAt: Date, lastUsedAt: Date? = nil) {
 		self.id = id
 		self.name = name
 		self.limitMinorUnits = limitMinorUnits
 		self.currencyCode = currencyCode
 		self.createdAt = createdAt
+		self.lastUsedAt = lastUsedAt
 	}
 }

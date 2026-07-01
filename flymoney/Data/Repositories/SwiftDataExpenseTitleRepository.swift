@@ -32,7 +32,8 @@ actor SwiftDataExpenseTitleRepository: ExpenseTitleRepository {
 			context.insert(ExpenseTitleModel(
 				id: title.id, name: title.name,
 				limitMinorUnits: title.limit?.minorUnits,
-				currencyCode: code, createdAt: title.createdAt
+				currencyCode: code, createdAt: title.createdAt,
+				lastUsedAt: title.lastUsedAt
 			))
 		}
 		try context.save()
@@ -60,6 +61,7 @@ actor SwiftDataExpenseTitleRepository: ExpenseTitleRepository {
 	func allTitles() async throws -> [ExpenseTitle] {
 		let descriptor = FetchDescriptor<ExpenseTitleModel>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
 		return try context.fetch(descriptor).map { $0.toEntity() }
+			.sorted { ($0.lastUsedAt ?? $0.createdAt) > ($1.lastUsedAt ?? $1.createdAt) }
 	}
 
 	func search(matching query: String) async throws -> [ExpenseTitle] {
@@ -71,8 +73,15 @@ actor SwiftDataExpenseTitleRepository: ExpenseTitleRepository {
 			filtered = models.filter { $0.name.localizedStandardContains(query) }
 		}
 		return filtered
-			.sorted { $0.createdAt > $1.createdAt }
+			.sorted { ($0.lastUsedAt ?? $0.createdAt) > ($1.lastUsedAt ?? $1.createdAt) }
 			.map { $0.toEntity() }
+	}
+
+	func recordUsage(titleID: UUID, at date: Date) async throws {
+		let descriptor = FetchDescriptor<ExpenseTitleModel>(predicate: #Predicate { $0.id == titleID })
+		guard let model = try context.fetch(descriptor).first else { return }
+		model.lastUsedAt = date
+		try context.save()
 	}
 }
 
@@ -80,6 +89,7 @@ extension ExpenseTitleModel {
 	func toEntity() -> ExpenseTitle {
 		let limit = limitMinorUnits.map { Money(minorUnits: $0, currencyCode: currencyCode) }
 		return ExpenseTitle(id: id, name: name, limit: limit,
-							period: .calendarMonth, createdAt: createdAt)
+							period: .calendarMonth, createdAt: createdAt,
+							lastUsedAt: lastUsedAt)
 	}
 }

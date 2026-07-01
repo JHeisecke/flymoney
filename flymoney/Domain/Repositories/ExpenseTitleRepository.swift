@@ -14,4 +14,5 @@ protocol ExpenseTitleRepository: Sendable {
 	func title(named name: String) async throws -> ExpenseTitle?
 	func allTitles() async throws -> [ExpenseTitle]
 	func search(matching query: String) async throws -> [ExpenseTitle]
+	func recordUsage(titleID: UUID, at date: Date) async throws
 }

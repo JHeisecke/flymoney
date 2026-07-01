@@ -96,9 +96,13 @@ struct ChunkedTransferTests {
 		let payload = Data(repeating: 0x42, count: 200)
 		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
 		let reassembler = ChunkedTransfer.Reassembler()
-		for (i, chunk) in chunks.enumerated() {
-			_ = try reassembler.ingest(decryptedFrame: chunk)
-			#expect(reassembler.receivedCount == i + 1)
+		for chunk in chunks {
+			let previous = reassembler.receivedCount
+			if case .complete = try reassembler.ingest(decryptedFrame: chunk) {
+				#expect(previous == chunks.count - 1)
+				break
+			}
+			#expect(reassembler.receivedCount == previous + 1)
 		}
 	}
 

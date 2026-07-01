@@ -33,10 +33,16 @@ actor InMemoryExpenseTitleRepository: ExpenseTitleRepository {
 
 	func search(matching query: String) async throws -> [ExpenseTitle] {
 		guard !query.isEmpty else {
-			return Array(storage.values).sorted { $0.createdAt > $1.createdAt }
+			return Array(storage.values).sorted { ($0.lastUsedAt ?? $0.createdAt) > ($1.lastUsedAt ?? $1.createdAt) }
 		}
 		return storage.values.filter {
 			$0.name.localizedStandardContains(query)
 		}
+	}
+
+	func recordUsage(titleID: UUID, at date: Date) async throws {
+		guard var title = storage[titleID] else { return }
+		title.lastUsedAt = date
+		storage[titleID] = title
 	}
 }

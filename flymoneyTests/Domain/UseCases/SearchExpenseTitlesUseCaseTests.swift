@@ -70,4 +70,44 @@ struct SearchExpenseTitlesUseCaseTests {
 		let results = try await useCase.execute(query: "coffee")
 		#expect(results.count == 1)
 	}
+
+	@Test("lastUsedAt takes precedence over createdAt for recency")
+	func lastUsedAtPrecedence() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		try await titles.upsert(ExpenseTitle(
+			name: "Old creation, recent use",
+			createdAt: Date(timeIntervalSince1970: 1),
+			lastUsedAt: Date(timeIntervalSince1970: 9999999999)
+		))
+		try await titles.upsert(ExpenseTitle(
+			name: "New creation, no use",
+			createdAt: Date(timeIntervalSince1970: 9999999999),
+			lastUsedAt: nil
+		))
+
+		let useCase = SearchExpenseTitlesUseCaseImpl(titles: titles)
+		let results = try await useCase.execute(query: "")
+		#expect(results.count == 2)
+		#expect(results.first?.name == "Old creation, recent use")
+	}
+
+	@Test("nil lastUsedAt falls back to createdAt")
+	func nilLastUsedAtFallback() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		try await titles.upsert(ExpenseTitle(
+			name: "Old",
+			createdAt: Date(timeIntervalSince1970: 1),
+			lastUsedAt: nil
+		))
+		try await titles.upsert(ExpenseTitle(
+			name: "New",
+			createdAt: Date(timeIntervalSince1970: 9999999999),
+			lastUsedAt: nil
+		))
+
+		let useCase = SearchExpenseTitlesUseCaseImpl(titles: titles)
+		let results = try await useCase.execute(query: "")
+		#expect(results.first?.name == "New")
+		#expect(results.last?.name == "Old")
+	}
 }

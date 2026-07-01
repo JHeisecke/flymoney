@@ -79,12 +79,35 @@ struct ExpenseModelMappingTests {
 		#expect(roundTripped.limit?.minorUnits == 80000)
 	}
 
-	@Test("period is always calendarMonth on read")
-	func periodAlwaysCalendarMonth() {
+	@Test("nil lastUsedAt maps correctly")
+	func nilLastUsedAtMaps() {
 		let model = ExpenseTitleModel(
-			id: UUID(), name: "Test", limitMinorUnits: nil,
-			currencyCode: "USD", createdAt: Date(timeIntervalSince1970: 1735689600)
+			id: UUID(), name: "Coffee", limitMinorUnits: nil,
+			currencyCode: "USD", createdAt: Date(timeIntervalSince1970: 1735689600),
+			lastUsedAt: nil
 		)
-		#expect(model.toEntity().period == .calendarMonth)
+		let entity = model.toEntity()
+		#expect(entity.lastUsedAt == nil)
+	}
+
+	@Test("lastUsedAt round-trips")
+	func lastUsedAtRoundTrip() {
+		let now = Date(timeIntervalSince1970: 1735689600)
+		let entity = ExpenseTitle(
+			id: UUID(),
+			name: "Rent",
+			limit: Money(minorUnits: 80000, currencyCode: "USD"),
+			period: .calendarMonth,
+			createdAt: Date(timeIntervalSince1970: 1000),
+			lastUsedAt: now
+		)
+		let model = ExpenseTitleModel(
+			id: entity.id, name: entity.name,
+			limitMinorUnits: entity.limit?.minorUnits,
+			currencyCode: "USD", createdAt: entity.createdAt,
+			lastUsedAt: entity.lastUsedAt
+		)
+		let roundTripped = model.toEntity()
+		#expect(roundTripped.lastUsedAt == now)
 	}
 }

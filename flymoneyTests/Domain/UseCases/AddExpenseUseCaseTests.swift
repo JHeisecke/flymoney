@@ -76,4 +76,29 @@ struct AddExpenseUseCaseTests {
 		#expect(stored.count == 1)
 		#expect(stored.first?.id == expense.id)
 	}
+
+	@Test("recordUsage called on new title creation")
+	func recordUsageOnNewTitle() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let titles = InMemoryExpenseTitleRepository()
+		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
+
+		_ = try await useCase.execute(amount: Money(minorUnits: 500, currencyCode: "USD"), titleName: "Coffee", date: .now)
+		let created = try await titles.title(named: "Coffee")
+		#expect(created?.lastUsedAt != nil)
+	}
+
+	@Test("recordUsage bumps lastUsedAt on existing title")
+	func recordUsageBumpsExisting() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let titles = InMemoryExpenseTitleRepository()
+		let oldDate = Date(timeIntervalSince1970: 1000)
+		try await titles.upsert(ExpenseTitle(name: "Coffee", lastUsedAt: oldDate))
+		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
+
+		_ = try await useCase.execute(amount: Money(minorUnits: 300, currencyCode: "USD"), titleName: "Coffee", date: .now)
+		let updated = try await titles.title(named: "Coffee")
+		#expect(updated?.lastUsedAt != nil)
+		#expect(updated?.lastUsedAt != oldDate)
+	}
 }
