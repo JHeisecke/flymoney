@@ -48,7 +48,7 @@ import Observation
 			return nil
 		}
 		if existing.contains(where: { $0.id != titleID && $0.name.localizedCaseInsensitiveCompare(trimmed) == .orderedSame }) {
-			nameError = String(localized: "A title with this name already exists.")
+			nameError = String(localized: Lexicon.duplicateName)
 			return nil
 		}
 		let limit: Money?

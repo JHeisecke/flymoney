@@ -20,8 +20,10 @@ struct RootView: View {
 			Tab("History", systemImage: "list.bullet", value: TabID.history) {
 				HistoryView(viewModel: assembly.makeHistoryViewModel(), assembly: assembly)
 			}
-			Tab("Titles", systemImage: "tag", value: TabID.titles) {
+			Tab(value: TabID.titles) {
 				TitlesView(viewModel: assembly.makeTitlesViewModel())
+			} label: {
+				Label(title: { Text(Lexicon.Term.plural.text) }, icon: { Image(systemName: "tag") })
 			}
 		}
 		.tint(Theme.Colors.accent)

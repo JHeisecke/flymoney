@@ -75,7 +75,7 @@ struct HistoryViewModelTests {
 		let vm = makeVM(expenses: expenses)
 		await vm.load()
 
-		#expect(vm.sections.first?.rows.first?.titleName == String(localized: "Untitled"))
+		#expect(vm.sections.first?.rows.first?.titleName == String(localized: Lexicon.untitled))
 	}
 
 	@Test("load month-scoped", .tags(.viewModel))

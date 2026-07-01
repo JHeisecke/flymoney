@@ -43,8 +43,7 @@ struct HistoryHeroView: View {
 	private var subtitle: String {
 		switch titleCount {
 		case 0: return String(localized: "no expenses yet")
-		case 1: return String(localized: "spent across 1 title")
-		default: return String(localized: "spent across \(titleCount) titles")
+		default: return String(localized: Lexicon.spentAcross(count: titleCount))
 		}
 	}
 }

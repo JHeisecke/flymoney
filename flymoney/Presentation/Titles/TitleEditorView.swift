@@ -88,7 +88,7 @@ struct TitleEditorView: View {
 					UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 				}
 			)
-			.navigationTitle(Text(model.isEditing ? Lexicon.editTitle : Lexicon.newTitle))
+			.navigationTitle(Text(model.isEditing ? Lexicon.editTerm : Lexicon.newTerm))
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
 					Button(String(localized: "Cancel"), action: onCancel)

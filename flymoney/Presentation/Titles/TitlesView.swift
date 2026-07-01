@@ -27,7 +27,7 @@ struct TitlesView: View {
 				onSave: { await viewModel.save(model) },
 				onCancel: { viewModel.editor = nil })
 		}
-		.alert(Text(Lexicon.titleSingular),
+		.alert(Text(Lexicon.Term.singular.text),
 			   isPresented: isDeleteBlockedPresented,
 			   presenting: viewModel.deleteBlocked) { _ in
 			Button(String(localized: "OK"), role: .cancel) {}
@@ -36,7 +36,7 @@ struct TitlesView: View {
 
 	private var header: some View {
 		HStack {
-			Text(Lexicon.titlesPlural)
+			Text(Lexicon.Term.plural.text)
 				.font(Theme.Typography.display27)
 				.tracking(-0.5)
 				.foregroundStyle(Theme.Colors.ink)
@@ -67,32 +67,32 @@ struct TitlesView: View {
 									Button {
 										viewModel.beginEdit(title)
 									} label: {
-										Label(String(localized: "Edit title"), systemImage: "pencil")
-									}
-									Button(role: .destructive) {
-										Task { await viewModel.delete(title) }
-									} label: {
-										Label(String(localized: "Delete title"), systemImage: "trash")
-									}
+									Label(String(localized: Lexicon.editTerm), systemImage: "pencil")
 								}
-					} else {
-						let noLimitCurrency = viewModel.spentByTitle[title.id]?.currencyCode ?? viewModel.currencyCode
-						TitleNoLimitRowView(
-							title: title,
-							spent: viewModel.spentByTitle[title.id] ?? Money.zero(noLimitCurrency)
-						) { viewModel.beginEdit(title) }
-								.contextMenu {
-									Button {
-										viewModel.beginEdit(title)
-									} label: {
-										Label(String(localized: "Edit title"), systemImage: "pencil")
-									}
-									Button(role: .destructive) {
-										Task { await viewModel.delete(title) }
-									} label: {
-										Label(String(localized: "Delete title"), systemImage: "trash")
-									}
+								Button(role: .destructive) {
+									Task { await viewModel.delete(title) }
+								} label: {
+									Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
 								}
+							}
+				} else {
+					let noLimitCurrency = viewModel.spentByTitle[title.id]?.currencyCode ?? viewModel.currencyCode
+					TitleNoLimitRowView(
+						title: title,
+						spent: viewModel.spentByTitle[title.id] ?? Money.zero(noLimitCurrency)
+					) { viewModel.beginEdit(title) }
+							.contextMenu {
+								Button {
+									viewModel.beginEdit(title)
+								} label: {
+									Label(String(localized: Lexicon.editTerm), systemImage: "pencil")
+								}
+								Button(role: .destructive) {
+									Task { await viewModel.delete(title) }
+								} label: {
+									Label(String(localized: Lexicon.deleteTerm), systemImage: "trash")
+								}
+							}
 						}
 					}
 				}
@@ -105,7 +105,7 @@ struct TitlesView: View {
 	private var empty: some View {
 		ContentUnavailableView {
 			Label {
-				Text(Lexicon.noTitlesYet)
+				Text(Lexicon.noneYet)
 					.font(Theme.Typography.title17)
 			} icon: {
 				Image(systemName: "tag")

@@ -51,7 +51,7 @@ final class TitlesViewModel {
 			self.spentByTitle = computeSpent(expenses, defaultCode: currencyCode)
 			self.loadError = nil
 		} catch {
-			loadError = String(localized: "Couldn\u{2019}t load titles.")
+			loadError = String(localized: Lexicon.loadFailed)
 		}
 	}
 

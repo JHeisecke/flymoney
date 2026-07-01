@@ -120,7 +120,7 @@ final class HistoryViewModel {
 					id: e.id,
 					titleID: e.titleID,
 					titleName: titlesByID[e.titleID]?.name
-						?? String(localized: "Untitled"),
+						?? String(localized: Lexicon.untitled),
 					amount: e.amount,
 					date: e.date)
 			}

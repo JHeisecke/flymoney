@@ -35,7 +35,7 @@ struct TitleAutocompleteField: View {
 				.focused($isFocused)
 				.textFieldStyle(.plain)
 			if form.titleName.isEmpty {
-				EyebrowLabel(text: "Title", tracking: 0.6)
+				EyebrowLabel(text: Lexicon.Term.singular.text, tracking: 0.6)
 					.padding(.trailing, Theme.Spacing.s14)
 			}
 		}

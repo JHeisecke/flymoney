@@ -35,7 +35,7 @@ final class AddExpenseFormModel {
 
 		let trimmedTitle = titleName.trimmingCharacters(in: .whitespacesAndNewlines)
 		guard !trimmedTitle.isEmpty else {
-			titleError = String(localized: "Enter a title.")
+			titleError = String(localized: Lexicon.enterTerm)
 			return nil
 		}
 		guard amountDecimal > 0 else {
