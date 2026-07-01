@@ -50,7 +50,7 @@ final class TransferWatchdog {
 		lastActivity = ContinuousClock.now
 		while !isCancelled {
 			try? await Task.sleep(for: tickInterval, tolerance: tickInterval / 2)
-			if isCancelled { return }
+			if isCancelled || Task.isCancelled { return }
 			let elapsed = ContinuousClock.now - lastActivity
 			let budget = phase == .handshake ? handshakeTimeout : idleChunkTimeout
 			if elapsed >= budget {

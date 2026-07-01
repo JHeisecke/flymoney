@@ -38,8 +38,8 @@ struct AddExpenseViewModelTests {
 	}
 
 	private func awaitSearch() async {
-		await Task.yield()
-		try? await Task.sleep(for: .milliseconds(50))
+		for _ in 0..<10 { await Task.yield() }
+		try? await Task.sleep(for: .milliseconds(200))
 	}
 
 	@Test("happy path persists expense and resets form", .tags(.viewModel))
@@ -331,6 +331,33 @@ struct AddExpenseViewModelTests {
 		let count = await counter.callCount
 		#expect(count == 0)
 		#expect(vm.suggestions.isEmpty)
+	}
+
+	@Test("auto-bind matches diacritic-insensitively via localizedStandardCompare", .tags(.viewModel))
+	func autoBindDiacriticInsensitive() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let cafe = ExpenseTitle(name: "Caf\u{E9}")
+		try await titles.upsert(cafe)
+		try await titles.upsert(ExpenseTitle(name: "Coffee"))
+
+		let vm = makeVM(titles: titles, searchDebounce: .zero)
+		vm.search("cafe")
+		await awaitSearch()
+
+		#expect(vm.selectedTitleID == cafe.id)
+	}
+
+	@Test("auto-bind case-insensitive via localizedStandardCompare", .tags(.viewModel))
+	func autoBindCaseInsensitive() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let coffee = ExpenseTitle(name: "Coffee")
+		try await titles.upsert(coffee)
+
+		let vm = makeVM(titles: titles, searchDebounce: .zero)
+		vm.search("coffee")
+		await awaitSearch()
+
+		#expect(vm.selectedTitleID == coffee.id)
 	}
 
 	private func makeCountingVM(

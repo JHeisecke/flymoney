@@ -98,4 +98,44 @@ struct SwiftDataExpenseTitleRepositoryTests {
 		let fetched = try await repo.title(id: id)
 		#expect(fetched?.limit == nil)
 	}
+
+	@Test("search with diacritics matches accent-insensitively")
+	func searchDiacriticInsensitive() async throws {
+		let container = try TestSupport.makeContainer()
+		let repo = SwiftDataExpenseTitleRepository(modelContainer: container, defaultCurrencyCode: "USD")
+
+		try await repo.upsert(ExpenseTitle(name: "Café", createdAt: Date(timeIntervalSince1970: 1000)))
+		try await repo.upsert(ExpenseTitle(name: "Coffee", createdAt: Date(timeIntervalSince1970: 2000)))
+
+		let results = try await repo.search(matching: "cafe")
+		#expect(results.count == 1)
+		#expect(results.first?.name == "Café")
+	}
+
+	@Test("search substring matches contain-style across titles")
+	func searchSubstringContains() async throws {
+		let container = try TestSupport.makeContainer()
+		let repo = SwiftDataExpenseTitleRepository(modelContainer: container, defaultCurrencyCode: "USD")
+
+		try await repo.upsert(ExpenseTitle(name: "Caf\u{E9}", createdAt: Date(timeIntervalSince1970: 1000)))
+		try await repo.upsert(ExpenseTitle(name: "Coffee", createdAt: Date(timeIntervalSince1970: 2000)))
+		try await repo.upsert(ExpenseTitle(name: "Groceries", createdAt: Date(timeIntervalSince1970: 3000)))
+
+		let results = try await repo.search(matching: "co")
+		#expect(results.count == 1)
+		#expect(results.first?.name == "Coffee")
+	}
+
+	@Test("search results ordered by lastUsedAt descending")
+	func searchOrderedByLastUsedAt() async throws {
+		let container = try TestSupport.makeContainer()
+		let repo = SwiftDataExpenseTitleRepository(modelContainer: container, defaultCurrencyCode: "USD")
+
+		try await repo.upsert(ExpenseTitle(name: "Old", createdAt: Date(timeIntervalSince1970: 1), lastUsedAt: Date(timeIntervalSince1970: 100)))
+		try await repo.upsert(ExpenseTitle(name: "Recent", createdAt: Date(timeIntervalSince1970: 1), lastUsedAt: Date(timeIntervalSince1970: 9999999999)))
+
+		let results = try await repo.search(matching: "")
+		#expect(results.count == 2)
+		#expect(results.first?.name == "Recent")
+	}
 }

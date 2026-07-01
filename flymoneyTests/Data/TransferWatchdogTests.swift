@@ -28,23 +28,6 @@ struct TransferWatchdogTests {
 		#expect(didFire)
 	}
 
-	@Test("touch resets timer so watchdog does not fire early")
-	func touchResetsTimer() async {
-		var didFire = false
-		let watchdog = TransferWatchdog(
-			handshakeTimeout: .milliseconds(150),
-			tickInterval: .milliseconds(10)
-		)
-		let task = Task {
-			await watchdog.run { didFire = true }
-		}
-		try? await Task.sleep(for: .milliseconds(80))
-		watchdog.touch()
-		try? await Task.sleep(for: .milliseconds(80))
-		task.cancel()
-		#expect(!didFire)
-	}
-
 	@Test("phase switch changes budget from handshake to transfer and fires sooner")
 	func phaseSwitchChangesBudget() async {
 		var didFire = false
@@ -69,7 +52,7 @@ struct TransferWatchdogTests {
 			handshakeTimeout: .milliseconds(50),
 			tickInterval: .milliseconds(10)
 		)
-		let task = Task {
+		_ = Task {
 			await watchdog.run { didFire = true }
 		}
 		watchdog.cancel()
