@@ -46,6 +46,7 @@ struct TitlesView: View {
 				model: model,
 				onSave: { await viewModel.save(model) },
 				onCancel: { viewModel.editor = nil })
+				.presentationDragIndicator(.visible)
 		}
 		.alert(Text(Lexicon.Term.singular.text),
 			   isPresented: isDeleteBlockedPresented,

@@ -13,6 +13,13 @@ struct TitleEditorView: View {
 	let onSave: @MainActor () async -> Void
 	let onCancel: @MainActor () -> Void
 
+	@State private var limitText: String = ""
+	private let locale: Locale = .current
+
+	private var formatter: AmountFormatter {
+		AmountFormatter(currencyCode: model.currencyCode, locale: locale)
+	}
+
 	var body: some View {
 		NavigationStack {
 			VStack(spacing: Theme.Spacing.s18) {
@@ -44,14 +51,13 @@ struct TitleEditorView: View {
 					Text(String(localized: "Monthly limit"))
 						.font(Theme.Typography.caption12)
 						.foregroundStyle(Theme.Colors.textSubtle)
-					TextField(
-						String(localized: "Monthly limit"),
-						value: $model.limitDecimal,
-						format: .number
-							.grouping(.automatic)
-							.precision(.fractionLength(0...Money.exponent(for: model.currencyCode)))
-					)
-					.keyboardType(.decimalPad)
+					TextField(String(localized: "Monthly limit"), text: $limitText)
+						.keyboardType(.decimalPad)
+						.onChange(of: limitText) { oldValue, newValue in
+							let result = formatter.format(newValue, previousText: oldValue)
+							limitText = result.display
+							model.limitDecimal = result.value
+						}
 						.font(Theme.Typography.body17)
 						.tint(Theme.Colors.accent)
 						.textFieldStyle(.plain)
@@ -84,21 +90,33 @@ struct TitleEditorView: View {
 			.padding(.horizontal, Theme.Spacing.xxl)
 			.padding(.top, Theme.Spacing.lg)
 			.background(Theme.Colors.surface)
-			.simultaneousGesture(
-				TapGesture().onEnded {
-					UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-				}
-			)
+			.dismissKeyboardOnTap()
 			.navigationTitle(Text(model.isEditing ? Lexicon.editTerm : Lexicon.newTerm))
 			.toolbar {
-				ToolbarItem(placement: .topBarLeading) {
-					Button(String(localized: "Cancel"), action: onCancel)
+				ToolbarItem(placement: .topBarTrailing) {
+					Button {
+						onCancel()
+					} label: {
+						Image(systemName: "xmark")
+							.foregroundStyle(Theme.Colors.textSubtle)
+					}
+					.accessibilityLabel(String(localized: "Cancel"))
 				}
 			}
 			.tint(Theme.Colors.accent)
 		}
 		.onChange(of: model.saveError) { _, error in
 			if error != nil { haptics.error() }
+		}
+		.onAppear { syncLimitFromDecimal() }
+	}
+
+	private func syncLimitFromDecimal() {
+		if model.limitDecimal > 0 {
+			limitText = Money(majorUnits: model.limitDecimal, currencyCode: model.currencyCode)
+				.formattedNumber(locale: locale)
+		} else {
+			limitText = ""
 		}
 	}
 }

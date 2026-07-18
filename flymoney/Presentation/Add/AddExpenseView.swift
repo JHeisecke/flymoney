@@ -67,14 +67,8 @@ struct AddExpenseView: View {
 		}
 		.padding(.horizontal, Theme.Spacing.xxl)
 		.background(Theme.Colors.surface)
-		.background {
-			Color.clear
-				.contentShape(.rect)
-				.onTapGesture {
-					showSuggestions = false
-					UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-				}
-		}
+		.dismissKeyboardOnTap()
+		.simultaneousGesture(TapGesture().onEnded { showSuggestions = false })
 		.onChange(of: viewModel.didJustSave) { _, isTrue in
 			if isTrue {
 				haptics.success()
