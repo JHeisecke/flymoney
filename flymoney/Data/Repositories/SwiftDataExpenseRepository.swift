@@ -17,9 +17,24 @@ actor SwiftDataExpenseRepository: ExpenseRepository {
 			amountMinorUnits: expense.amount.minorUnits,
 			currencyCode: expense.amount.currencyCode,
 			titleID: expense.titleID,
-			date: expense.date
+			date: expense.date,
+			detail: expense.detail
 		)
 		modelContext.insert(model)
+		try modelContext.save()
+	}
+
+	func update(_ expense: Expense) async throws {
+		let id = expense.id
+		let descriptor = FetchDescriptor<ExpenseModel>(predicate: #Predicate { $0.id == id })
+		guard let model = try modelContext.fetch(descriptor).first else {
+			throw ExpenseRepositoryError.notFound
+		}
+		model.amountMinorUnits = expense.amount.minorUnits
+		model.currencyCode = expense.amount.currencyCode
+		model.titleID = expense.titleID
+		model.date = expense.date
+		model.detail = expense.detail
 		try modelContext.save()
 	}
 
@@ -67,7 +82,8 @@ extension ExpenseModel {
 			id: id,
 			amount: Money(minorUnits: amountMinorUnits, currencyCode: currencyCode),
 			titleID: titleID,
-			date: date
+			date: date,
+			detail: detail
 		)
 	}
 }

@@ -15,12 +15,14 @@ final class ExpenseModel {
 	var currencyCode: String
 	var titleID: UUID
 	var date: Date
+	var detail: String?
 
-	init(id: UUID, amountMinorUnits: Int, currencyCode: String, titleID: UUID, date: Date) {
+	init(id: UUID, amountMinorUnits: Int, currencyCode: String, titleID: UUID, date: Date, detail: String? = nil) {
 		self.id = id
 		self.amountMinorUnits = amountMinorUnits
 		self.currencyCode = currencyCode
 		self.titleID = titleID
 		self.date = date
+		self.detail = detail
 	}
 }

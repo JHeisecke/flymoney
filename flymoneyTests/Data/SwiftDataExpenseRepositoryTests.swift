@@ -36,6 +36,51 @@ struct SwiftDataExpenseRepositoryTests {
 		#expect(results.first == expense)
 	}
 
+	@Test("update persists amount, title, date and detail changes")
+	func updatePersistsChanges() async throws {
+		let container = try TestSupport.makeContainer()
+		let repo = SwiftDataExpenseRepository(modelContainer: container)
+
+		let id = UUID()
+		let original = Expense(
+			id: id,
+			amount: Money(minorUnits: 500, currencyCode: "USD"),
+			titleID: UUID(),
+			date: Date(timeIntervalSince1970: 1748750000)
+		)
+		try await repo.add(original)
+
+		let newTitleID = UUID()
+		let newDate = Date(timeIntervalSince1970: 1748850000)
+		let updated = Expense(
+			id: id,
+			amount: Money(minorUnits: 999, currencyCode: "USD"),
+			titleID: newTitleID,
+			date: newDate,
+			detail: "note"
+		)
+		try await repo.update(updated)
+
+		let results = try await repo.expenses(in: DateInterval(start: .distantPast, end: .distantFuture), titleID: nil)
+		#expect(results.count == 1)
+		#expect(results.first == updated)
+	}
+
+	@Test("update on a missing id throws notFound")
+	func updateMissingIDThrows() async throws {
+		let container = try TestSupport.makeContainer()
+		let repo = SwiftDataExpenseRepository(modelContainer: container)
+
+		let ghost = Expense(
+			amount: Money(minorUnits: 100, currencyCode: "USD"),
+			titleID: UUID(),
+			date: Date(timeIntervalSince1970: 1748750000)
+		)
+		await #expect(throws: ExpenseRepositoryError.notFound) {
+			try await repo.update(ghost)
+		}
+	}
+
 	@Test("delete removes expense")
 	func deleteRemoves() async throws {
 		let container = try TestSupport.makeContainer()

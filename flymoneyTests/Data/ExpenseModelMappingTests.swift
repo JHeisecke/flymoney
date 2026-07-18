@@ -31,6 +31,36 @@ struct ExpenseModelMappingTests {
 		#expect(roundTripped == entity)
 	}
 
+	@Test("detail round-trips through the model")
+	func detailRoundTrip() {
+		let entity = Expense(
+			id: UUID(),
+			amount: Money(minorUnits: 1299, currencyCode: "USD"),
+			titleID: UUID(),
+			date: Date(timeIntervalSince1970: 1735689600),
+			detail: "Extra shot"
+		)
+		let model = ExpenseModel(
+			id: entity.id,
+			amountMinorUnits: entity.amount.minorUnits,
+			currencyCode: entity.amount.currencyCode,
+			titleID: entity.titleID,
+			date: entity.date,
+			detail: entity.detail
+		)
+		let roundTripped = model.toEntity()
+		#expect(roundTripped == entity)
+	}
+
+	@Test("nil detail maps to nil")
+	func nilDetailMapsToNil() {
+		let model = ExpenseModel(
+			id: UUID(), amountMinorUnits: 100, currencyCode: "USD",
+			titleID: UUID(), date: Date(timeIntervalSince1970: 1735689600)
+		)
+		#expect(model.toEntity().detail == nil)
+	}
+
 	@Test("negative Money round-trips")
 	func negativeMoney() {
 		let entity = Expense(

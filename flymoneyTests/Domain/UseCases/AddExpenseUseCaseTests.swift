@@ -19,7 +19,7 @@ struct AddExpenseUseCaseTests {
 		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
 
 		let amount = Money(minorUnits: 500, currencyCode: "USD")
-		let expense = try await useCase.execute(amount: amount, titleName: "Coffee", date: Date.now)
+		let expense = try await useCase.execute(amount: amount, titleName: "Coffee", date: Date.now, detail: nil)
 
 		#expect(expense.titleID != UUID())
 		#expect(expense.amount.minorUnits == 500)
@@ -39,7 +39,7 @@ struct AddExpenseUseCaseTests {
 
 		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
 		let amount = Money(minorUnits: 300, currencyCode: "USD")
-		let expense = try await useCase.execute(amount: amount, titleName: "Coffee", date: Date.now)
+		let expense = try await useCase.execute(amount: amount, titleName: "Coffee", date: Date.now, detail: nil)
 
 		#expect(expense.titleID == existing.id)
 		let allTitles = try await titles.allTitles()
@@ -55,7 +55,7 @@ struct AddExpenseUseCaseTests {
 
 		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
 		let amount = Money(minorUnits: 300, currencyCode: "USD")
-		let expense = try await useCase.execute(amount: amount, titleName: "  Coffee  ", date: Date.now)
+		let expense = try await useCase.execute(amount: amount, titleName: "  Coffee  ", date: Date.now, detail: nil)
 
 		#expect(expense.titleID == existing.id)
 	}
@@ -68,7 +68,7 @@ struct AddExpenseUseCaseTests {
 
 		let now = Date.now
 		let amount = Money(minorUnits: 1000, currencyCode: "USD")
-		let expense = try await useCase.execute(amount: amount, titleName: "Lunch", date: now)
+		let expense = try await useCase.execute(amount: amount, titleName: "Lunch", date: now, detail: nil)
 
 		let month = CalendarMonth.containing(now, using: .current)
 		let interval = month.interval(using: .current)
@@ -83,7 +83,7 @@ struct AddExpenseUseCaseTests {
 		let titles = InMemoryExpenseTitleRepository()
 		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
 
-		_ = try await useCase.execute(amount: Money(minorUnits: 500, currencyCode: "USD"), titleName: "Coffee", date: .now)
+		_ = try await useCase.execute(amount: Money(minorUnits: 500, currencyCode: "USD"), titleName: "Coffee", date: .now, detail: nil)
 		let created = try await titles.title(named: "Coffee")
 		#expect(created?.lastUsedAt != nil)
 	}
@@ -96,9 +96,33 @@ struct AddExpenseUseCaseTests {
 		try await titles.upsert(ExpenseTitle(name: "Coffee", lastUsedAt: oldDate))
 		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
 
-		_ = try await useCase.execute(amount: Money(minorUnits: 300, currencyCode: "USD"), titleName: "Coffee", date: .now)
+		_ = try await useCase.execute(amount: Money(minorUnits: 300, currencyCode: "USD"), titleName: "Coffee", date: .now, detail: nil)
 		let updated = try await titles.title(named: "Coffee")
 		#expect(updated?.lastUsedAt != nil)
 		#expect(updated?.lastUsedAt != oldDate)
+	}
+
+	@Test("detail is threaded into the persisted expense")
+	func detailThreaded() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let titles = InMemoryExpenseTitleRepository()
+		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
+
+		let expense = try await useCase.execute(
+			amount: Money(minorUnits: 500, currencyCode: "USD"), titleName: "Coffee", date: .now, detail: "with oat milk")
+
+		#expect(expense.detail == "with oat milk")
+	}
+
+	@Test("nil detail persisted as nil")
+	func nilDetailPersisted() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let titles = InMemoryExpenseTitleRepository()
+		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
+
+		let expense = try await useCase.execute(
+			amount: Money(minorUnits: 500, currencyCode: "USD"), titleName: "Coffee", date: .now, detail: nil)
+
+		#expect(expense.detail == nil)
 	}
 }

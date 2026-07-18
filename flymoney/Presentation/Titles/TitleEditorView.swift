@@ -100,6 +100,7 @@ struct TitleEditorView: View {
 						Image(systemName: "xmark")
 							.foregroundStyle(Theme.Colors.textSubtle)
 					}
+					.buttonStyle(.hapticPlain)
 					.accessibilityLabel(String(localized: "Cancel"))
 				}
 			}

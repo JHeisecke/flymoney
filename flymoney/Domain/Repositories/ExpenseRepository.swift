@@ -9,6 +9,7 @@ import Foundation
 
 protocol ExpenseRepository: Sendable {
 	func add(_ expense: Expense) async throws
+	func update(_ expense: Expense) async throws
 	func delete(id: UUID) async throws
 
 	func deleteAll(forTitleID titleID: UUID) async throws
@@ -16,4 +17,8 @@ protocol ExpenseRepository: Sendable {
 	func expenses(in interval: DateInterval, titleID: UUID?) async throws -> [Expense]
 
 	func count(forTitleID titleID: UUID) async throws -> Int
+}
+
+enum ExpenseRepositoryError: Error, Equatable {
+	case notFound
 }

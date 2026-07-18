@@ -54,4 +54,26 @@ struct ModelMigrationTests {
 		let fetched = try context.fetch(FetchDescriptor<ExpenseModel>())
 		#expect(fetched.count == 1)
 	}
+
+	@Test("V3 schema is registered and container boots with detail field defaulting to nil")
+	func v3SchemaRegisteredWithDetailDefault() throws {
+		#expect(ModelMigrationPlan.schemas.count == 3)
+		#expect(ExpenseSchemaV3.versionIdentifier == Schema.Version(3, 0, 0))
+
+		let config = ModelConfiguration(schema: ModelSchema.schema, isStoredInMemoryOnly: true)
+		let container = try ModelContainer(
+			for: ModelSchema.schema, migrationPlan: ModelMigrationPlan.self, configurations: config)
+		let context = ModelContext(container)
+
+		let expense = ExpenseModel(
+			id: UUID(), amountMinorUnits: 1234, currencyCode: "USD",
+			titleID: UUID(), date: .now
+		)
+		context.insert(expense)
+		try context.save()
+
+		let fetched = try context.fetch(FetchDescriptor<ExpenseModel>())
+		#expect(fetched.count == 1)
+		#expect(fetched.first?.detail == nil)
+	}
 }

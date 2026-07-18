@@ -53,6 +53,13 @@ struct HistoryView: View {
 			SharingSheetHost(assembly: assembly, role: role)
 				.presentationDetents([.large])
 		}
+		.sheet(item: $viewModel.editor) { model in
+			ExpenseEditView(
+				model: model,
+				onSave: { await viewModel.save(model) },
+				onCancel: { viewModel.editor = nil })
+				.presentationDragIndicator(.visible)
+		}
 	}
 
 	private var header: some View {
@@ -84,11 +91,17 @@ struct HistoryView: View {
 				ForEach(viewModel.sections) { section in
 					Section {
 						ForEach(section.rows) { row in
-							ExpenseRowView(row: row)
-								.listRowInsets(EdgeInsets())
-								.listRowSeparator(.visible, edges: .bottom)
-								.listRowSeparatorTint(Theme.Colors.borderDivider)
-								.listRowBackground(Theme.Colors.card)
+							Button {
+								viewModel.beginEdit(row)
+							} label: {
+								ExpenseRowView(row: row)
+							}
+							.buttonStyle(.hapticPlain)
+							.accessibilityHint(Text(String(localized: "Edits this expense.")))
+							.listRowInsets(EdgeInsets())
+							.listRowSeparator(.visible, edges: .bottom)
+							.listRowSeparatorTint(Theme.Colors.borderDivider)
+							.listRowBackground(Theme.Colors.card)
 						}
 						.onDelete { offsets in
 							for offset in offsets {

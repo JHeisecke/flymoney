@@ -12,11 +12,13 @@ struct Expense: Identifiable, Equatable, Sendable {
 	var amount: Money
 	var titleID: UUID
 	var date: Date
+	var detail: String?
 
-	init(id: UUID = UUID(), amount: Money, titleID: UUID, date: Date) {
+	init(id: UUID = UUID(), amount: Money, titleID: UUID, date: Date, detail: String? = nil) {
 		self.id = id
 		self.amount = amount
 		self.titleID = titleID
 		self.date = date
+		self.detail = detail
 	}
 }

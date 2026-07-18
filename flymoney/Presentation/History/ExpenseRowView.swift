@@ -19,6 +19,13 @@ struct ExpenseRowView: View {
 				Text(row.date.formatted(date: .omitted, time: .shortened))
 					.font(Theme.Typography.caption12)
 					.foregroundStyle(Theme.Colors.inkTertiary)
+				if let detail = row.detail, !detail.isEmpty {
+					Text(detail)
+						.font(Theme.Typography.caption12)
+						.foregroundStyle(Theme.Colors.inkTertiary)
+						.lineLimit(1)
+						.truncationMode(.tail)
+				}
 			}
 			Spacer()
 			Text(row.amount.formatted())

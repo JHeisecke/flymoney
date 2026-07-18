@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TitleAutocompleteField: View {
-	@Bindable var form: AddExpenseFormModel
+	@Binding var titleName: String
 	@Binding var showSuggestions: Bool
 	let suggestions: [ExpenseTitle]
 	let selectedID: UUID?
@@ -40,12 +40,12 @@ struct TitleAutocompleteField: View {
 
 	private var field: some View {
 		ZStack(alignment: .trailing) {
-			TextField("", text: $form.titleName)
+			TextField("", text: $titleName)
 				.font(Theme.Typography.body17)
 				.tint(Theme.Colors.accent)
 				.focused($isFocused)
 				.textFieldStyle(.plain)
-			if form.titleName.isEmpty {
+			if titleName.isEmpty {
 				EyebrowLabel(text: Lexicon.Term.singular.text, tracking: 0.6)
 					.padding(.trailing, Theme.Spacing.s14)
 			}
@@ -59,7 +59,7 @@ struct TitleAutocompleteField: View {
 				.stroke(Theme.Colors.accent, lineWidth: 1.5)
 		}
 		.shadow(isFocused ? Theme.Shadow.focusGlow : Theme.Shadow.subtle)
-		.onChange(of: form.titleName) { _, newValue in
+		.onChange(of: titleName) { _, newValue in
 			if isFocused { showSuggestions = true }
 			onQueryChange(newValue)
 		}

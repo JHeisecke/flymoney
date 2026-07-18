@@ -28,6 +28,9 @@ struct HistoryViewModelTests {
 			fetchExpenses: FetchExpensesForMonthUseCaseImpl(expenses: expenses, calendar: Self.utc),
 			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: titles),
 			deleteExpense: DeleteExpenseUseCaseImpl(expenses: expenses),
+			updateExpense: UpdateExpenseUseCaseImpl(expenses: expenses, titles: titles),
+			searchTitles: SearchExpenseTitlesUseCaseImpl(titles: titles),
+			currencyCode: "USD",
 			calendar: Self.utc,
 			now: now)
 	}
@@ -157,10 +160,14 @@ struct HistoryViewModelTests {
 		let id = UUID()
 		try await expenses.add(Expense(id: id, amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: UUID(), date: Date(timeIntervalSince1970: 1748736000)))
 
+		let titles = InMemoryExpenseTitleRepository()
 		let vm = HistoryViewModel(
 			fetchExpenses: FetchExpensesForMonthUseCaseImpl(expenses: expenses, calendar: Self.utc),
-			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: InMemoryExpenseTitleRepository()),
+			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: titles),
 			deleteExpense: ThrowingDeleteExpenseUseCase(),
+			updateExpense: UpdateExpenseUseCaseImpl(expenses: expenses, titles: titles),
+			searchTitles: SearchExpenseTitlesUseCaseImpl(titles: titles),
+			currencyCode: "USD",
 			calendar: Self.utc,
 			now: Date(timeIntervalSince1970: 1748736000))
 
@@ -206,6 +213,56 @@ struct HistoryViewModelTests {
 		await vm.load()
 
 		#expect(vm.totalSpent?.minorUnits == 400)
+	}
+
+	@Test("update reflects new amount, title and detail after save", .tags(.viewModel))
+	func updateReflectsChanges() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let titles = InMemoryExpenseTitleRepository()
+		let title = ExpenseTitle(name: "Coffee")
+		try await titles.upsert(title)
+		let id = UUID()
+		try await expenses.add(Expense(id: id, amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: title.id, date: Date(timeIntervalSince1970: 1748736000)))
+
+		let vm = makeVM(expenses: expenses, titles: titles)
+		await vm.load()
+
+		let row = try #require(vm.sections.first?.rows.first)
+		vm.beginEdit(row)
+		let model = try #require(vm.editor)
+		model.amountDecimal = 9
+		model.titleName = "Groceries"
+		model.detail = "weekly shop"
+		await vm.save(model)
+
+		#expect(vm.editor == nil)
+		let updatedRow = try #require(vm.sections.first?.rows.first)
+		#expect(updatedRow.amount.minorUnits == 900)
+		#expect(updatedRow.titleName == "Groceries")
+		#expect(updatedRow.detail == "weekly shop")
+	}
+
+	@Test("update error surfaces a message on the editor model", .tags(.viewModel))
+	func updateErrorSurfacesMessage() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let titles = InMemoryExpenseTitleRepository()
+		let title = ExpenseTitle(name: "Coffee")
+		try await titles.upsert(title)
+		let id = UUID()
+		try await expenses.add(Expense(id: id, amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: title.id, date: Date(timeIntervalSince1970: 1748736000)))
+
+		let vm = makeVM(expenses: expenses, titles: titles)
+		await vm.load()
+		let row = try #require(vm.sections.first?.rows.first)
+		vm.beginEdit(row)
+		let model = try #require(vm.editor)
+
+		// Deleting the underlying expense out from under the edit simulates a not-found failure.
+		try await expenses.delete(id: id)
+		model.amountDecimal = 5
+		await vm.save(model)
+
+		#expect(model.saveError != nil)
 	}
 
 	@Test("titleCount returns distinct title IDs", .tags(.viewModel))

@@ -19,4 +19,5 @@ struct HistoryRow: Identifiable, Equatable, Sendable {
 	let titleName: String
 	let amount: Money
 	let date: Date
+	let detail: String?
 }

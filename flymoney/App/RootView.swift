@@ -17,7 +17,7 @@ struct RootView: View {
 
 	init(assembly: AppAssembly) {
 		self.assembly = assembly
-		_historyViewModel = State(initialValue: assembly.makeHistoryViewModel())
+        self.historyViewModel = assembly.makeHistoryViewModel()
 	}
 
 	var body: some View {

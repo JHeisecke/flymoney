@@ -14,8 +14,10 @@ final class HistoryViewModel {
 	private(set) var sections: [HistorySection] = []
 	private(set) var isLoading = false
 	var loadError: String?
+	var editor: ExpenseEditModel?
 
 	var month: CalendarMonth
+	let currencyCode: String
 
 	internal var calendar: Calendar {
 		_calendar
@@ -26,16 +28,24 @@ final class HistoryViewModel {
 	private let fetchExpenses: any FetchExpensesForMonthUseCase
 	private let fetchTitles: any FetchExpenseTitlesUseCase
 	private let deleteExpense: any DeleteExpenseUseCase
+	private let updateExpense: any UpdateExpenseUseCase
+	private let searchTitles: any SearchExpenseTitlesUseCase
 	private let _calendar: Calendar
 
 	init(fetchExpenses: any FetchExpensesForMonthUseCase,
 		 fetchTitles: any FetchExpenseTitlesUseCase,
 		 deleteExpense: any DeleteExpenseUseCase,
+		 updateExpense: any UpdateExpenseUseCase,
+		 searchTitles: any SearchExpenseTitlesUseCase,
+		 currencyCode: String,
 		 calendar: Calendar = .current,
 		 now: Date = .now) {
 		self.fetchExpenses = fetchExpenses
 		self.fetchTitles = fetchTitles
 		self.deleteExpense = deleteExpense
+		self.updateExpense = updateExpense
+		self.searchTitles = searchTitles
+		self.currencyCode = currencyCode
 		self._calendar = calendar
 		self.month = CalendarMonth.containing(now, using: calendar)
 	}
@@ -103,6 +113,47 @@ final class HistoryViewModel {
 		}
 	}
 
+	func beginEdit(_ row: HistoryRow) {
+		editor = ExpenseEditModel(row: row, searchTitles: searchTitles)
+	}
+
+	func save(_ model: ExpenseEditModel) async {
+		guard let clean = model.validated() else { return }
+		do {
+			let updated = try await updateExpense.execute(
+				id: model.id, amount: clean.amount, titleName: clean.titleName,
+				date: clean.date, detail: clean.detail)
+			editor = nil
+			if titlesByID[updated.titleID] == nil {
+				let titles = try await fetchTitles.execute()
+				titlesByID = Dictionary(uniqueKeysWithValues: titles.map { ($0.id, $0) })
+			}
+			patchRow(with: updated)
+		} catch {
+			model.saveError = String(localized: "Couldn\u{2019}t update. Try again.")
+		}
+	}
+
+	private func patchRow(with expense: Expense) {
+		guard let (sectionIndex, rowIndex) = locate(rowID: expense.id) else { return }
+		guard _calendar.isDate(sections[sectionIndex].day, inSameDayAs: expense.date) else {
+			Task { await load() }
+			return
+		}
+		let newRow = HistoryRow(
+			id: expense.id,
+			titleID: expense.titleID,
+			titleName: titlesByID[expense.titleID]?.name ?? String(localized: Lexicon.untitled),
+			amount: expense.amount,
+			date: expense.date,
+			detail: expense.detail)
+		var rows = sections[sectionIndex].rows
+		rows[rowIndex] = newRow
+		rows.sort { $0.date > $1.date }
+		sections[sectionIndex] = HistorySection(
+			id: sections[sectionIndex].id, day: sections[sectionIndex].day, rows: rows)
+	}
+
 	private func locate(rowID: UUID) -> (Int, Int)? {
 		for (s, section) in sections.enumerated() {
 			if let r = section.rows.firstIndex(where: { $0.id == rowID }) { return (s, r) }
@@ -122,7 +173,8 @@ final class HistoryViewModel {
 					titleName: titlesByID[e.titleID]?.name
 						?? String(localized: Lexicon.untitled),
 					amount: e.amount,
-					date: e.date)
+					date: e.date,
+					detail: e.detail)
 			}
 			return HistorySection(id: day, day: dayExpenses.first?.date ?? day, rows: rows)
 		}

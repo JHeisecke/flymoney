@@ -61,6 +61,34 @@ struct AddExpenseViewModelTests {
 		#expect(allExpenses.first?.amount.minorUnits == 500)
 	}
 
+	@Test("save threads detail into the persisted expense", .tags(.viewModel))
+	func saveThreadsDetail() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let vm = makeVM(expenses: expenses)
+
+		vm.form.amountDecimal = 5
+		vm.form.titleName = "Coffee"
+		vm.form.detail = "with oat milk"
+		await vm.save()
+
+		let all = try await expenses.expenses(in: DateInterval(start: Date.distantPast, end: Date.distantFuture), titleID: nil)
+		#expect(all.first?.detail == "with oat milk")
+	}
+
+	@Test("blank note is saved as nil", .tags(.viewModel))
+	func blankNoteSavedAsNil() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let vm = makeVM(expenses: expenses)
+
+		vm.form.amountDecimal = 5
+		vm.form.titleName = "Coffee"
+		vm.form.detail = "   "
+		await vm.save()
+
+		let all = try await expenses.expenses(in: DateInterval(start: Date.distantPast, end: Date.distantFuture), titleID: nil)
+		#expect(all.first?.detail == nil)
+	}
+
 	@Test("new title creation generates limit-less title", .tags(.viewModel))
 	func newTitleCreation() async throws {
 		let expenses = InMemoryExpenseRepository()

@@ -15,6 +15,13 @@ actor InMemoryExpenseRepository: ExpenseRepository {
 		storage.append(expense)
 	}
 
+	func update(_ expense: Expense) async throws {
+		guard let index = storage.firstIndex(where: { $0.id == expense.id }) else {
+			throw ExpenseRepositoryError.notFound
+		}
+		storage[index] = expense
+	}
+
 	func delete(id: UUID) async throws {
 		storage.removeAll { $0.id == id }
 	}

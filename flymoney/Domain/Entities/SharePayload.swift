@@ -25,5 +25,6 @@ struct SharePayload: Equatable, Sendable, Codable {
 		let titleID: UUID
 		let amountMinorUnits: Int
 		let date: Date
+		// Expense.detail is intentionally not serialized here — notes stay local (see plan).
 	}
 }

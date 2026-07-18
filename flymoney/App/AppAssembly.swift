@@ -51,6 +51,10 @@ final class AppAssembly {
 		DeleteExpenseUseCaseImpl(expenses: expenseRepo)
 	}
 
+	func makeUpdateExpenseUseCase() -> any UpdateExpenseUseCase {
+		UpdateExpenseUseCaseImpl(expenses: expenseRepo, titles: titleRepo)
+	}
+
 	func makeExportMonthUseCase() -> any ExportMonthUseCase {
 		ExportMonthUseCaseImpl(expenses: expenseRepo, titles: titleRepo, currencyProvider: currencyProvider)
 	}
@@ -91,7 +95,10 @@ final class AppAssembly {
 		HistoryViewModel(
 			fetchExpenses: makeFetchExpensesForMonthUseCase(),
 			fetchTitles: makeFetchExpenseTitlesUseCase(),
-			deleteExpense: makeDeleteExpenseUseCase())
+			deleteExpense: makeDeleteExpenseUseCase(),
+			updateExpense: makeUpdateExpenseUseCase(),
+			searchTitles: makeSearchExpenseTitlesUseCase(),
+			currencyCode: currencyProvider.defaultCurrencyCode)
 	}
 
 	func makeImportSharedMonthUseCase() -> any ImportSharedMonthUseCase {

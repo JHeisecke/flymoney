@@ -32,7 +32,7 @@ struct AddExpenseView: View {
 			Spacer().frame(height: 40)
 
 			TitleAutocompleteField(
-				form: viewModel.form,
+				titleName: $viewModel.form.titleName,
 				showSuggestions: $showSuggestions,
 				suggestions: viewModel.suggestions,
 				selectedID: viewModel.selectedTitleID,
@@ -47,6 +47,9 @@ struct AddExpenseView: View {
 					.foregroundStyle(Theme.Colors.danger)
 					.padding(.top, Theme.Spacing.xs)
 			}
+
+			ExpenseNoteField(text: $viewModel.form.detail)
+				.padding(.top, Theme.Spacing.s14)
 
 			DateChipView(date: $viewModel.form.date)
 				.padding(.top, Theme.Spacing.s18)

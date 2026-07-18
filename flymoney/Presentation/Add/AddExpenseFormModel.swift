@@ -14,6 +14,7 @@ final class AddExpenseFormModel {
 	var amountDecimal: Decimal = 0
 	var titleName: String = ""
 	var date: Date = Date()
+	var detail: String = ""
 
 	var amountError: String?
 	var titleError: String?
@@ -29,7 +30,7 @@ final class AddExpenseFormModel {
 		!titleName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 	}
 
-	func validated() -> (amount: Money, titleName: String, date: Date)? {
+	func validated() -> (amount: Money, titleName: String, date: Date, detail: String?)? {
 		amountError = nil
 		titleError = nil
 
@@ -43,13 +44,15 @@ final class AddExpenseFormModel {
 			return nil
 		}
 		let amount = Money(majorUnits: amountDecimal, currencyCode: currencyCode)
-		return (amount, trimmedTitle, date)
+		let trimmedDetail = detail.trimmingCharacters(in: .whitespacesAndNewlines)
+		return (amount, trimmedTitle, date, trimmedDetail.isEmpty ? nil : trimmedDetail)
 	}
 
 	func reset() {
 		amountDecimal = 0
 		titleName = ""
 		date = Date()
+		detail = ""
 		amountError = nil
 		titleError = nil
 	}

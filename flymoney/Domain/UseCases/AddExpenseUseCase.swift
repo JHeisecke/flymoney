@@ -8,14 +8,14 @@
 import Foundation
 
 protocol AddExpenseUseCase: Sendable {
-	func execute(amount: Money, titleName: String, date: Date) async throws -> Expense
+	func execute(amount: Money, titleName: String, date: Date, detail: String?) async throws -> Expense
 }
 
 struct AddExpenseUseCaseImpl: AddExpenseUseCase {
 	let expenses: ExpenseRepository
 	let titles: ExpenseTitleRepository
 
-	func execute(amount: Money, titleName: String, date: Date) async throws -> Expense {
+	func execute(amount: Money, titleName: String, date: Date, detail: String?) async throws -> Expense {
 		let trimmed = titleName.trimmingCharacters(in: .whitespacesAndNewlines)
 		let title: ExpenseTitle
 		if let existing = try await titles.title(named: trimmed) {
@@ -25,7 +25,7 @@ struct AddExpenseUseCaseImpl: AddExpenseUseCase {
 			try await titles.upsert(title)
 		}
 		try await titles.recordUsage(titleID: title.id, at: .now)
-		let expense = Expense(amount: amount, titleID: title.id, date: date)
+		let expense = Expense(amount: amount, titleID: title.id, date: date, detail: detail)
 		try await expenses.add(expense)
 		return expense
 	}

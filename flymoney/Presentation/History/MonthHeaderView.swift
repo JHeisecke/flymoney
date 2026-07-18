@@ -18,6 +18,7 @@ struct MonthHeaderView: View {
 			Button("Previous month", systemImage: "chevron.left") {
 				onPrevious()
 			}
+			.buttonStyle(.hapticPlain)
 			.labelStyle(.iconOnly)
 			.foregroundStyle(Theme.Colors.inkQuaternary)
 
@@ -30,6 +31,7 @@ struct MonthHeaderView: View {
 			Button("Next month", systemImage: "chevron.right") {
 				onNext()
 			}
+			.buttonStyle(.hapticPlain)
 			.labelStyle(.iconOnly)
 			.foregroundStyle(Theme.Colors.inkSecondary)
 		}

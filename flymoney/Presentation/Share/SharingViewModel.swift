@@ -91,12 +91,12 @@ final class SharingViewModel {
 			case .mergeInto(let localID):
 				guard let local = localTitles.first(where: { $0.id == localID }) else { continue }
 				for expense in imported.expenses where expense.titleID == title.id {
-					_ = try? await addExpense.execute(amount: expense.amount, titleName: local.name, date: expense.date)
+					_ = try? await addExpense.execute(amount: expense.amount, titleName: local.name, date: expense.date, detail: nil)
 				}
 			case .keepSeparate:
 				_ = try? await upsertTitle.execute(id: title.id, name: title.name, limit: title.limit, period: .calendarMonth)
 				for expense in imported.expenses where expense.titleID == title.id {
-					_ = try? await addExpense.execute(amount: expense.amount, titleName: title.name, date: expense.date)
+					_ = try? await addExpense.execute(amount: expense.amount, titleName: title.name, date: expense.date, detail: nil)
 				}
 			}
 		}

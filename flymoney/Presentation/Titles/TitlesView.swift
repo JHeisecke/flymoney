@@ -70,6 +70,7 @@ struct TitlesView: View {
                     .tracking(-0.5)
                     .foregroundStyle(Theme.Colors.ink)
             }
+            .buttonStyle(.hapticPlain)
 			Spacer()
 			PillButton(title: "New", systemImage: "plus") {
 				viewModel.beginCreate()
