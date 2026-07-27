@@ -42,11 +42,16 @@ struct DateChipView: View {
 			}
 		}
 		.popover(isPresented: $isPickerPresented, attachmentAnchor: .point(.bottom)) {
-			DatePicker(String(localized: "Date"), selection: $date, displayedComponents: .date)
-				.datePickerStyle(.graphical)
-				.frame(minWidth: 320)
-				.padding(Theme.Spacing.lg)
-				.presentationCompactAdaptation(.popover)
+            DatePicker(
+                String(localized: "Date"),
+                selection: $date,
+                in: ...Date.now,
+                displayedComponents: .date
+            )
+            .datePickerStyle(.graphical)
+            .frame(minWidth: 320)
+            .padding(Theme.Spacing.lg)
+            .presentationCompactAdaptation(.popover)
 		}
 	}
 
