@@ -41,10 +41,10 @@ struct TitlesView: View {
 		.onChange(of: viewModel.deleteBlocked) { _, blocked in
 			if blocked != nil { haptics.error() }
 		}
-		.sheet(item: $viewModel.editor) { model in
+		.sheet(item: $viewModel.editor) { editorVM in
 			TitleEditorView(
-				model: model,
-				onSave: { await viewModel.save(model) },
+				viewModel: editorVM,
+				onSave: { await viewModel.save(editorVM.form) },
 				onCancel: { viewModel.editor = nil })
 				.presentationDragIndicator(.visible)
 		}

@@ -21,7 +21,7 @@ final class TitlesViewModel {
 	}
 	var loadError: String?
 	var deleteBlocked: LocalizedStringResource?
-	var editor: TitleEditorModel?
+	var editor: TitleEditorViewModel?
 
 	var month: CalendarMonth
 
@@ -80,13 +80,17 @@ final class TitlesViewModel {
 	}
 
 	func beginCreate() {
-		editor = TitleEditorModel(currencyCode: currencyCode, effectiveMonth: month)
+		let form = TitleEditorModel(currencyCode: currencyCode, effectiveMonth: month)
+		editor = TitleEditorViewModel(
+			form: form, month: month, titleID: nil, titleName: "", fetchExpenses: fetchExpenses)
 	}
 
 	func beginEdit(_ t: ExpenseTitle) {
-		editor = TitleEditorModel(
+		let form = TitleEditorModel(
 			editing: t, currencyCode: currencyCode,
 			currentLimit: limitByTitle[t.id], effectiveMonth: month)
+		editor = TitleEditorViewModel(
+			form: form, month: month, titleID: t.id, titleName: t.name, fetchExpenses: fetchExpenses)
 	}
 
 	func save(_ model: TitleEditorModel) async {

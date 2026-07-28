@@ -116,7 +116,7 @@ struct ModelMigrationTests {
 			try seedContext.save()
 		}
 
-		// Reopen under the full migration plan (V3 → V4 → V5 → V6).
+		// Reopen under the full migration plan (V3 → V4 → V5).
 		let config = ModelConfiguration(schema: ModelSchema.schema, url: url)
 		let container = try ModelContainer(
 			for: ModelSchema.schema, migrationPlan: ModelMigrationPlan.self, configurations: config)

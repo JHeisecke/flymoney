@@ -58,9 +58,9 @@ struct TitlesViewModelTests {
 
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
-		editor.name = "Coffee"
-		editor.limitDecimal = 10
-		await vm.save(editor)
+		editor.form.name = "Coffee"
+		editor.form.limitDecimal = 10
+		await vm.save(editor.form)
 
 		await vm.load()
 		#expect(vm.titles.count == 1)
@@ -75,9 +75,9 @@ struct TitlesViewModelTests {
 
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
-		editor.name = "Coffee"
-		editor.limitDecimal = 0
-		await vm.save(editor)
+		editor.form.name = "Coffee"
+		editor.form.limitDecimal = 0
+		await vm.save(editor.form)
 
 		await vm.load()
 		let titleID = try #require(vm.titles.first?.id)
@@ -97,11 +97,11 @@ struct TitlesViewModelTests {
 		vm.beginEdit(vm.titles[0])
 
 		let editor = try #require(vm.editor)
-		#expect(editor.limitDecimal == 5)
-		#expect(editor.effectiveMonth == CalendarMonth(year: 2026, month: 6))
-		editor.name = "Espresso"
-		editor.limitDecimal = 15
-		await vm.save(editor)
+		#expect(editor.form.limitDecimal == 5)
+		#expect(editor.form.effectiveMonth == CalendarMonth(year: 2026, month: 6))
+		editor.form.name = "Espresso"
+		editor.form.limitDecimal = 15
+		await vm.save(editor.form)
 
 		await vm.load()
 		#expect(vm.titles.count == 1)
@@ -118,9 +118,9 @@ struct TitlesViewModelTests {
 		// Create in June with a $10 limit.
 		vm.beginCreate()
 		let createEditor = try #require(vm.editor)
-		createEditor.name = "Coffee"
-		createEditor.limitDecimal = 10
-		await vm.save(createEditor)
+		createEditor.form.name = "Coffee"
+		createEditor.form.limitDecimal = 10
+		await vm.save(createEditor.form)
 
 		// Move to July and clear the limit.
 		vm.nextMonth()
@@ -131,8 +131,8 @@ struct TitlesViewModelTests {
 
 		vm.beginEdit(vm.titles[0])
 		let editEditor = try #require(vm.editor)
-		editEditor.limitDecimal = 0
-		await vm.save(editEditor)
+		editEditor.form.limitDecimal = 0
+		await vm.save(editEditor.form)
 
 		// July on: cleared. June: untouched.
 		await vm.load()
@@ -182,10 +182,10 @@ struct TitlesViewModelTests {
 		let vm = makeVM()
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
-		editor.name = ""
-		await vm.save(editor)
+		editor.form.name = ""
+		await vm.save(editor.form)
 
-		#expect(editor.nameError != nil)
+		#expect(editor.form.nameError != nil)
 	}
 
 	@Test("validation blocks duplicate name", .tags(.viewModel))
@@ -197,10 +197,10 @@ struct TitlesViewModelTests {
 		await vm.load()
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
-		editor.name = "Coffee"
-		await vm.save(editor)
+		editor.form.name = "Coffee"
+		await vm.save(editor.form)
 
-		#expect(editor.nameError != nil)
+		#expect(editor.form.nameError != nil)
 	}
 
 	@Test("validation blocks negative limit", .tags(.viewModel))
@@ -208,11 +208,11 @@ struct TitlesViewModelTests {
 		let vm = makeVM()
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
-		editor.name = "Coffee"
-		editor.limitDecimal = -5
-		await vm.save(editor)
+		editor.form.name = "Coffee"
+		editor.form.limitDecimal = -5
+		await vm.save(editor.form)
 
-		#expect(editor.nameError != nil)
+		#expect(editor.form.nameError != nil)
 	}
 
 	@Test("spentByTitle populated with current-month expenses", .tags(.viewModel))
@@ -326,10 +326,10 @@ struct TitlesViewModelTests {
 
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
-		editor.name = "Coffee"
-		await vm.save(editor)
+		editor.form.name = "Coffee"
+		await vm.save(editor.form)
 
-		#expect(editor.nameError != nil)
+		#expect(editor.form.nameError != nil)
 	}
 
 	private func date(day: Int, month: Int, year: Int) -> Date {

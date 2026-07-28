@@ -26,20 +26,8 @@ struct TitleCardView: View {
 						.foregroundStyle(Theme.Colors.textSubtle)
 						.monospacedDigit()
 				}
-				TitleProgressMeter(spent: spent, limit: limit)
+				BudgetSummaryView(spent: spent, limit: limit)
 					.padding(.top, Theme.Spacing.s14)
-					.padding(.bottom, Theme.Spacing.md)
-				HStack(alignment: .firstTextBaseline) {
-					Text(verbatim: "\(spent.formatted()) \(String(localized: "spent"))")
-						.font(Theme.Typography.body13)
-						.foregroundStyle(Theme.Colors.inkQuaternary)
-						.monospacedDigit()
-					Spacer()
-					Text(captionText)
-						.font(Theme.Typography.caption13Strong)
-						.foregroundStyle(captionColor)
-						.monospacedDigit()
-				}
 			}
 			.padding(Theme.Spacing.lg)
 			.background(Theme.Colors.card)
@@ -50,24 +38,6 @@ struct TitleCardView: View {
 			}
 		}
 		.buttonStyle(.hapticPlain)
-	}
-
-	private var ratio: Double {
-		guard limit.minorUnits > 0 else { return 0 }
-		return Double(spent.minorUnits) / Double(limit.minorUnits)
-	}
-	private var status: BudgetStatus { BudgetStatus(spent: spent, limit: limit) }
-
-	private var captionColor: Color { status.color }
-
-	private var captionText: String {
-		let remainingUnits = limit.minorUnits - spent.minorUnits
-		let remaining = Money(
-			minorUnits: abs(remainingUnits),
-			currencyCode: limit.currencyCode)
-		return status == .over
-			? String(localized: "Over \(remaining.formatted())")
-			: String(localized: "Left \(remaining.formatted())")
 	}
 }
 

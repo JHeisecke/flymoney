@@ -9,17 +9,23 @@ import SwiftUI
 
 struct ExpenseRowView: View {
 	let row: HistoryRow
+    let prioritizeTitle: Bool
+
+    init(row: HistoryRow, prioritizeTitle: Bool = true) {
+        self.row = row
+        self.prioritizeTitle = prioritizeTitle
+    }
 
 	var body: some View {
 		HStack(alignment: .center) {
 			VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-				Text(row.titleName)
+                Text(prioritizeTitle ? row.titleName : row.detail ?? row.titleName)
 					.font(Theme.Typography.body16)
 					.foregroundStyle(Theme.Colors.ink)
 				Text(row.date.formatted(date: .omitted, time: .shortened))
 					.font(Theme.Typography.caption12)
 					.foregroundStyle(Theme.Colors.inkTertiary)
-				if let detail = row.detail, !detail.isEmpty {
+				if let detail = row.detail, !detail.isEmpty, prioritizeTitle {
 					Text(detail)
 						.font(Theme.Typography.caption12)
 						.foregroundStyle(Theme.Colors.inkTertiary)
