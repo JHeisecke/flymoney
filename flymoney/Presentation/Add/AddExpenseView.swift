@@ -37,6 +37,7 @@ struct AddExpenseView: View {
 				suggestions: viewModel.suggestions,
 				selectedID: viewModel.selectedTitleID,
 				selectedSummary: viewModel.budget,
+				limitsByTitleID: viewModel.limitsByTitleID,
 				onQueryChange: { viewModel.search($0) },
 				onSelect: { await viewModel.select($0) })
 				.zIndex(1)

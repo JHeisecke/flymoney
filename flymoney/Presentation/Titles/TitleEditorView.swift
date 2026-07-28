@@ -48,7 +48,7 @@ struct TitleEditorView: View {
 				}
 
 				VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-					Text(String(localized: "Monthly limit"))
+					Text("\(String(localized: "Monthly limit")) (\(model.monthLabel()))")
 						.font(Theme.Typography.caption12)
 						.foregroundStyle(Theme.Colors.textSubtle)
 					TextField(String(localized: "Monthly limit"), text: $limitText)

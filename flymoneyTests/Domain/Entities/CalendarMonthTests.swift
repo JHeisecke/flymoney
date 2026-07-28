@@ -97,4 +97,15 @@ struct CalendarMonthTests {
 		#expect(result.year == 2027)
 		#expect(result.month == 1)
 	}
+
+	@Test("key is sortable across year boundaries", .tags(.entity))
+	func keySortableAcrossYears() {
+		let jan = CalendarMonth(year: 2026, month: 1)
+		let dec = CalendarMonth(year: 2026, month: 12)
+		let janNext = CalendarMonth(year: 2027, month: 1)
+		#expect(jan.key == 2026 * 12)
+		#expect(dec.key == 2026 * 12 + 11)
+		#expect(jan.key < dec.key)
+		#expect(dec.key + 1 == janNext.key)
+	}
 }

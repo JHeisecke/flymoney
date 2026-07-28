@@ -14,6 +14,7 @@ final class AppAssembly {
 	private let currencyProvider: CurrencyProvider
 	private let expenseRepo: ExpenseRepository
 	private let titleRepo: ExpenseTitleRepository
+	private let titleLimitRepo: TitleLimitRepository
 
 	init() throws {
 		container = try SwiftDataStack.makeContainer()
@@ -23,6 +24,9 @@ final class AppAssembly {
 			modelContainer: container
 		)
 		titleRepo = SwiftDataExpenseTitleRepository(
+			modelContainer: container, defaultCurrencyCode: provider.defaultCurrencyCode
+		)
+		titleLimitRepo = SwiftDataTitleLimitRepository(
 			modelContainer: container, defaultCurrencyCode: provider.defaultCurrencyCode
 		)
 	}
@@ -36,7 +40,7 @@ final class AppAssembly {
 	}
 
 	func makeRemainingBudgetUseCase() -> any RemainingBudgetUseCase {
-		RemainingBudgetUseCaseImpl(expenses: expenseRepo, titles: titleRepo)
+		RemainingBudgetUseCaseImpl(expenses: expenseRepo, limits: titleLimitRepo)
 	}
 
 	func makeSearchExpenseTitlesUseCase() -> any SearchExpenseTitlesUseCase {
@@ -56,7 +60,7 @@ final class AppAssembly {
 	}
 
 	func makeExportMonthUseCase() -> any ExportMonthUseCase {
-		ExportMonthUseCaseImpl(expenses: expenseRepo, titles: titleRepo, currencyProvider: currencyProvider)
+		ExportMonthUseCaseImpl(expenses: expenseRepo, titles: titleRepo, limits: titleLimitRepo, currencyProvider: currencyProvider)
 	}
 
 	func makeFetchExpenseTitlesUseCase() -> any FetchExpenseTitlesUseCase {
@@ -64,7 +68,15 @@ final class AppAssembly {
 	}
 
 	func makeDeleteExpenseTitleUseCase() -> any DeleteExpenseTitleUseCase {
-		DeleteExpenseTitleUseCaseImpl(titles: titleRepo, expenses: expenseRepo)
+		DeleteExpenseTitleUseCaseImpl(titles: titleRepo, expenses: expenseRepo, limits: titleLimitRepo)
+	}
+
+	func makeSetTitleLimitUseCase() -> any SetTitleLimitUseCase {
+		SetTitleLimitUseCaseImpl(limits: titleLimitRepo)
+	}
+
+	func makeFetchEffectiveLimitsUseCase() -> any FetchEffectiveLimitsUseCase {
+		FetchEffectiveLimitsUseCaseImpl(limits: titleLimitRepo)
 	}
 
 	func makeAllTitlesManagementViewModel() -> AllTitlesManagementViewModel {
@@ -80,6 +92,8 @@ final class AppAssembly {
 			upsertTitle: makeUpsertExpenseTitleUseCase(),
 			deleteTitle: makeDeleteExpenseTitleUseCase(),
 			fetchExpenses: makeFetchExpensesForMonthUseCase(),
+			fetchLimits: makeFetchEffectiveLimitsUseCase(),
+			setTitleLimit: makeSetTitleLimitUseCase(),
 			currencyCode: currencyProvider.defaultCurrencyCode)
 	}
 
@@ -88,6 +102,7 @@ final class AppAssembly {
 			addExpense: makeAddExpenseUseCase(),
 			searchTitles: makeSearchExpenseTitlesUseCase(),
 			remainingBudget: makeRemainingBudgetUseCase(),
+			fetchLimits: makeFetchEffectiveLimitsUseCase(),
 			currencyCode: currencyProvider.defaultCurrencyCode)
 	}
 
@@ -98,6 +113,7 @@ final class AppAssembly {
 			deleteExpense: makeDeleteExpenseUseCase(),
 			updateExpense: makeUpdateExpenseUseCase(),
 			searchTitles: makeSearchExpenseTitlesUseCase(),
+			fetchLimits: makeFetchEffectiveLimitsUseCase(),
 			currencyCode: currencyProvider.defaultCurrencyCode)
 	}
 
@@ -123,6 +139,8 @@ final class AppAssembly {
 			fetchTitles: makeFetchExpenseTitlesUseCase(),
 			addExpense: makeAddExpenseUseCase(),
 			upsertTitle: makeUpsertExpenseTitleUseCase(),
+			setTitleLimit: makeSetTitleLimitUseCase(),
+			fetchLimits: makeFetchEffectiveLimitsUseCase(),
 			transport: transport,
 			bleTransport: transport)
 	}

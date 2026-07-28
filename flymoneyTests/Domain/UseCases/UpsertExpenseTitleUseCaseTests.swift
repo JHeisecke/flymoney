@@ -19,7 +19,7 @@ struct UpsertExpenseTitleUseCaseTests {
 		try await titles.upsert(original)
 
 		let useCase = UpsertExpenseTitleUseCaseImpl(titles: titles)
-		let result = try await useCase.execute(id: original.id, name: "Espresso", limit: nil, period: .calendarMonth)
+		let result = try await useCase.execute(id: original.id, name: "Espresso")
 
 		#expect(result.id == original.id)
 		#expect(result.name == "Espresso")
@@ -34,7 +34,7 @@ struct UpsertExpenseTitleUseCaseTests {
 		let titles = InMemoryExpenseTitleRepository()
 
 		let useCase = UpsertExpenseTitleUseCaseImpl(titles: titles)
-		let result = try await useCase.execute(id: nil, name: "Coffee", limit: nil, period: .calendarMonth)
+		let result = try await useCase.execute(id: nil, name: "Coffee")
 
 		#expect(result.name == "Coffee")
 		let all = try await titles.allTitles()
@@ -48,10 +48,10 @@ struct UpsertExpenseTitleUseCaseTests {
 		try await titles.upsert(original)
 
 		let useCase = UpsertExpenseTitleUseCaseImpl(titles: titles)
-		let result = try await useCase.execute(id: nil, name: "Coffee", limit: Money(minorUnits: 500, currencyCode: "USD"), period: .calendarMonth)
+		let result = try await useCase.execute(id: nil, name: "Coffee")
 
 		#expect(result.id == original.id)
-		#expect(result.limit?.minorUnits == 500)
+		#expect(result.createdAt == original.createdAt)
 
 		let all = try await titles.allTitles()
 		#expect(all.count == 1)
@@ -62,7 +62,7 @@ struct UpsertExpenseTitleUseCaseTests {
 		let titles = InMemoryExpenseTitleRepository()
 
 		let useCase = UpsertExpenseTitleUseCaseImpl(titles: titles)
-		let result = try await useCase.execute(id: nil, name: "  Coffee  ", limit: nil, period: .calendarMonth)
+		let result = try await useCase.execute(id: nil, name: "  Coffee  ")
 
 		#expect(result.name == "Coffee")
 	}

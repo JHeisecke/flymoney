@@ -16,28 +16,38 @@ import Observation
 	var name: String
 	var limitDecimal: Decimal = 0
 	let currencyCode: String
+	/// Month the limit change applies from (the month the caller was viewing).
+	let effectiveMonth: CalendarMonth
 	var nameError: String?
 	var saveError: String?
 
-	init(currencyCode: String) {
+	init(currencyCode: String, effectiveMonth: CalendarMonth) {
 		self.titleID = nil
 		self.name = ""
 		self.limitDecimal = 0
 		self.currencyCode = currencyCode
+		self.effectiveMonth = effectiveMonth
 	}
 
-	init(editing title: ExpenseTitle, currencyCode fallback: String) {
+	init(editing title: ExpenseTitle, currencyCode fallback: String, currentLimit: Money?, effectiveMonth: CalendarMonth) {
 		self.titleID = title.id
 		self.name = title.name
-		if let limit = title.limit {
-			self.limitDecimal = limit.majorUnits
+		if let currentLimit {
+			self.limitDecimal = currentLimit.majorUnits
 		} else {
 			self.limitDecimal = 0
 		}
-		self.currencyCode = title.limit?.currencyCode ?? fallback
+		self.currencyCode = currentLimit?.currencyCode ?? fallback
+		self.effectiveMonth = effectiveMonth
 	}
 
 	var isEditing: Bool { titleID != nil }
+
+	/// "Applies from July 2026" — locale-aware month + year for the effective month.
+	func monthLabel(calendar: Calendar = .current) -> String {
+		let start = effectiveMonth.interval(using: calendar).start
+		return start.formatted(.dateTime.month(.wide).year())
+    }
 
 	func validated(existing: [ExpenseTitle]) -> (id: UUID?, name: String, limit: Money?)? {
 		nameError = nil

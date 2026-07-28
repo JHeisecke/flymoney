@@ -13,6 +13,7 @@ struct TitleAutocompleteField: View {
 	let suggestions: [ExpenseTitle]
 	let selectedID: UUID?
 	let selectedSummary: MonthSummary?
+	let limitsByTitleID: [UUID: Money]
 	let onQueryChange: (String) -> Void
 	let onSelect: (ExpenseTitle) async -> Void
 
@@ -76,7 +77,8 @@ struct TitleAutocompleteField: View {
 					SuggestionRowView(
 						title: title,
 						isSelected: title.id == selectedID,
-						summary: title.id == selectedID ? selectedSummary : nil
+						summary: title.id == selectedID ? selectedSummary : nil,
+						limit: limitsByTitleID[title.id]
 					) {
 						showSuggestions = false
 						isFocused = false
@@ -105,6 +107,7 @@ private struct SuggestionRowView: View {
 	let title: ExpenseTitle
 	let isSelected: Bool
 	let summary: MonthSummary?
+	let limit: Money?
 	let onTap: () -> Void
 
 	var body: some View {
@@ -132,7 +135,7 @@ private struct SuggestionRowView: View {
 				.font(Theme.Typography.caption13Strong)
 				.foregroundStyle(summary.isOver ? Theme.Colors.danger : Theme.Colors.success)
 				.monospacedDigit()
-		} else if let limit = title.limit {
+		} else if let limit {
 			Text("\(limit.formatted()) / \(String(localized: "mo"))")
 				.font(Theme.Typography.body13)
 				.foregroundStyle(Theme.Colors.textSubtle)

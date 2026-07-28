@@ -19,10 +19,12 @@ final class AddExpenseViewModel {
 	private(set) var suggestions: [ExpenseTitle] = []
 	private(set) var selectedTitleID: UUID?
 	private(set) var budget: MonthSummary?
+	private(set) var limitsByTitleID: [UUID: Money] = [:]
 
 	private let addExpense: any AddExpenseUseCase
 	private let searchTitles: any SearchExpenseTitlesUseCase
 	private let remainingBudget: any RemainingBudgetUseCase
+	private let fetchLimits: any FetchEffectiveLimitsUseCase
 	private let calendar: Calendar
 	private let searchDebounce: Duration
 	private var searchTask: Task<Void, Never>?
@@ -30,12 +32,14 @@ final class AddExpenseViewModel {
 	init(addExpense: any AddExpenseUseCase,
 		 searchTitles: any SearchExpenseTitlesUseCase,
 		 remainingBudget: any RemainingBudgetUseCase,
+		 fetchLimits: any FetchEffectiveLimitsUseCase,
 		 currencyCode: String,
 		 calendar: Calendar = .current,
 		 searchDebounce: Duration = .milliseconds(200)) {
 		self.addExpense = addExpense
 		self.searchTitles = searchTitles
 		self.remainingBudget = remainingBudget
+		self.fetchLimits = fetchLimits
 		self.calendar = calendar
 		self.searchDebounce = searchDebounce
 		self.form = AddExpenseFormModel(currencyCode: currencyCode)
@@ -48,6 +52,7 @@ final class AddExpenseViewModel {
 			suggestions = []
 			selectedTitleID = nil
 			budget = nil
+			limitsByTitleID = [:]
 			return
 		}
 		searchTask = Task { [searchDebounce, trimmed] in
@@ -58,11 +63,13 @@ final class AddExpenseViewModel {
 	}
 
 	private func performSearch(_ query: String) async {
+		async let limitsTask = fetchLimits.execute(currentMonth)
 		do {
 			suggestions = try await searchTitles.execute(query: query)
 		} catch {
 			suggestions = []
 		}
+		limitsByTitleID = (try? await limitsTask) ?? [:]
 		await updateBinding(forText: query)
 	}
 
@@ -86,8 +93,11 @@ final class AddExpenseViewModel {
 	}
 
 	private func loadBudget(for titleID: UUID) async {
-		let month = CalendarMonth.containing(.now, using: calendar)
-		budget = try? await remainingBudget.execute(titleID: titleID, month: month)
+		budget = try? await remainingBudget.execute(titleID: titleID, month: currentMonth)
+	}
+
+	private var currentMonth: CalendarMonth {
+		CalendarMonth.containing(.now, using: calendar)
 	}
 
 	func save() async {
@@ -102,6 +112,7 @@ final class AddExpenseViewModel {
 			suggestions = []
 			selectedTitleID = nil
 			budget = nil
+			limitsByTitleID = [:]
 			didJustSave = true
 		} catch {
 			saveError = String(localized: "Couldn\u{2019}t save. Try again.")

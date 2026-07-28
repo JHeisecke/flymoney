@@ -32,6 +32,7 @@ struct ExpenseEditView: View {
 					suggestions: model.suggestions,
 					selectedID: model.selectedTitleID,
 					selectedSummary: nil,
+					limitsByTitleID: model.limitsByTitleID,
 					onQueryChange: { model.search($0) },
 					onSelect: { model.select($0) })
 

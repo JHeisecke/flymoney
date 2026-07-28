@@ -26,7 +26,6 @@ struct AddExpenseUseCaseTests {
 
 		let createdTitle = try await titles.title(named: "Coffee")
 		#expect(createdTitle != nil)
-		#expect(createdTitle?.limit == nil)
 		#expect(createdTitle?.period == .calendarMonth)
 	}
 

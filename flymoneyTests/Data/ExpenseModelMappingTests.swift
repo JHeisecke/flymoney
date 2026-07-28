@@ -81,38 +81,50 @@ struct ExpenseModelMappingTests {
 		#expect(roundTripped.amount.currencyCode == "EUR")
 	}
 
-	@Test("nil limit maps to nil Money")
-	func nilLimitMapsToNilMoney() {
-		let model = ExpenseTitleModel(
-			id: UUID(), name: "Coffee", limitMinorUnits: nil,
-			currencyCode: "USD", createdAt: Date(timeIntervalSince1970: 1735689600)
-		)
-		let entity = model.toEntity()
-		#expect(entity.limit == nil)
-	}
-
-	@Test("limit round-trips lossless")
-	func limitRoundTrip() {
+	@Test("title identity round-trips lossless")
+	func titleIdentityRoundTrip() {
 		let entity = ExpenseTitle(
 			id: UUID(),
 			name: "Rent",
-			limit: Money(minorUnits: 80000, currencyCode: "USD"),
 			period: .calendarMonth,
 			createdAt: Date(timeIntervalSince1970: 1735689600)
 		)
 		let model = ExpenseTitleModel(
 			id: entity.id, name: entity.name,
-			limitMinorUnits: entity.limit?.minorUnits,
 			currencyCode: "USD", createdAt: entity.createdAt
 		)
 		let roundTripped = model.toEntity()
-		#expect(roundTripped.limit?.minorUnits == 80000)
+		#expect(roundTripped == entity)
+	}
+
+	@Test("title limit round-trips lossless through TitleLimitModel")
+	func titleLimitRoundTrip() {
+		let titleID = UUID()
+		let monthKey = CalendarMonth(year: 2026, month: 7).key
+		let model = TitleLimitModel(
+			titleID: titleID, effectiveMonthKey: monthKey,
+			limitMinorUnits: 80000, currencyCode: "USD"
+		)
+		let entity = model.toEntity()
+		#expect(entity == TitleLimit(
+			titleID: titleID, effectiveMonthKey: monthKey,
+			limit: Money(minorUnits: 80000, currencyCode: "USD")
+		))
+	}
+
+	@Test("nil limitMinorUnits maps to a cleared (nil) limit")
+	func nilLimitMapsToCleared() {
+		let model = TitleLimitModel(
+			titleID: UUID(), effectiveMonthKey: CalendarMonth(year: 2026, month: 7).key,
+			limitMinorUnits: nil, currencyCode: "USD"
+		)
+		#expect(model.toEntity().limit == nil)
 	}
 
 	@Test("nil lastUsedAt maps correctly")
 	func nilLastUsedAtMaps() {
 		let model = ExpenseTitleModel(
-			id: UUID(), name: "Coffee", limitMinorUnits: nil,
+			id: UUID(), name: "Coffee",
 			currencyCode: "USD", createdAt: Date(timeIntervalSince1970: 1735689600),
 			lastUsedAt: nil
 		)
@@ -126,14 +138,12 @@ struct ExpenseModelMappingTests {
 		let entity = ExpenseTitle(
 			id: UUID(),
 			name: "Rent",
-			limit: Money(minorUnits: 80000, currencyCode: "USD"),
 			period: .calendarMonth,
 			createdAt: Date(timeIntervalSince1970: 1000),
 			lastUsedAt: now
 		)
 		let model = ExpenseTitleModel(
 			id: entity.id, name: entity.name,
-			limitMinorUnits: entity.limit?.minorUnits,
 			currencyCode: "USD", createdAt: entity.createdAt,
 			lastUsedAt: entity.lastUsedAt
 		)

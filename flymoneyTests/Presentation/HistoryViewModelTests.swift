@@ -30,6 +30,7 @@ struct HistoryViewModelTests {
 			deleteExpense: DeleteExpenseUseCaseImpl(expenses: expenses),
 			updateExpense: UpdateExpenseUseCaseImpl(expenses: expenses, titles: titles),
 			searchTitles: SearchExpenseTitlesUseCaseImpl(titles: titles),
+			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: InMemoryTitleLimitRepository()),
 			currencyCode: "USD",
 			calendar: Self.utc,
 			now: now)
@@ -167,6 +168,7 @@ struct HistoryViewModelTests {
 			deleteExpense: ThrowingDeleteExpenseUseCase(),
 			updateExpense: UpdateExpenseUseCaseImpl(expenses: expenses, titles: titles),
 			searchTitles: SearchExpenseTitlesUseCaseImpl(titles: titles),
+			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: InMemoryTitleLimitRepository()),
 			currencyCode: "USD",
 			calendar: Self.utc,
 			now: Date(timeIntervalSince1970: 1748736000))

@@ -22,19 +22,25 @@ struct AddExpenseViewModelTests {
 	private func makeVM(
 		expenses: InMemoryExpenseRepository = InMemoryExpenseRepository(),
 		titles: InMemoryExpenseTitleRepository = InMemoryExpenseTitleRepository(),
+		limits: InMemoryTitleLimitRepository = InMemoryTitleLimitRepository(),
 		searchDebounce: Duration = .milliseconds(1)
 	) -> AddExpenseViewModel {
 		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
 		let search = SearchExpenseTitlesUseCaseImpl(titles: titles)
-		let budget = RemainingBudgetUseCaseImpl(expenses: expenses, titles: titles, calendar: Self.utc)
+		let budget = RemainingBudgetUseCaseImpl(expenses: expenses, limits: limits, calendar: Self.utc)
 		let vm = AddExpenseViewModel(
 			addExpense: useCase,
 			searchTitles: search,
 			remainingBudget: budget,
+			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: limits),
 			currencyCode: "USD",
 			calendar: Self.utc,
 			searchDebounce: searchDebounce)
 		return vm
+	}
+
+	private var currentMonthKey: Int {
+		CalendarMonth.containing(Date(), using: Self.utc).key
 	}
 
 	private func awaitSearch() async {
@@ -101,7 +107,6 @@ struct AddExpenseViewModelTests {
 
 		let created = try await titles.title(named: "Coffee")
 		#expect(created != nil)
-		#expect(created?.limit == nil)
 		#expect(created?.period == .calendarMonth)
 	}
 
@@ -223,12 +228,13 @@ struct AddExpenseViewModelTests {
 	func selectUnderBudget() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let expenses = InMemoryExpenseRepository()
-		let limit = Money(minorUnits: 1000, currencyCode: "USD")
-		let title = ExpenseTitle(id: UUID(), name: "Coffee", limit: limit)
+		let limits = InMemoryTitleLimitRepository()
+		let title = ExpenseTitle(id: UUID(), name: "Coffee")
 		try await titles.upsert(title)
+		try await limits.setLimit(Money(minorUnits: 1000, currencyCode: "USD"), forTitleID: title.id, effectiveMonthKey: currentMonthKey)
 		try await expenses.add(Expense(amount: Money(minorUnits: 300, currencyCode: "USD"), titleID: title.id, date: Date()))
 
-		let vm = makeVM(expenses: expenses, titles: titles)
+		let vm = makeVM(expenses: expenses, titles: titles, limits: limits)
 		await vm.select(title)
 
 		#expect(vm.budget?.isOver == false)
@@ -239,12 +245,13 @@ struct AddExpenseViewModelTests {
 	func selectOverBudget() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let expenses = InMemoryExpenseRepository()
-		let limit = Money(minorUnits: 500, currencyCode: "USD")
-		let title = ExpenseTitle(id: UUID(), name: "Shopping", limit: limit)
+		let limits = InMemoryTitleLimitRepository()
+		let title = ExpenseTitle(id: UUID(), name: "Shopping")
 		try await titles.upsert(title)
+		try await limits.setLimit(Money(minorUnits: 500, currencyCode: "USD"), forTitleID: title.id, effectiveMonthKey: currentMonthKey)
 		try await expenses.add(Expense(amount: Money(minorUnits: 800, currencyCode: "USD"), titleID: title.id, date: Date()))
 
-		let vm = makeVM(expenses: expenses, titles: titles)
+		let vm = makeVM(expenses: expenses, titles: titles, limits: limits)
 		await vm.select(title)
 
 		#expect(vm.budget?.isOver == true)
@@ -253,13 +260,28 @@ struct AddExpenseViewModelTests {
 	@Test("select limit-less title has nil limit in budget", .tags(.viewModel))
 	func selectLimitLessTitle() async throws {
 		let titles = InMemoryExpenseTitleRepository()
-		let title = ExpenseTitle(name: "Coffee", limit: nil)
+		let title = ExpenseTitle(name: "Coffee")
 		try await titles.upsert(title)
 
 		let vm = makeVM(titles: titles)
 		await vm.select(title)
 
 		#expect(vm.budget?.limit == nil)
+	}
+
+	@Test("search resolves current-month limits for suggestion captions", .tags(.viewModel))
+	func searchResolvesLimitsForCaptions() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let limits = InMemoryTitleLimitRepository()
+		let title = ExpenseTitle(name: "Coffee")
+		try await titles.upsert(title)
+		try await limits.setLimit(Money(minorUnits: 50000, currencyCode: "USD"), forTitleID: title.id, effectiveMonthKey: currentMonthKey)
+
+		let vm = makeVM(titles: titles, limits: limits)
+		vm.search("Coffee")
+		await awaitSearch()
+
+		#expect(vm.limitsByTitleID[title.id]?.minorUnits == 50000)
 	}
 
 	@Test("auto-bind on exact typed match", .tags(.viewModel))
@@ -312,12 +334,13 @@ struct AddExpenseViewModelTests {
 	func budgetUsesCurrentMonth() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let expenses = InMemoryExpenseRepository()
-		let limit = Money(minorUnits: 1000, currencyCode: "USD")
-		let title = ExpenseTitle(id: UUID(), name: "Coffee", limit: limit)
+		let limits = InMemoryTitleLimitRepository()
+		let title = ExpenseTitle(id: UUID(), name: "Coffee")
 		try await titles.upsert(title)
+		try await limits.setLimit(Money(minorUnits: 1000, currencyCode: "USD"), forTitleID: title.id, effectiveMonthKey: currentMonthKey)
 		try await expenses.add(Expense(amount: Money(minorUnits: 400, currencyCode: "USD"), titleID: title.id, date: Date()))
 
-		let vm = makeVM(expenses: expenses, titles: titles)
+		let vm = makeVM(expenses: expenses, titles: titles, limits: limits)
 		vm.form.date = Date().addingTimeInterval(-60 * 86400)
 		await vm.select(title)
 
@@ -393,12 +416,14 @@ struct AddExpenseViewModelTests {
 		searchDebounce: Duration
 	) -> AddExpenseViewModel {
 		let expenses = InMemoryExpenseRepository()
+		let limits = InMemoryTitleLimitRepository()
 		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: InMemoryExpenseTitleRepository())
-		let budget = RemainingBudgetUseCaseImpl(expenses: expenses, titles: InMemoryExpenseTitleRepository(), calendar: Self.utc)
+		let budget = RemainingBudgetUseCaseImpl(expenses: expenses, limits: limits, calendar: Self.utc)
 		return AddExpenseViewModel(
 			addExpense: useCase,
 			searchTitles: titles,
 			remainingBudget: budget,
+			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: limits),
 			currencyCode: "USD",
 			calendar: Self.utc,
 			searchDebounce: searchDebounce)

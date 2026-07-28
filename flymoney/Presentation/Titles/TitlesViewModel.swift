@@ -13,6 +13,7 @@ import Observation
 final class TitlesViewModel {
 	private(set) var titles: [ExpenseTitle] = []
 	private(set) var spentByTitle: [UUID: Money] = [:]
+	private(set) var limitByTitle: [UUID: Money] = [:]
 	private(set) var isLoading = false
 
 	var visibleTitles: [ExpenseTitle] {
@@ -28,6 +29,8 @@ final class TitlesViewModel {
 	private let upsertTitle: any UpsertExpenseTitleUseCase
 	private let deleteTitle: any DeleteExpenseTitleUseCase
 	private let fetchExpenses: any FetchExpensesForMonthUseCase
+	private let fetchLimits: any FetchEffectiveLimitsUseCase
+	private let setTitleLimit: any SetTitleLimitUseCase
 	let calendar: Calendar
 	let currencyCode: String
 
@@ -35,6 +38,8 @@ final class TitlesViewModel {
 		 upsertTitle: any UpsertExpenseTitleUseCase,
 		 deleteTitle: any DeleteExpenseTitleUseCase,
 		 fetchExpenses: any FetchExpensesForMonthUseCase,
+		 fetchLimits: any FetchEffectiveLimitsUseCase,
+		 setTitleLimit: any SetTitleLimitUseCase,
 		 calendar: Calendar = .current,
 		 now: Date = .now,
 		 currencyCode: String) {
@@ -42,6 +47,8 @@ final class TitlesViewModel {
 		self.upsertTitle = upsertTitle
 		self.deleteTitle = deleteTitle
 		self.fetchExpenses = fetchExpenses
+		self.fetchLimits = fetchLimits
+		self.setTitleLimit = setTitleLimit
 		self.calendar = calendar
 		self.currencyCode = currencyCode
 		self.month = CalendarMonth.containing(now, using: calendar)
@@ -61,9 +68,11 @@ final class TitlesViewModel {
 		do {
 			async let titlesTask = fetchTitles.execute()
 			async let expensesTask = fetchExpenses.execute(month)
-			let (titles, expenses) = try await (titlesTask, expensesTask)
+			async let limitsTask = fetchLimits.execute(month)
+			let (titles, expenses, limits) = try await (titlesTask, expensesTask, limitsTask)
 			self.titles = titles
 			self.spentByTitle = computeSpent(expenses, defaultCode: currencyCode)
+			self.limitByTitle = limits
 			self.loadError = nil
 		} catch {
 			loadError = String(localized: Lexicon.loadFailed)
@@ -71,18 +80,20 @@ final class TitlesViewModel {
 	}
 
 	func beginCreate() {
-		editor = TitleEditorModel(currencyCode: currencyCode)
+		editor = TitleEditorModel(currencyCode: currencyCode, effectiveMonth: month)
 	}
 
 	func beginEdit(_ t: ExpenseTitle) {
-		editor = TitleEditorModel(editing: t, currencyCode: currencyCode)
+		editor = TitleEditorModel(
+			editing: t, currencyCode: currencyCode,
+			currentLimit: limitByTitle[t.id], effectiveMonth: month)
 	}
 
 	func save(_ model: TitleEditorModel) async {
 		guard let clean = model.validated(existing: titles) else { return }
 		do {
-			_ = try await upsertTitle.execute(
-				id: clean.id, name: clean.name, limit: clean.limit, period: .calendarMonth)
+			let title = try await upsertTitle.execute(id: clean.id, name: clean.name)
+			try await setTitleLimit.execute(titleID: title.id, limit: clean.limit, effectiveMonth: month)
 			editor = nil
 			await load()
 		} catch {

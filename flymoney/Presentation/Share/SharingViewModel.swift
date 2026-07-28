@@ -28,6 +28,7 @@ final class SharingViewModel {
 	private(set) var fuzzyMatches: [UUID: [LocalMatch]] = [:]
 	private(set) var combinedSummary: [MonthSummary] = []
 	private(set) var localTitles: [ExpenseTitle] = []
+	private var localLimits: [UUID: Money] = [:]
 
 	private let role: SharingRole
 	private let exportMonth: any ExportMonthUseCase
@@ -36,6 +37,8 @@ final class SharingViewModel {
 	private let fetchTitles: any FetchExpenseTitlesUseCase
 	private let addExpense: any AddExpenseUseCase
 	private let upsertTitle: any UpsertExpenseTitleUseCase
+	private let setTitleLimit: any SetTitleLimitUseCase
+	private let fetchLimits: any FetchEffectiveLimitsUseCase
 	private let sharingTransport: any SharingTransport
 	let bleTransport: BLEQRSharingTransport?
 
@@ -46,6 +49,8 @@ final class SharingViewModel {
 		 fetchTitles: any FetchExpenseTitlesUseCase,
 		 addExpense: any AddExpenseUseCase,
 		 upsertTitle: any UpsertExpenseTitleUseCase,
+		 setTitleLimit: any SetTitleLimitUseCase,
+		 fetchLimits: any FetchEffectiveLimitsUseCase,
 		 transport: any SharingTransport,
 		 bleTransport: BLEQRSharingTransport? = nil) {
 		self.role = role
@@ -55,6 +60,8 @@ final class SharingViewModel {
 		self.fetchTitles = fetchTitles
 		self.addExpense = addExpense
 		self.upsertTitle = upsertTitle
+		self.setTitleLimit = setTitleLimit
+		self.fetchLimits = fetchLimits
 		self.sharingTransport = transport
 		self.bleTransport = bleTransport
 	}
@@ -94,7 +101,10 @@ final class SharingViewModel {
 					_ = try? await addExpense.execute(amount: expense.amount, titleName: local.name, date: expense.date, detail: nil)
 				}
 			case .keepSeparate:
-				_ = try? await upsertTitle.execute(id: title.id, name: title.name, limit: title.limit, period: .calendarMonth)
+				if let saved = try? await upsertTitle.execute(id: title.id, name: title.name) {
+					let limit = imported.limitsByTitleID[title.id]
+					try? await setTitleLimit.execute(titleID: saved.id, limit: limit, effectiveMonth: imported.month)
+				}
 				for expense in imported.expenses where expense.titleID == title.id {
 					_ = try? await addExpense.execute(amount: expense.amount, titleName: title.name, date: expense.date, detail: nil)
 				}
@@ -142,6 +152,7 @@ final class SharingViewModel {
 			case .received(let payload):
 				if let imported = try? importShared.execute(payload) {
 					await loadLocalTitles()
+					await loadLocalLimits(for: imported.month)
 					fuzzyMatches = MergeMatcher.findMatches(imported: imported.titles, local: localTitles)
 					for (id, matches) in fuzzyMatches {
 						if let strong = matches.first(where: { $0.isStrong }) {
@@ -165,12 +176,16 @@ final class SharingViewModel {
 		localTitles = (try? await fetchTitles.execute()) ?? []
 	}
 
+	private func loadLocalLimits(for month: CalendarMonth) async {
+		localLimits = (try? await fetchLimits.execute(month)) ?? [:]
+	}
+
 	private func recomputeSummary() async {
 		guard case .awaitingMerge(let imported) = phase else { return }
 		_ = try? remerge(imported)
 	}
 
 	private func remerge(_ imported: ImportedMonth) throws {
-		combinedSummary = try mergeTitles.execute(local: localTitles, imported: imported, resolutions: resolutions)
+		combinedSummary = try mergeTitles.execute(local: localTitles, localLimits: localLimits, imported: imported, resolutions: resolutions)
 	}
 }

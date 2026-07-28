@@ -27,16 +27,11 @@ actor SwiftDataExpenseTitleRepository: ExpenseTitleRepository, ModelActor {
 			FetchDescriptor<ExpenseTitleModel>(predicate: #Predicate { $0.id == id })
 		).first
 		if let existing {
-			let code = title.limit?.currencyCode ?? existing.currencyCode
 			existing.name = title.name
-			existing.limitMinorUnits = title.limit?.minorUnits
-			existing.currencyCode = code
 		} else {
-			let code = title.limit?.currencyCode ?? defaultCurrencyCode
 			context.insert(ExpenseTitleModel(
 				id: title.id, name: title.name,
-				limitMinorUnits: title.limit?.minorUnits,
-				currencyCode: code, createdAt: title.createdAt,
+				currencyCode: defaultCurrencyCode, createdAt: title.createdAt,
 				lastUsedAt: title.lastUsedAt
 			))
 		}
@@ -88,9 +83,8 @@ actor SwiftDataExpenseTitleRepository: ExpenseTitleRepository, ModelActor {
 
 extension ExpenseTitleModel {
 	func toEntity() -> ExpenseTitle {
-		let limit = limitMinorUnits.map { Money(minorUnits: $0, currencyCode: currencyCode) }
-		return ExpenseTitle(id: id, name: name, limit: limit,
-							period: .calendarMonth, createdAt: createdAt,
-							lastUsedAt: lastUsedAt)
+		ExpenseTitle(id: id, name: name,
+					 period: .calendarMonth, createdAt: createdAt,
+					 lastUsedAt: lastUsedAt)
 	}
 }

@@ -24,13 +24,18 @@ final class ExpenseEditModel: Identifiable {
 
 	private(set) var suggestions: [ExpenseTitle] = []
 	private(set) var selectedTitleID: UUID?
+	private(set) var limitsByTitleID: [UUID: Money] = [:]
 
 	private let searchTitles: any SearchExpenseTitlesUseCase
+	private let fetchLimits: any FetchEffectiveLimitsUseCase
+	private let calendar: Calendar
 	private let searchDebounce: Duration
 	private var searchTask: Task<Void, Never>?
 
 	init(row: HistoryRow,
 		 searchTitles: any SearchExpenseTitlesUseCase,
+		 fetchLimits: any FetchEffectiveLimitsUseCase,
+		 calendar: Calendar = .current,
 		 searchDebounce: Duration = .milliseconds(200)) {
 		self.id = row.id
 		self.amountDecimal = row.amount.majorUnits
@@ -39,6 +44,8 @@ final class ExpenseEditModel: Identifiable {
 		self.detail = row.detail ?? ""
 		self.currencyCode = row.amount.currencyCode
 		self.searchTitles = searchTitles
+		self.fetchLimits = fetchLimits
+		self.calendar = calendar
 		self.searchDebounce = searchDebounce
 		self.selectedTitleID = row.titleID
 	}
@@ -54,6 +61,7 @@ final class ExpenseEditModel: Identifiable {
 		guard !trimmed.isEmpty else {
 			suggestions = []
 			selectedTitleID = nil
+			limitsByTitleID = [:]
 			return
 		}
 		searchTask = Task { [searchDebounce, trimmed] in
@@ -64,11 +72,14 @@ final class ExpenseEditModel: Identifiable {
 	}
 
 	private func performSearch(_ query: String) async {
+		let month = CalendarMonth.containing(date, using: calendar)
+		async let limitsTask = fetchLimits.execute(month)
 		do {
 			suggestions = try await searchTitles.execute(query: query)
 		} catch {
 			suggestions = []
 		}
+		limitsByTitleID = (try? await limitsTask) ?? [:]
 		if let match = suggestions.first(where: {
 			$0.name.compare(query, options: [.caseInsensitive, .diacriticInsensitive], range: nil, locale: .current) == .orderedSame
 		}) {

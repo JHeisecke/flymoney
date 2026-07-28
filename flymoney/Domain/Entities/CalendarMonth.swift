@@ -11,6 +11,9 @@ struct CalendarMonth: Equatable, Hashable, Sendable, Codable {
 	let year: Int
 	let month: Int
 
+	/// Sortable month identifier (`year * 12 + (month - 1)`) used for effective-dated queries.
+	var key: Int { year * 12 + (month - 1) }
+
 	func interval(using calendar: Calendar) -> DateInterval {
 		var comps = DateComponents()
 		comps.year = year

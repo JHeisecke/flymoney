@@ -22,13 +22,16 @@ struct TitlesViewModelTests {
 	private func makeVM(
 		titles: InMemoryExpenseTitleRepository = InMemoryExpenseTitleRepository(),
 		expenses: InMemoryExpenseRepository = InMemoryExpenseRepository(),
+		limits: InMemoryTitleLimitRepository = InMemoryTitleLimitRepository(),
 		now: Date = Date()
 	) -> TitlesViewModel {
 		TitlesViewModel(
 			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: titles),
 			upsertTitle: UpsertExpenseTitleUseCaseImpl(titles: titles),
-			deleteTitle: DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses),
+			deleteTitle: DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses, limits: limits),
 			fetchExpenses: FetchExpensesForMonthUseCaseImpl(expenses: expenses, calendar: Self.utc),
+			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: limits),
+			setTitleLimit: SetTitleLimitUseCaseImpl(limits: limits),
 			calendar: Self.utc,
 			now: now,
 			currencyCode: "USD"
@@ -48,10 +51,10 @@ struct TitlesViewModelTests {
 		#expect(vm.loadError == nil)
 	}
 
-	@Test("create with limit", .tags(.viewModel))
+	@Test("create with limit writes a row effective from the viewed month", .tags(.viewModel))
 	func createWithLimit() async throws {
 		let titles = InMemoryExpenseTitleRepository()
-		let vm = makeVM(titles: titles)
+		let vm = makeVM(titles: titles, now: date(day: 15, month: 6, year: 2026))
 
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
@@ -61,10 +64,11 @@ struct TitlesViewModelTests {
 
 		await vm.load()
 		#expect(vm.titles.count == 1)
-		#expect(vm.titles.first?.limit?.minorUnits == 1000)
+		let titleID = try #require(vm.titles.first?.id)
+		#expect(vm.limitByTitle[titleID]?.minorUnits == 1000)
 	}
 
-	@Test("create without limit", .tags(.viewModel))
+	@Test("create without limit resolves to no limit", .tags(.viewModel))
 	func createWithoutLimit() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let vm = makeVM(titles: titles)
@@ -76,20 +80,25 @@ struct TitlesViewModelTests {
 		await vm.save(editor)
 
 		await vm.load()
-		#expect(vm.titles.first?.limit == nil)
+		let titleID = try #require(vm.titles.first?.id)
+		#expect(vm.limitByTitle[titleID] == nil)
 	}
 
-	@Test("edit name and limit", .tags(.viewModel))
+	@Test("edit seeds from the viewed month's resolved limit and saves effective-dated", .tags(.viewModel))
 	func editNameAndLimit() async throws {
 		let titles = InMemoryExpenseTitleRepository()
-		let original = ExpenseTitle(id: UUID(), name: "Coffee", limit: Money(minorUnits: 500, currencyCode: "USD"))
+		let limits = InMemoryTitleLimitRepository()
+		let original = ExpenseTitle(id: UUID(), name: "Coffee")
 		try await titles.upsert(original)
+		try await limits.setLimit(Money(minorUnits: 500, currencyCode: "USD"), forTitleID: original.id, effectiveMonthKey: CalendarMonth(year: 2026, month: 6).key)
 
-		let vm = makeVM(titles: titles)
+		let vm = makeVM(titles: titles, limits: limits, now: date(day: 15, month: 6, year: 2026))
 		await vm.load()
 		vm.beginEdit(vm.titles[0])
 
 		let editor = try #require(vm.editor)
+		#expect(editor.limitDecimal == 5)
+		#expect(editor.effectiveMonth == CalendarMonth(year: 2026, month: 6))
 		editor.name = "Espresso"
 		editor.limitDecimal = 15
 		await vm.save(editor)
@@ -97,7 +106,46 @@ struct TitlesViewModelTests {
 		await vm.load()
 		#expect(vm.titles.count == 1)
 		#expect(vm.titles.first?.name == "Espresso")
-		#expect(vm.titles.first?.limit?.minorUnits == 1500)
+		#expect(vm.limitByTitle[original.id]?.minorUnits == 1500)
+	}
+
+	@Test("editing a limit changes the viewed month forward but not past months", .tags(.viewModel))
+	func editAppliesFromViewedMonthForward() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let limits = InMemoryTitleLimitRepository()
+		let vm = makeVM(titles: titles, limits: limits, now: date(day: 15, month: 6, year: 2026))
+
+		// Create in June with a $10 limit.
+		vm.beginCreate()
+		let createEditor = try #require(vm.editor)
+		createEditor.name = "Coffee"
+		createEditor.limitDecimal = 10
+		await vm.save(createEditor)
+
+		// Move to July and clear the limit.
+		vm.nextMonth()
+		await vm.load()
+		#expect(vm.month == CalendarMonth(year: 2026, month: 7))
+		let titleID = try #require(vm.titles.first?.id)
+		#expect(vm.limitByTitle[titleID]?.minorUnits == 1000)
+
+		vm.beginEdit(vm.titles[0])
+		let editEditor = try #require(vm.editor)
+		editEditor.limitDecimal = 0
+		await vm.save(editEditor)
+
+		// July on: cleared. June: untouched.
+		await vm.load()
+		#expect(vm.limitByTitle[titleID] == nil)
+
+		vm.previousMonth()
+		await vm.load()
+		#expect(vm.month == CalendarMonth(year: 2026, month: 6))
+		#expect(vm.limitByTitle[titleID]?.minorUnits == 1000)
+
+		let rows = try await limits.limits(forTitleID: titleID)
+		#expect(rows.count == 2)
+		#expect(rows.last?.limit == nil)
 	}
 
 	@Test("delete success removes title", .tags(.viewModel))
@@ -171,7 +219,7 @@ struct TitlesViewModelTests {
 	func spentByTitlePopulated() async throws {
 		let titles = InMemoryExpenseTitleRepository()
 		let expenses = InMemoryExpenseRepository()
-		let title = ExpenseTitle(name: "Coffee", limit: Money(minorUnits: 1000, currencyCode: "USD"))
+		let title = ExpenseTitle(name: "Coffee")
 		try await titles.upsert(title)
 		try await expenses.add(Expense(amount: Money(minorUnits: 300, currencyCode: "USD"), titleID: title.id, date: Date()))
 
@@ -182,19 +230,25 @@ struct TitlesViewModelTests {
 		#expect(spent?.minorUnits == 300)
 	}
 
-	@Test("meter shows 100% when spent equals limit", .tags(.viewModel))
-	func spentEqualsLimit() async throws {
+	@Test("load resolves limits for the viewed month", .tags(.viewModel))
+	func loadResolvesLimitsForViewedMonth() async throws {
 		let titles = InMemoryExpenseTitleRepository()
-		let expenses = InMemoryExpenseRepository()
-		let title = ExpenseTitle(name: "Coffee", limit: Money(minorUnits: 500, currencyCode: "USD"))
+		let limits = InMemoryTitleLimitRepository()
+		let title = ExpenseTitle(name: "Coffee")
 		try await titles.upsert(title)
-		try await expenses.add(Expense(amount: Money(minorUnits: 500, currencyCode: "USD"), titleID: title.id, date: Date()))
+		try await limits.setLimit(Money(minorUnits: 50000, currencyCode: "USD"), forTitleID: title.id, effectiveMonthKey: CalendarMonth(year: 2026, month: 4).key)
 
-		let vm = makeVM(titles: titles, expenses: expenses)
+		let vm = makeVM(titles: titles, limits: limits, now: date(day: 15, month: 6, year: 2026))
 		await vm.load()
+		#expect(vm.limitByTitle[title.id]?.minorUnits == 50000)
 
-		let spent = vm.spentByTitle[title.id]
-		#expect(spent?.minorUnits == 500)
+		// March precedes the only change → no limit.
+		vm.previousMonth()
+		vm.previousMonth()
+		vm.previousMonth()
+		await vm.load()
+		#expect(vm.month == CalendarMonth(year: 2026, month: 3))
+		#expect(vm.limitByTitle[title.id] == nil)
 	}
 
 	@Test("visibleTitles only includes titles with an expense in the selected month", .tags(.viewModel))

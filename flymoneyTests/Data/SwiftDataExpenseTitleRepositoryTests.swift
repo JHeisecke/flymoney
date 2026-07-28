@@ -21,12 +21,11 @@ struct SwiftDataExpenseTitleRepositoryTests {
 		let original = ExpenseTitle(id: id, name: "Coffee")
 		try await repo.upsert(original)
 
-		let updated = ExpenseTitle(id: id, name: "Espresso", limit: Money(minorUnits: 500, currencyCode: "USD"))
+		let updated = ExpenseTitle(id: id, name: "Espresso")
 		try await repo.upsert(updated)
 
 		let fetched = try await repo.title(id: id)
 		#expect(fetched?.name == "Espresso")
-		#expect(fetched?.limit?.minorUnits == 500)
 
 		let all = try await repo.allTitles()
 		#expect(all.count == 1)
@@ -87,16 +86,20 @@ struct SwiftDataExpenseTitleRepositoryTests {
 		#expect(results.count == 2)
 	}
 
-	@Test("limit-less title round-trips correctly")
-	func limitLessTitleRoundTrip() async throws {
+	@Test("title round-trips identity fields")
+	func titleRoundTrip() async throws {
 		let container = try TestSupport.makeContainer()
 		let repo = SwiftDataExpenseTitleRepository(modelContainer: container, defaultCurrencyCode: "EUR")
 
 		let id = UUID()
-		try await repo.upsert(ExpenseTitle(id: id, name: "Coffee", limit: nil))
+		let createdAt = Date(timeIntervalSince1970: 1000)
+		try await repo.upsert(ExpenseTitle(id: id, name: "Coffee", createdAt: createdAt))
 
 		let fetched = try await repo.title(id: id)
-		#expect(fetched?.limit == nil)
+		#expect(fetched?.id == id)
+		#expect(fetched?.name == "Coffee")
+		#expect(fetched?.createdAt == createdAt)
+		#expect(fetched?.period == .calendarMonth)
 	}
 
 	@Test("search with diacritics matches accent-insensitively")

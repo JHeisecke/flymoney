@@ -91,11 +91,10 @@ struct TitlesView: View {
 			ScrollView {
 				VStack(spacing: Theme.Spacing.md) {
 					ForEach(viewModel.visibleTitles) { title in
-						let currency = title.limit?.currencyCode ?? viewModel.currencyCode
-						if let limit = title.limit {
+						if let limit = viewModel.limitByTitle[title.id] {
 							TitleCardView(
 								title: title,
-								spent: viewModel.spentByTitle[title.id] ?? Money.zero(currency),
+								spent: viewModel.spentByTitle[title.id] ?? Money.zero(limit.currencyCode),
 								limit: limit
 							) { viewModel.beginEdit(title) }
 							.contextMenu {

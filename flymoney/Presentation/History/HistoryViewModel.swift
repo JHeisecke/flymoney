@@ -30,6 +30,7 @@ final class HistoryViewModel {
 	private let deleteExpense: any DeleteExpenseUseCase
 	private let updateExpense: any UpdateExpenseUseCase
 	private let searchTitles: any SearchExpenseTitlesUseCase
+	private let fetchLimits: any FetchEffectiveLimitsUseCase
 	private let _calendar: Calendar
 
 	init(fetchExpenses: any FetchExpensesForMonthUseCase,
@@ -37,6 +38,7 @@ final class HistoryViewModel {
 		 deleteExpense: any DeleteExpenseUseCase,
 		 updateExpense: any UpdateExpenseUseCase,
 		 searchTitles: any SearchExpenseTitlesUseCase,
+		 fetchLimits: any FetchEffectiveLimitsUseCase,
 		 currencyCode: String,
 		 calendar: Calendar = .current,
 		 now: Date = .now) {
@@ -45,6 +47,7 @@ final class HistoryViewModel {
 		self.deleteExpense = deleteExpense
 		self.updateExpense = updateExpense
 		self.searchTitles = searchTitles
+		self.fetchLimits = fetchLimits
 		self.currencyCode = currencyCode
 		self._calendar = calendar
 		self.month = CalendarMonth.containing(now, using: calendar)
@@ -114,7 +117,7 @@ final class HistoryViewModel {
 	}
 
 	func beginEdit(_ row: HistoryRow) {
-		editor = ExpenseEditModel(row: row, searchTitles: searchTitles)
+		editor = ExpenseEditModel(row: row, searchTitles: searchTitles, fetchLimits: fetchLimits, calendar: _calendar)
 	}
 
 	func save(_ model: ExpenseEditModel) async {

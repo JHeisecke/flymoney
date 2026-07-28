@@ -24,17 +24,42 @@ struct MergeTitlesUseCaseTests {
 			currencyCode: currency,
 			month: CalendarMonth(year: 2025, month: 6),
 			titles: [remoteTitle],
-			expenses: [remoteExpense]
+			expenses: [remoteExpense],
+			limitsByTitleID: [:]
 		)
 
 		let resolutions: [UUID: MergeResolution] = [remoteTitle.id: .keepSeparate]
 		let useCase = MergeTitlesUseCaseImpl()
-		let summaries = try useCase.execute(local: local, imported: imported, resolutions: resolutions)
+		let summaries = try useCase.execute(local: local, localLimits: [:], imported: imported, resolutions: resolutions)
 
 		#expect(summaries.count == 1)
 		#expect(summaries[0].titleID == remoteTitle.id)
 		#expect(summaries[0].spent.minorUnits == 500)
 		#expect(summaries[0].limit == nil)
+		#expect(summaries[0].isOver == false)
+	}
+
+	@Test("keepSeparate shows the shared month's imported limit")
+	func keepSeparateShowsImportedLimit() throws {
+		let local: [ExpenseTitle] = []
+		let remoteTitle = ExpenseTitle(id: UUID(), name: "Coffee")
+		let remoteExpense = Expense(amount: Money(minorUnits: 500, currencyCode: currency), titleID: remoteTitle.id, date: Date.now)
+		let remoteLimit = Money(minorUnits: 1000, currencyCode: currency)
+
+		let imported = ImportedMonth(
+			currencyCode: currency,
+			month: CalendarMonth(year: 2025, month: 6),
+			titles: [remoteTitle],
+			expenses: [remoteExpense],
+			limitsByTitleID: [remoteTitle.id: remoteLimit]
+		)
+
+		let resolutions: [UUID: MergeResolution] = [remoteTitle.id: .keepSeparate]
+		let useCase = MergeTitlesUseCaseImpl()
+		let summaries = try useCase.execute(local: local, localLimits: [:], imported: imported, resolutions: resolutions)
+
+		#expect(summaries[0].limit?.minorUnits == 1000)
+		#expect(summaries[0].remaining?.minorUnits == 500)
 		#expect(summaries[0].isOver == false)
 	}
 
@@ -49,12 +74,13 @@ struct MergeTitlesUseCaseTests {
 			currencyCode: currency,
 			month: CalendarMonth(year: 2025, month: 6),
 			titles: [remoteTitle],
-			expenses: [remoteExpense]
+			expenses: [remoteExpense],
+			limitsByTitleID: [:]
 		)
 
 		let resolutions: [UUID: MergeResolution] = [remoteTitle.id: .mergeInto(localTitleID: localID)]
 		let useCase = MergeTitlesUseCaseImpl()
-		let summaries = try useCase.execute(local: local, imported: imported, resolutions: resolutions)
+		let summaries = try useCase.execute(local: local, localLimits: [:], imported: imported, resolutions: resolutions)
 
 		#expect(summaries.count == 1)
 		#expect(summaries[0].titleID == localID)
@@ -65,7 +91,7 @@ struct MergeTitlesUseCaseTests {
 	func mergeIntoWithLimitAndOverBudget() throws {
 		let localID = UUID()
 		let limit = Money(minorUnits: 200, currencyCode: currency)
-		let local = [ExpenseTitle(id: localID, name: "Coffee", limit: limit)]
+		let local = [ExpenseTitle(id: localID, name: "Coffee")]
 		let remoteTitle = ExpenseTitle(id: UUID(), name: "CoffeeBean")
 		let remoteExpense = Expense(amount: Money(minorUnits: 300, currencyCode: currency), titleID: remoteTitle.id, date: Date.now)
 
@@ -73,12 +99,13 @@ struct MergeTitlesUseCaseTests {
 			currencyCode: currency,
 			month: CalendarMonth(year: 2025, month: 6),
 			titles: [remoteTitle],
-			expenses: [remoteExpense]
+			expenses: [remoteExpense],
+			limitsByTitleID: [:]
 		)
 
 		let resolutions: [UUID: MergeResolution] = [remoteTitle.id: .mergeInto(localTitleID: localID)]
 		let useCase = MergeTitlesUseCaseImpl()
-		let summaries = try useCase.execute(local: local, imported: imported, resolutions: resolutions)
+		let summaries = try useCase.execute(local: local, localLimits: [localID: limit], imported: imported, resolutions: resolutions)
 
 		#expect(summaries[0].spent.minorUnits == 300)
 		#expect(summaries[0].remaining?.minorUnits == -100)
@@ -98,12 +125,13 @@ struct MergeTitlesUseCaseTests {
 			currencyCode: currency,
 			month: CalendarMonth(year: 2025, month: 6),
 			titles: [remoteTitle],
-			expenses: [e1, e2]
+			expenses: [e1, e2],
+			limitsByTitleID: [:]
 		)
 
 		let resolutions: [UUID: MergeResolution] = [remoteTitle.id: .mergeInto(localTitleID: localID)]
 		let useCase = MergeTitlesUseCaseImpl()
-		let summaries = try useCase.execute(local: local, imported: imported, resolutions: resolutions)
+		let summaries = try useCase.execute(local: local, localLimits: [:], imported: imported, resolutions: resolutions)
 
 		#expect(summaries.count == 1)
 		#expect(summaries[0].spent.minorUnits == 300)

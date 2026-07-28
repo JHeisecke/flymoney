@@ -17,6 +17,8 @@ struct ImportedMonth: Equatable, Sendable {
 	let month: CalendarMonth
 	let titles: [ExpenseTitle]
 	let expenses: [Expense]
+	/// Each title's effective limit in the shared month, keyed by the payload's title id.
+	let limitsByTitleID: [UUID: Money]
 }
 
 protocol ImportSharedMonthUseCase: Sendable {
@@ -29,10 +31,16 @@ struct ImportSharedMonthUseCaseImpl: ImportSharedMonthUseCase {
 			ExpenseTitle(
 				id: dto.id,
 				name: dto.name,
-				limit: dto.limitMinorUnits.map { Money(minorUnits: $0, currencyCode: payload.currencyCode) },
 				period: .calendarMonth,
 				createdAt: .now
 			)
+		}
+
+		var limitsByTitleID: [UUID: Money] = [:]
+		for dto in payload.titles {
+			if let limitMinorUnits = dto.limitMinorUnits {
+				limitsByTitleID[dto.id] = Money(minorUnits: limitMinorUnits, currencyCode: payload.currencyCode)
+			}
 		}
 
 		let expenses = payload.expenses.map { dto in
@@ -48,7 +56,8 @@ struct ImportSharedMonthUseCaseImpl: ImportSharedMonthUseCase {
 			currencyCode: payload.currencyCode,
 			month: payload.month,
 			titles: titles,
-			expenses: expenses
+			expenses: expenses,
+			limitsByTitleID: limitsByTitleID
 		)
 	}
 }

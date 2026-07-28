@@ -75,17 +75,17 @@ struct TitleCardView: View {
 	ScrollView {
 		VStack(spacing: Theme.Spacing.md) {
 			TitleCardView(
-				title: ExpenseTitle(name: "Groceries", limit: Money(majorUnits: Decimal(500), currencyCode: "USD")),
+				title: ExpenseTitle(name: "Groceries"),
 				spent: Money(majorUnits: Decimal(200), currencyCode: "USD"),
 				limit: Money(majorUnits: Decimal(500), currencyCode: "USD")
 			) {}
 			TitleCardView(
-				title: ExpenseTitle(name: "Transport", limit: Money(majorUnits: Decimal(100), currencyCode: "USD")),
+				title: ExpenseTitle(name: "Transport"),
 				spent: Money(majorUnits: Decimal(95), currencyCode: "USD"),
 				limit: Money(majorUnits: Decimal(100), currencyCode: "USD")
 			) {}
 			TitleCardView(
-				title: ExpenseTitle(name: "Dining", limit: Money(majorUnits: Decimal(300), currencyCode: "USD")),
+				title: ExpenseTitle(name: "Dining"),
 				spent: Money(majorUnits: Decimal(350), currencyCode: "USD"),
 				limit: Money(majorUnits: Decimal(300), currencyCode: "USD")
 			) {}
@@ -104,7 +104,7 @@ struct TitleCardView: View {
 
 	VStack(spacing: Theme.Spacing.md) {
 		TitleCardView(
-			title: ExpenseTitle(name: "Interactive Title", limit: limit),
+			title: ExpenseTitle(name: "Interactive Title"),
 			spent: spent,
 			limit: limit
 		) {}
