@@ -890,6 +890,7 @@
       }
     },
     "Receive from a friend" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -1009,6 +1010,7 @@
       }
     },
     "Share this month" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {

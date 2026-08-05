@@ -69,17 +69,17 @@ struct HistoryView: View {
 				.tracking(-0.5)
 				.foregroundStyle(Theme.Colors.ink)
 			Spacer()
-			Menu {
-				Button(String(localized: "Share this month"), systemImage: "qrcode") {
-					sharingRole = .send(month: viewModel.month)
-				}
-				Button(String(localized: "Receive from a friend"), systemImage: "qrcode.viewfinder") {
-					sharingRole = .receive
-				}
-			} label: {
-				PillButton(title: "Share month", systemImage: nil, style: .outline) {}
-					.allowsHitTesting(false)
-			}
+//			Menu {
+//				Button(String(localized: "Share this month"), systemImage: "qrcode") {
+//					sharingRole = .send(month: viewModel.month)
+//				}
+//				Button(String(localized: "Receive from a friend"), systemImage: "qrcode.viewfinder") {
+//					sharingRole = .receive
+//				}
+//			} label: {
+//				PillButton(title: "Share month", systemImage: nil, style: .outline) {}
+//					.allowsHitTesting(false)
+//			}
 		}
 	}
 
