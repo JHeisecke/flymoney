@@ -21,6 +21,8 @@ struct ExpenseNoteField: View {
 					.tint(Theme.Colors.accent)
 					.textFieldStyle(.plain)
 					.lineLimit(1...4)
+					.focused($isFocused)
+					.onAppear { isFocused = true }
 			} else {
 				Button {
 					withAnimation(.easeOut(duration: 0.15)) { isExpanded = true }
