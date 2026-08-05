@@ -10,6 +10,7 @@ import SwiftUI
 struct ExpenseEditView: View {
 	@Bindable var model: ExpenseEditModel
 	@Environment(\.haptics) private var haptics
+	let assembly: AppAssembly
 	let onSave: @MainActor () async -> Void
 	let onCancel: @MainActor () -> Void
 
@@ -33,6 +34,7 @@ struct ExpenseEditView: View {
 					selectedID: model.selectedTitleID,
 					selectedSummary: nil,
 					limitsByTitleID: model.limitsByTitleID,
+					assembly: assembly,
 					onQueryChange: { model.search($0) },
 					onSelect: { model.select($0) })
 

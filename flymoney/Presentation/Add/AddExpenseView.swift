@@ -11,9 +11,11 @@ struct AddExpenseView: View {
 	@State private var viewModel: AddExpenseViewModel
 	@State private var showSuggestions = false
 	@Environment(\.haptics) private var haptics
+	let assembly: AppAssembly
 
-	init(viewModel: AddExpenseViewModel) {
+	init(viewModel: AddExpenseViewModel, assembly: AppAssembly) {
 		_viewModel = State(initialValue: viewModel)
+		self.assembly = assembly
 	}
 
 	var body: some View {
@@ -38,6 +40,7 @@ struct AddExpenseView: View {
 				selectedID: viewModel.selectedTitleID,
 				selectedSummary: viewModel.budget,
 				limitsByTitleID: viewModel.limitsByTitleID,
+				assembly: assembly,
 				onQueryChange: { viewModel.search($0) },
 				onSelect: { await viewModel.select($0) })
 				.zIndex(1)

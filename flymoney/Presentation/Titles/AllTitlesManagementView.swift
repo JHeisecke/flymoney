@@ -9,9 +9,11 @@ import SwiftUI
 
 struct AllTitlesManagementView: View {
 	@State private var viewModel: AllTitlesManagementViewModel
+	var onSelect: ((ExpenseTitle) -> Void)?
 
-	init(viewModel: AllTitlesManagementViewModel) {
+	init(viewModel: AllTitlesManagementViewModel, onSelect: ((ExpenseTitle) -> Void)? = nil) {
 		_viewModel = State(initialValue: viewModel)
+		self.onSelect = onSelect
 	}
 
 	var body: some View {
@@ -38,8 +40,18 @@ struct AllTitlesManagementView: View {
 			} else {
 				List {
 					ForEach(viewModel.titles) { title in
-						Text(title.name)
-							.font(Theme.Typography.body16)
+						if let onSelect {
+							Button {
+								onSelect(title)
+							} label: {
+								Text(title.name)
+									.font(Theme.Typography.body16)
+									.foregroundStyle(Theme.Colors.ink)
+							}
+						} else {
+							Text(title.name)
+								.font(Theme.Typography.body16)
+						}
 					}
 					.onDelete { indexSet in
 						let targets = indexSet.map { viewModel.titles[$0] }

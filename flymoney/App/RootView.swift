@@ -23,7 +23,7 @@ struct RootView: View {
 	var body: some View {
         TabView(selection: $selection) {
             Tab("Add", systemImage: "plus.circle", value: TabID.add) {
-                AddExpenseView(viewModel: assembly.makeAddExpenseViewModel())
+                AddExpenseView(viewModel: assembly.makeAddExpenseViewModel(), assembly: assembly)
             }
             Tab("History", systemImage: "list.bullet", value: TabID.history) {
                 HistoryView(viewModel: historyViewModel, assembly: assembly)

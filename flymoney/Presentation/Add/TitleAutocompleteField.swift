@@ -8,12 +8,16 @@
 import SwiftUI
 
 struct TitleAutocompleteField: View {
+    
+    @State private var showAllTitles = false
+
 	@Binding var titleName: String
 	@Binding var showSuggestions: Bool
 	let suggestions: [ExpenseTitle]
 	let selectedID: UUID?
 	let selectedSummary: MonthSummary?
 	let limitsByTitleID: [UUID: Money]
+	let assembly: AppAssembly
 	let onQueryChange: (String) -> Void
 	let onSelect: (ExpenseTitle) async -> Void
 
@@ -37,6 +41,15 @@ struct TitleAutocompleteField: View {
 			.onChange(of: isFocused) { _, focused in
 				if focused { showSuggestions = true }
 			}
+            .sheet(isPresented: $showAllTitles) {
+                AllTitlesManagementView(
+                    viewModel: assembly.makeAllTitlesManagementViewModel(),
+                    onSelect: { title in
+                        titleName = title.name
+                        showAllTitles = false
+                        Task { await onSelect(title) }
+                    })
+            }
 	}
 
 	private var field: some View {
@@ -47,8 +60,13 @@ struct TitleAutocompleteField: View {
 				.focused($isFocused)
 				.textFieldStyle(.plain)
 			if titleName.isEmpty {
-				EyebrowLabel(text: Lexicon.Term.singular.text, tracking: 0.6)
-					.padding(.trailing, Theme.Spacing.s14)
+                Button {
+                    showAllTitles = true
+                } label: {
+                    EyebrowLabel(text: Lexicon.Term.singular.text, tracking: 0.6)
+                        .padding(.trailing, Theme.Spacing.s14)
+                }
+                .buttonStyle(.hapticPlain)
 			}
 		}
 		.padding(.horizontal, Theme.Spacing.lg)

@@ -56,6 +56,7 @@ struct HistoryView: View {
 		.sheet(item: $viewModel.editor) { model in
 			ExpenseEditView(
 				model: model,
+				assembly: assembly,
 				onSave: { await viewModel.save(model) },
 				onCancel: { viewModel.editor = nil })
 				.presentationDragIndicator(.visible)

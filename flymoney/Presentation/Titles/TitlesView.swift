@@ -47,18 +47,24 @@ struct TitlesView: View {
 				onSave: { await viewModel.save(editorVM.form) },
 				onCancel: { viewModel.editor = nil })
 				.presentationDragIndicator(.visible)
-		}
-		.alert(Text(Lexicon.Term.singular.text),
-			   isPresented: isDeleteBlockedPresented,
-			   presenting: viewModel.deleteBlocked) { _ in
-			Button(String(localized: "OK"), role: .cancel) {}
-		} message: { Text($0) }
-            .sheet(isPresented: $showAllTitles, onDismiss: {
-                Task { await viewModel.load() }
-            }) {
-                AllTitlesManagementView(viewModel: assembly.makeAllTitlesManagementViewModel())
+        }
+        .alert(
+            Text(Lexicon.Term.singular.text),
+            isPresented: isDeleteBlockedPresented,
+            presenting: viewModel.deleteBlocked
+        ) { _ in
+            Button(String(localized: "OK"), role: .cancel) {
+
             }
-	}
+        } message: {
+            Text($0)
+        }
+        .sheet(isPresented: $showAllTitles, onDismiss: {
+            Task { await viewModel.load() }
+        }) {
+            AllTitlesManagementView(viewModel: assembly.makeAllTitlesManagementViewModel())
+        }
+    }
 
 	private var header: some View {
 		HStack {
