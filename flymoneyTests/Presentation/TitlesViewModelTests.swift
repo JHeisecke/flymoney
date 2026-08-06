@@ -23,12 +23,13 @@ struct TitlesViewModelTests {
 		titles: InMemoryExpenseTitleRepository = InMemoryExpenseTitleRepository(),
 		expenses: InMemoryExpenseRepository = InMemoryExpenseRepository(),
 		limits: InMemoryTitleLimitRepository = InMemoryTitleLimitRepository(),
+		aliases: InMemoryTitleAliasRepository = InMemoryTitleAliasRepository(),
 		now: Date = Date()
 	) -> TitlesViewModel {
 		TitlesViewModel(
 			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: titles),
 			upsertTitle: UpsertExpenseTitleUseCaseImpl(titles: titles),
-			deleteTitle: DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses, limits: limits),
+			deleteTitle: DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses, limits: limits, aliases: aliases),
 			fetchExpenses: FetchExpensesForMonthUseCaseImpl(expenses: expenses, calendar: Self.utc),
 			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: limits),
 			setTitleLimit: SetTitleLimitUseCaseImpl(limits: limits),

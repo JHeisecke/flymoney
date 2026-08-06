@@ -17,8 +17,23 @@ protocol ExpenseRepository: Sendable {
 	func expenses(in interval: DateInterval, titleID: UUID?) async throws -> [Expense]
 
 	func count(forTitleID titleID: UUID) async throws -> Int
+
+	/// Exact statement-import dedupe: which of these fingerprints are already stored.
+	func existingFingerprints(_ fingerprints: [String]) async throws -> Set<String>
+	/// Inexact statement-import dedupe: a lightweight digest of every expense in
+	/// range, matched in memory by (day, amount) — cheaper than N range queries.
+	func expenseDigests(in interval: DateInterval) async throws -> [ExpenseDigest]
 }
 
 enum ExpenseRepositoryError: Error, Equatable {
 	case notFound
+}
+
+struct ExpenseDigest: Equatable, Sendable {
+	let id: UUID
+	let date: Date
+	let amountMinorUnits: Int
+	let titleID: UUID
+	/// `importFingerprint != nil`.
+	let isImported: Bool
 }

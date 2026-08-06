@@ -10,6 +10,7 @@ import Foundation
 
 actor InMemoryExpenseRepository: ExpenseRepository {
 	private var storage: [Expense] = []
+	private var fingerprints: [UUID: String] = [:]
 
 	func add(_ expense: Expense) async throws {
 		storage.append(expense)
@@ -40,5 +41,27 @@ actor InMemoryExpenseRepository: ExpenseRepository {
 
 	func count(forTitleID titleID: UUID) async throws -> Int {
 		storage.filter { $0.titleID == titleID }.count
+	}
+
+	/// Test-only: seed an expense as if it came from a prior statement import —
+	/// `add(_:)` takes a domain `Expense`, which carries no fingerprint.
+	func seed(_ expense: Expense, importFingerprint: String) async {
+		storage.append(expense)
+		fingerprints[expense.id] = importFingerprint
+	}
+
+	func existingFingerprints(_ candidates: [String]) async throws -> Set<String> {
+		Set(fingerprints.values).intersection(candidates)
+	}
+
+	func expenseDigests(in interval: DateInterval) async throws -> [ExpenseDigest] {
+		storage
+			.filter { interval.start <= $0.date && $0.date < interval.end }
+			.map { expense in
+				ExpenseDigest(
+					id: expense.id, date: expense.date, amountMinorUnits: expense.amount.minorUnits,
+					titleID: expense.titleID, isImported: fingerprints[expense.id] != nil
+				)
+			}
 	}
 }

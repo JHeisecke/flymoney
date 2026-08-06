@@ -21,6 +21,7 @@ struct DeleteExpenseTitleCascadeTests {
 		let titles: SwiftDataExpenseTitleRepository
 		let expenses: SwiftDataExpenseRepository
 		let limits: SwiftDataTitleLimitRepository
+		let aliases: SwiftDataTitleAliasRepository
 	}
 
 	private func makeStack() throws -> OnDiskStack {
@@ -32,7 +33,8 @@ struct DeleteExpenseTitleCascadeTests {
 			url: url,
 			titles: SwiftDataExpenseTitleRepository(modelContainer: container, defaultCurrencyCode: "USD"),
 			expenses: SwiftDataExpenseRepository(modelContainer: container),
-			limits: SwiftDataTitleLimitRepository(modelContainer: container, defaultCurrencyCode: "USD")
+			limits: SwiftDataTitleLimitRepository(modelContainer: container, defaultCurrencyCode: "USD"),
+			aliases: SwiftDataTitleAliasRepository(modelContainer: container)
 		)
 	}
 
@@ -50,8 +52,9 @@ struct DeleteExpenseTitleCascadeTests {
 		try await stack.expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: id, date: .now))
 		try await stack.limits.setLimit(Money(minorUnits: 50000, currencyCode: "USD"), forTitleID: id, effectiveMonthKey: CalendarMonth(year: 2026, month: 4).key)
 		try await stack.limits.setLimit(nil, forTitleID: id, effectiveMonthKey: CalendarMonth(year: 2026, month: 7).key)
+		try await stack.aliases.upsert(TitleAlias(normalizedDetail: "MT-SN", titleID: id))
 
-		let useCase = DeleteExpenseTitleUseCaseImpl(titles: stack.titles, expenses: stack.expenses, limits: stack.limits)
+		let useCase = DeleteExpenseTitleUseCaseImpl(titles: stack.titles, expenses: stack.expenses, limits: stack.limits, aliases: stack.aliases)
 		try await useCase.execute(id: id, cascade: true)
 
 		// Assert through the repos (properly pinned ModelActors) — a bare ModelContext
@@ -59,9 +62,10 @@ struct DeleteExpenseTitleCascadeTests {
 		#expect(try await stack.titles.title(id: id) == nil)
 		#expect(try await stack.expenses.count(forTitleID: id) == 0)
 		#expect(try await stack.limits.limits(forTitleID: id).isEmpty)
+		#expect(try await stack.aliases.alias(forNormalizedDetail: "MT-SN") == nil)
 	}
 
-	@Test("non-cascade delete of an unused title also removes its limit rows on disk")
+	@Test("non-cascade delete of an unused title also removes its limit rows and aliases on disk")
 	func nonCascadeDeleteRemovesLimitRows() async throws {
 		let stack = try makeStack()
 		defer { cleanup(stack) }
@@ -69,12 +73,14 @@ struct DeleteExpenseTitleCascadeTests {
 		let id = UUID()
 		try await stack.titles.upsert(ExpenseTitle(id: id, name: "Coffee"))
 		try await stack.limits.setLimit(Money(minorUnits: 50000, currencyCode: "USD"), forTitleID: id, effectiveMonthKey: CalendarMonth(year: 2026, month: 4).key)
+		try await stack.aliases.upsert(TitleAlias(normalizedDetail: "MT-SN", titleID: id))
 
-		let useCase = DeleteExpenseTitleUseCaseImpl(titles: stack.titles, expenses: stack.expenses, limits: stack.limits)
+		let useCase = DeleteExpenseTitleUseCaseImpl(titles: stack.titles, expenses: stack.expenses, limits: stack.limits, aliases: stack.aliases)
 		try await useCase.execute(id: id, cascade: false)
 
 		#expect(try await stack.titles.title(id: id) == nil)
 		#expect(try await stack.limits.limits(forTitleID: id).isEmpty)
+		#expect(try await stack.aliases.alias(forNormalizedDetail: "MT-SN") == nil)
 	}
 
 	@Test("cascade delete leaves other titles' rows untouched")
@@ -90,7 +96,7 @@ struct DeleteExpenseTitleCascadeTests {
 		try await stack.limits.setLimit(Money(minorUnits: 50000, currencyCode: "USD"), forTitleID: id, effectiveMonthKey: CalendarMonth(year: 2026, month: 4).key)
 		try await stack.limits.setLimit(Money(minorUnits: 20000, currencyCode: "USD"), forTitleID: other, effectiveMonthKey: CalendarMonth(year: 2026, month: 4).key)
 
-		let useCase = DeleteExpenseTitleUseCaseImpl(titles: stack.titles, expenses: stack.expenses, limits: stack.limits)
+		let useCase = DeleteExpenseTitleUseCaseImpl(titles: stack.titles, expenses: stack.expenses, limits: stack.limits, aliases: stack.aliases)
 		try await useCase.execute(id: id, cascade: true)
 
 		#expect(try await stack.titles.title(id: other)?.name == "Lunch")

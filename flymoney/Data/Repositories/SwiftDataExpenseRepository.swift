@@ -74,6 +74,28 @@ actor SwiftDataExpenseRepository: ExpenseRepository {
 		let descriptor = FetchDescriptor<ExpenseModel>(predicate: #Predicate { $0.titleID == titleID })
 		return try modelContext.fetchCount(descriptor)
 	}
+
+	func existingFingerprints(_ fingerprints: [String]) async throws -> Set<String> {
+		guard !fingerprints.isEmpty else { return [] }
+		// Fetch every imported row and intersect in memory rather than pushing
+		// `Array.contains($0.optional ?? "")` into #Predicate — that combination
+		// crashes SwiftData's predicate compiler at runtime rather than throwing.
+		let descriptor = FetchDescriptor<ExpenseModel>(predicate: #Predicate { $0.importFingerprint != nil })
+		let stored = try modelContext.fetch(descriptor).compactMap(\.importFingerprint)
+		return Set(stored).intersection(fingerprints)
+	}
+
+	func expenseDigests(in interval: DateInterval) async throws -> [ExpenseDigest] {
+		let start = interval.start
+		let end = interval.end
+		let descriptor = FetchDescriptor<ExpenseModel>(predicate: #Predicate { $0.date >= start && $0.date < end })
+		return try modelContext.fetch(descriptor).map { model in
+			ExpenseDigest(
+				id: model.id, date: model.date, amountMinorUnits: model.amountMinorUnits,
+				titleID: model.titleID, isImported: model.importFingerprint != nil
+			)
+		}
+	}
 }
 
 extension ExpenseModel {

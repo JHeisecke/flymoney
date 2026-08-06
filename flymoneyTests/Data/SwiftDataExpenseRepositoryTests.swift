@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 import Testing
 @testable import flymoney
 
@@ -168,5 +169,76 @@ struct SwiftDataExpenseRepositoryTests {
 
 		let results = try await repo.expenses(in: interval, titleID: nil)
 		#expect(results.first?.id == late.id)
+	}
+
+	@Test("existingFingerprints returns only the fingerprints already stored")
+	func existingFingerprintsReturnsOnlyStored() async throws {
+		let container = try TestSupport.makeContainer()
+		let repo = SwiftDataExpenseRepository(modelContainer: container)
+
+		// importFingerprint isn't reachable through Expense/add(_:) — only the
+		// statement-import writer sets it — so seed it directly on the model.
+		let context = ModelContext(container)
+		context.insert(ExpenseModel(
+			id: UUID(), amountMinorUnits: 100, currencyCode: "USD", titleID: UUID(),
+			date: .now, importFingerprint: "gnb-extracto|2026-07-01|345000|COPETROL|"
+		))
+		context.insert(ExpenseModel(
+			id: UUID(), amountMinorUnits: 200, currencyCode: "USD", titleID: UUID(),
+			date: .now, importFingerprint: nil
+		))
+		try context.save()
+
+		let found = try await repo.existingFingerprints([
+			"gnb-extracto|2026-07-01|345000|COPETROL|",
+			"gnb-extracto|2026-07-02|999999|UNKNOWN|",
+		])
+		#expect(found == ["gnb-extracto|2026-07-01|345000|COPETROL|"])
+	}
+
+	@Test("existingFingerprints with an empty query returns empty, not everything")
+	func existingFingerprintsEmptyQuery() async throws {
+		let container = try TestSupport.makeContainer()
+		let repo = SwiftDataExpenseRepository(modelContainer: container)
+		let context = ModelContext(container)
+		context.insert(ExpenseModel(
+			id: UUID(), amountMinorUnits: 100, currencyCode: "USD", titleID: UUID(),
+			date: .now, importFingerprint: "gnb-extracto|2026-07-01|345000|COPETROL|"
+		))
+		try context.save()
+
+		#expect(try await repo.existingFingerprints([]).isEmpty)
+	}
+
+	@Test("expenseDigests reports isImported and covers the requested interval only")
+	func expenseDigestsReportsIsImportedWithinInterval() async throws {
+		let container = try TestSupport.makeContainer()
+		let repo = SwiftDataExpenseRepository(modelContainer: container)
+		let titleID = UUID()
+
+		var cal = Calendar(identifier: .gregorian)
+		cal.timeZone = TimeZone(identifier: "UTC")!
+		let inRange = CalendarMonth(year: 2026, month: 7).interval(using: cal).start.addingTimeInterval(3600)
+		let outOfRange = CalendarMonth(year: 2026, month: 8).interval(using: cal).start.addingTimeInterval(3600)
+
+		let context = ModelContext(container)
+		context.insert(ExpenseModel(
+			id: UUID(), amountMinorUnits: 345000, currencyCode: "PYG", titleID: titleID,
+			date: inRange, importFingerprint: "gnb-extracto|2026-07-01|345000|COPETROL|"
+		))
+		context.insert(ExpenseModel(
+			id: UUID(), amountMinorUnits: 50000, currencyCode: "PYG", titleID: titleID,
+			date: inRange, importFingerprint: nil
+		))
+		context.insert(ExpenseModel(
+			id: UUID(), amountMinorUnits: 10000, currencyCode: "PYG", titleID: titleID,
+			date: outOfRange, importFingerprint: nil
+		))
+		try context.save()
+
+		let digests = try await repo.expenseDigests(in: CalendarMonth(year: 2026, month: 7).interval(using: cal))
+		#expect(digests.count == 2)
+		#expect(digests.first { $0.amountMinorUnits == 345000 }?.isImported == true)
+		#expect(digests.first { $0.amountMinorUnits == 50000 }?.isImported == false)
 	}
 }

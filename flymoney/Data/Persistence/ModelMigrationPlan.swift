@@ -12,12 +12,12 @@ enum ModelMigrationPlan: SchemaMigrationPlan {
 	static var schemas: [any VersionedSchema.Type] {
 		[
 			ExpenseSchemaV1.self, ExpenseSchemaV2.self, ExpenseSchemaV3.self,
-			ExpenseSchemaV4.self, ExpenseSchemaV5.self,
+			ExpenseSchemaV4.self, ExpenseSchemaV5.self, ExpenseSchemaV6.self,
 		]
 	}
 
 	static var stages: [MigrationStage] {
-		[migrateV1toV2, migrateV2toV3, migrateV3toV4, migrateV4toV5]
+		[migrateV1toV2, migrateV2toV3, migrateV3toV4, migrateV4toV5, migrateV5toV6]
 	}
 
 	static let migrateV1toV2 = MigrationStage.lightweight(
@@ -67,5 +67,13 @@ enum ModelMigrationPlan: SchemaMigrationPlan {
 	static let migrateV4toV5 = MigrationStage.lightweight(
 		fromVersion: ExpenseSchemaV4.self,
 		toVersion: ExpenseSchemaV5.self
+	)
+
+	/// Adds `TitleAliasModel` and `ExpenseModel.importFingerprint` — both
+	/// additive, no data transform. Migrated expenses default to `nil`
+	/// (not statement-imported).
+	static let migrateV5toV6 = MigrationStage.lightweight(
+		fromVersion: ExpenseSchemaV5.self,
+		toVersion: ExpenseSchemaV6.self
 	)
 }

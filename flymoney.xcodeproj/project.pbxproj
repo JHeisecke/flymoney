@@ -474,7 +474,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		D6C0D574055044FC8FCBF8C6 /* XCLocalSwiftPackageReference "Packages/StatementKit" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "Packages/StatementKit";
+			relativePath = Packages/StatementKit;
 		};
 /* End XCLocalSwiftPackageReference section */
 

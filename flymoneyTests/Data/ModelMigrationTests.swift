@@ -83,9 +83,14 @@ struct ModelMigrationTests {
 
 	@Test("V5 schema is registered as the latest version")
 	func v5SchemaRegistered() {
-		#expect(ModelMigrationPlan.schemas.count == 5)
+		#expect(ModelMigrationPlan.schemas.count == 6)
 		#expect(ExpenseSchemaV5.versionIdentifier == Schema.Version(5, 0, 0))
-		#expect(ModelMigrationPlan.stages.count == 4)
+		#expect(ModelMigrationPlan.stages.count == 5)
+	}
+
+	@Test("V6 schema is registered as the latest version")
+	func v6SchemaRegistered() {
+		#expect(ExpenseSchemaV6.versionIdentifier == Schema.Version(6, 0, 0))
 	}
 
 	@Test("full migration chain backfills each title's limit into a createdAt-month TitleLimitModel row")
@@ -214,5 +219,65 @@ struct ModelMigrationTests {
 		#expect(expenses.first?.id == expenseID)
 		#expect(expenses.first?.amountMinorUnits == 1299)
 		#expect(expenses.first?.detail == "Extra shot")
+	}
+
+	@Test("V5→V6 migration preserves expenses, titles and limits; new expenses default importFingerprint to nil; TitleAliasModel is queryable")
+	func v5ToV6MigrationPreservesDataAndAddsAliasSupport() throws {
+		let url = URL.temporaryDirectory.appending(path: UUID().uuidString + ".sqlite")
+		defer { try? FileManager.default.removeItem(at: url) }
+
+		let titleID = UUID()
+		let expenseID = UUID()
+
+		// Seed a store under the frozen V5 schema — no importFingerprint, no
+		// TitleAliasModel — scoped so the seed container releases before the
+		// same file reopens under the migration plan.
+		let v5Schema = Schema(versionedSchema: ExpenseSchemaV5.self)
+		do {
+			let seedConfig = ModelConfiguration(schema: v5Schema, url: url)
+			let seedContainer = try ModelContainer(for: v5Schema, configurations: seedConfig)
+			let seedContext = ModelContext(seedContainer)
+			seedContext.insert(ExpenseTitleModel(
+				id: titleID, name: "Coffee", currencyCode: "USD", createdAt: .now
+			))
+			seedContext.insert(TitleLimitModel(
+				titleID: titleID, effectiveMonthKey: CalendarMonth(year: 2026, month: 7).key,
+				limitMinorUnits: 50000, currencyCode: "USD"
+			))
+			seedContext.insert(ExpenseSchemaV5.ExpenseModel(
+				id: expenseID, amountMinorUnits: 1299, currencyCode: "USD",
+				titleID: titleID, date: .now, detail: "Extra shot"
+			))
+			try seedContext.save()
+		}
+
+		// Reopen under the full migration plan (…V4 → V5 → V6).
+		let config = ModelConfiguration(schema: ModelSchema.schema, url: url)
+		let container = try ModelContainer(
+			for: ModelSchema.schema, migrationPlan: ModelMigrationPlan.self, configurations: config)
+		let context = ModelContext(container)
+
+		let titles = try context.fetch(FetchDescriptor<ExpenseTitleModel>())
+		#expect(titles.count == 1)
+		#expect(titles.first?.name == "Coffee")
+
+		let limits = try context.fetch(FetchDescriptor<TitleLimitModel>())
+		#expect(limits.count == 1)
+		#expect(limits.first?.limitMinorUnits == 50000)
+
+		let expenses = try context.fetch(FetchDescriptor<ExpenseModel>())
+		#expect(expenses.count == 1)
+		#expect(expenses.first?.id == expenseID)
+		#expect(expenses.first?.amountMinorUnits == 1299)
+		#expect(expenses.first?.importFingerprint == nil)
+
+		// TitleAliasModel exists in the destination schema and is queryable,
+		// even though nothing was seeded into it.
+		let aliases = try context.fetch(FetchDescriptor<TitleAliasModel>())
+		#expect(aliases.isEmpty)
+
+		context.insert(TitleAliasModel(id: UUID(), normalizedDetail: "MT-SN", titleID: titleID, createdAt: .now))
+		try context.save()
+		#expect(try context.fetch(FetchDescriptor<TitleAliasModel>()).count == 1)
 	}
 }

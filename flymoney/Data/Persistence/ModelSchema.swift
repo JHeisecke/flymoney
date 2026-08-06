@@ -193,16 +193,49 @@ enum ExpenseSchemaV4: VersionedSchema {
 	}
 }
 
-/// Live schema: drops `limitMinorUnits` (already unused — limits are always
-/// resolved via `TitleLimitModel`). Lightweight from V4, since dropping a column
-/// needs no data transform. The V3→V4 stage already backfilled the rows, so by
-/// the time the column is dropped its data is preserved in `TitleLimitModel`.
+/// Frozen (not a live-typealias) because V6 later adds `importFingerprint` to
+/// the live `ExpenseModel` — V5 must keep its own copy without that column so
+/// V5's on-disk shape (`5.0.0`) stays a frozen promise. `ExpenseTitleModel` and
+/// `TitleLimitModel` are untouched by V6, so V5 keeps referencing them **live**
+/// — the same precedent `ExpenseSchemaV4` set for `TitleLimitModel`.
 enum ExpenseSchemaV5: VersionedSchema {
 	static let versionIdentifier = Schema.Version(5, 0, 0)
-	static var models: [any PersistentModel.Type] { [ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self] }
+	static var models: [any PersistentModel.Type] {
+		[ExpenseSchemaV5.ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self]
+	}
+
+	@Model
+	final class ExpenseModel {
+		@Attribute(.unique) var id: UUID
+		var amountMinorUnits: Int
+		var currencyCode: String
+		var titleID: UUID
+		var date: Date
+		var detail: String?
+
+		init(id: UUID, amountMinorUnits: Int, currencyCode: String, titleID: UUID, date: Date, detail: String? = nil) {
+			self.id = id
+			self.amountMinorUnits = amountMinorUnits
+			self.currencyCode = currencyCode
+			self.titleID = titleID
+			self.date = date
+			self.detail = detail
+		}
+	}
+}
+
+/// Live schema: adds `TitleAliasModel` and `ExpenseModel.importFingerprint`
+/// (nil for hand-entered expenses). Both additive — lightweight from V5.
+/// `ExpenseTitleModel` and `TitleLimitModel` are unchanged, so they keep
+/// typealiasing to the live models, same as V5.
+enum ExpenseSchemaV6: VersionedSchema {
+	static let versionIdentifier = Schema.Version(6, 0, 0)
+	static var models: [any PersistentModel.Type] {
+		[ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self]
+	}
 }
 
 enum ModelSchema {
-	static let models: [any PersistentModel.Type] = [ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self]
+	static let models: [any PersistentModel.Type] = [ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self]
 	static let schema = Schema(models)
 }

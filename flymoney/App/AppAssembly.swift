@@ -7,6 +7,8 @@
 
 import SwiftUI
 import SwiftData
+import StatementParsing
+import StatementParsingPDFKit
 
 @MainActor
 final class AppAssembly {
@@ -15,6 +17,14 @@ final class AppAssembly {
 	private let expenseRepo: ExpenseRepository
 	private let titleRepo: ExpenseTitleRepository
 	private let titleLimitRepo: TitleLimitRepository
+	private let titleAliasRepo: TitleAliasRepository
+	private let statementImportWriter: StatementImportWriter
+
+	private let statementExtractor: StatementTextExtracting
+	private let statementKindDetector: StatementKindDetector
+	private let statementProfileMatcher: StatementProfileMatcher
+	private let statementProfileRepository: StatementProfileRepository
+	private let statementRowParser: StatementRowParser
 
 	init() throws {
 		container = try SwiftDataStack.makeContainer()
@@ -29,6 +39,14 @@ final class AppAssembly {
 		titleLimitRepo = SwiftDataTitleLimitRepository(
 			modelContainer: container, defaultCurrencyCode: provider.defaultCurrencyCode
 		)
+		titleAliasRepo = SwiftDataTitleAliasRepository(modelContainer: container)
+		statementImportWriter = SwiftDataStatementImportWriter(modelContainer: container)
+
+		statementExtractor = PDFKitStatementTextExtractor()
+		statementKindDetector = DefaultStatementKindDetector()
+		statementProfileMatcher = DefaultStatementProfileMatcher()
+		statementProfileRepository = BundledStatementProfileRepository()
+		statementRowParser = DefaultStatementRowParser()
 	}
 
 	func makeAddExpenseUseCase() -> any AddExpenseUseCase {
@@ -68,7 +86,7 @@ final class AppAssembly {
 	}
 
 	func makeDeleteExpenseTitleUseCase() -> any DeleteExpenseTitleUseCase {
-		DeleteExpenseTitleUseCaseImpl(titles: titleRepo, expenses: expenseRepo, limits: titleLimitRepo)
+		DeleteExpenseTitleUseCaseImpl(titles: titleRepo, expenses: expenseRepo, limits: titleLimitRepo, aliases: titleAliasRepo)
 	}
 
 	func makeSetTitleLimitUseCase() -> any SetTitleLimitUseCase {
@@ -115,6 +133,24 @@ final class AppAssembly {
 			searchTitles: makeSearchExpenseTitlesUseCase(),
 			fetchLimits: makeFetchEffectiveLimitsUseCase(),
 			currencyCode: currencyProvider.defaultCurrencyCode)
+	}
+
+	func makeParseStatementUseCase() -> any ParseStatementUseCase {
+		ParseStatementUseCaseImpl(
+			extractor: statementExtractor,
+			kindDetector: statementKindDetector,
+			profileMatcher: statementProfileMatcher,
+			profileRepository: statementProfileRepository,
+			rowParser: statementRowParser,
+			expenses: expenseRepo,
+			titles: titleRepo,
+			aliases: titleAliasRepo,
+			currencyProvider: currencyProvider
+		)
+	}
+
+	func makeCommitStatementImportUseCase() -> any CommitStatementImportUseCase {
+		CommitStatementImportUseCaseImpl(writer: statementImportWriter, currencyProvider: currencyProvider)
 	}
 
 	func makeImportSharedMonthUseCase() -> any ImportSharedMonthUseCase {

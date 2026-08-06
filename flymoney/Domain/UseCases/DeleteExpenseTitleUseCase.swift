@@ -19,16 +19,19 @@ struct DeleteExpenseTitleUseCaseImpl: DeleteExpenseTitleUseCase {
 	let titles: ExpenseTitleRepository
 	let expenses: ExpenseRepository
 	let limits: TitleLimitRepository
+	let aliases: TitleAliasRepository
 
 	func execute(id: UUID, cascade: Bool = false) async throws {
 		if cascade {
 			try await expenses.deleteAll(forTitleID: id)
 			try await limits.deleteAll(forTitleID: id)
+			try await aliases.deleteAll(forTitleID: id)
 			try await titles.delete(id: id)
 		} else {
 			let used = try await expenses.count(forTitleID: id)
 			guard used == 0 else { throw DeleteTitleError.inUse(count: used) }
 			try await limits.deleteAll(forTitleID: id)
+			try await aliases.deleteAll(forTitleID: id)
 			try await titles.delete(id: id)
 		}
 	}
