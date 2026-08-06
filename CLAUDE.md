@@ -12,9 +12,15 @@ Planning context lives in an **Obsidian vault**, not in this repo:
 
 ```
 /Users/jheisecke/Documents/Obsidian/flymoney/
-├── Roadmap.md                  ← stage tracker + status (start here)
-├── Stages/                      ← per-stage scope + acceptance criteria
-├── Plans/                       ← detailed implementation plans (Stage N - Plan.md)
+├── Roadmap.md                  ← stage tracker + status (START HERE)
+├── TODO.md
+├── Features/<Feature>/         ← AddExpense · History · Sharing · Titles · Import
+│   ├── Stages/                 ← per-stage scope + acceptance criteria
+│   └── Plans/                  ← detailed implementation plans
+├── Foundation/{Stages,Plans}/  ← Stages 0–2
+├── MVP/0.1/{Stages,Plans}/     ← Stages 3–7
+├── Redesign/{Stages,Plans}/    ← Stages 8–12
+├── Other/Plans/
 └── Reference/
     ├── Decisions.md             ← locked product/tech decisions (canonical)
     ├── Architecture.md          ← layer rules, dependency direction, full file tree
@@ -22,9 +28,11 @@ Planning context lives in an **Obsidian vault**, not in this repo:
     └── flymoney.html            ← UI design reference (Claude Design export)
 ```
 
+**Stage docs are NOT all in one folder** — they are filed by feature/phase, and a stage's `Stages/` and `Plans/` may live in different trees. `Roadmap.md`'s stage table is the index: every row links to its stage note and plan. Start there and follow the links; do not `ls` a single directory and conclude a plan is missing.
+
 `Reference/Decisions.md` + `Reference/Architecture.md` are the canonical architecture/decisions docs. (There is no `PLAN.md` in the repo.)
 
-**Before implementing a stage:** read its `Stages/Stage N - …md` and `Plans/Stage N - Plan.md`. If no plan file exists yet, do not improvise — ask, or write the plan first and get sign-off.
+**Before implementing a stage:** read its stage note and its plan, both linked from `Roadmap.md`. If no plan file exists yet, do not improvise — ask, or write the plan first and get sign-off.
 
 **After completing work:** update the stage status in `Roadmap.md` and check off acceptance criteria in the stage/plan files.
 
