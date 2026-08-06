@@ -1,0 +1,40 @@
+{
+  "id": "gnb-extracto",
+  "displayName": "Banco GNB — Extracto de tarjeta",
+  "bankID": "gnb",
+  "currencyCode": "PYG",
+  "timeZoneIdentifier": "America/Asuncion",
+  "detection": ["FEC\\. OPERACION", "PUNTOS REWARDS", "RESUMEN ESTADO FINANCIERO"],
+  "minimumDetectionScore": 2,
+  "tableHeaderPatterns": ["FEC.OPERACION", "MONTO"],
+  "columns": [
+    { "column": "operationDate", "start": 0.00,  "end": 0.14  },
+    { "column": "postingDate",   "start": 0.14,  "end": 0.26  },
+    { "column": "reference",     "start": 0.26,  "end": 0.375 },
+    { "column": "detail",        "start": 0.375, "end": 0.70  },
+    { "column": "rateFlag",      "start": 0.70,  "end": 0.765 },
+    { "column": "taxFlag",       "start": 0.765, "end": 0.85  },
+    { "column": "amount",        "start": 0.85,  "end": 1.00  }
+  ],
+  "dateFormat": "dd/MM/yy",
+  "groupingSeparator": ".",
+  "decimalSeparator": ",",
+  "minorUnitDigits": null,
+  "documentPeriod": null,
+  "yTolerance": 3.0,
+  "rules": {
+    "creditCard": {
+      "sections": [
+        { "pattern": "^DEBITOSAUTOMATICOSLOCAL$", "kind": "purchase" },
+        { "pattern": "^COMPRALOCAL$",             "kind": "purchase" },
+        { "pattern": "^COMPRAENELEXTERIOR$",      "kind": "foreignPurchase" },
+        { "pattern": "^PAGOS$",                   "kind": "payment" },
+        { "pattern": "^CARGOS$",                  "kind": "fee" }
+      ],
+      "excludeDetailPatterns": ["^IVA LEY", "^Compras Exterior$"],
+      "excludeWhenColumnsPresent": ["taxFlag"],
+      "refundPrefixPatterns": ["^REINTEGRO\\s+"],
+      "amountOnFollowingRow": ["foreignPurchase"]
+    }
+  }
+}

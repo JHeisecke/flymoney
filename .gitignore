@@ -2,3 +2,10 @@
 /flymoney.xcodeproj/xcuserdata/jheisecke.xcuserdatad/xcschemes
 /flymoney.xcodeproj/xcuserdata/jheisecke.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
 /.claude/settings.local.json
+.fixtures/
+# SwiftPM
+Packages/*/.build/
+.swiftpm/
+# Statement scrubbing terms: a deny-list contains the very PII it redacts.
+# Terms live beside the source PDFs, outside the repo — never commit one.
+scrub-terms.json

@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1EBE3AFA68FE4F9BB4C8ABA8 /* StatementParsing in Frameworks */ = {isa = PBXBuildFile; productRef = 3FEED4A7291144219DB967A8 /* StatementParsing */; };
+		880B8AE552054D19A73E1A12 /* StatementParsingPDFKit in Frameworks */ = {isa = PBXBuildFile; productRef = DDB1C05616824DFD840D4934 /* StatementParsingPDFKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		2462A607EF3E44B3B3D52A62 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -39,6 +44,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1EBE3AFA68FE4F9BB4C8ABA8 /* StatementParsing in Frameworks */,
+				880B8AE552054D19A73E1A12 /* StatementParsingPDFKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +97,8 @@
 			);
 			name = flymoney;
 			packageProductDependencies = (
+				3FEED4A7291144219DB967A8 /* StatementParsing */,
+				DDB1C05616824DFD840D4934 /* StatementParsingPDFKit */,
 			);
 			productName = flymoney;
 			productReference = 0072E3CF2FEF525100F4D65D /* flymoney.app */;
@@ -145,6 +154,9 @@
 			);
 			mainGroup = 0072E3C62FEF525100F4D65D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D6C0D574055044FC8FCBF8C6 /* XCLocalSwiftPackageReference "Packages/StatementKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0072E3D02FEF525100F4D65D /* Products */;
 			projectDirPath = "";
@@ -458,6 +470,26 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		D6C0D574055044FC8FCBF8C6 /* XCLocalSwiftPackageReference "Packages/StatementKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "Packages/StatementKit";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3FEED4A7291144219DB967A8 /* StatementParsing */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D6C0D574055044FC8FCBF8C6 /* XCLocalSwiftPackageReference "Packages/StatementKit" */;
+			productName = StatementParsing;
+		};
+		DDB1C05616824DFD840D4934 /* StatementParsingPDFKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D6C0D574055044FC8FCBF8C6 /* XCLocalSwiftPackageReference "Packages/StatementKit" */;
+			productName = StatementParsingPDFKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0072E3C72FEF525100F4D65D /* Project object */;
 }

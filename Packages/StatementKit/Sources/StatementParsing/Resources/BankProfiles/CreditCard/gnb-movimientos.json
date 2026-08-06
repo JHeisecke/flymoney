@@ -1,0 +1,33 @@
+{
+  "id": "gnb-movimientos",
+  "displayName": "Banco GNB — Movimientos de tarjeta",
+  "bankID": "gnb",
+  "currencyCode": "PYG",
+  "timeZoneIdentifier": "America/Asuncion",
+  "detection": ["Consulta de Movimientos", "Detalle de movimientos a la fecha"],
+  "minimumDetectionScore": 2,
+  "tableHeaderPatterns": ["Detalle", "Importe"],
+  "columns": [
+    { "column": "operationDate", "start": 0.00, "end": 0.21 },
+    { "column": "postingDate",   "start": 0.21, "end": 0.33 },
+    { "column": "reference",     "start": 0.33, "end": 0.45 },
+    { "column": "detail",        "start": 0.45, "end": 0.64 },
+    { "column": "cardNumber",    "start": 0.64, "end": 0.76 },
+    { "column": "amount",        "start": 0.76, "end": 1.00 }
+  ],
+  "dateFormat": "dd/MM/yyyy",
+  "groupingSeparator": ".",
+  "decimalSeparator": ",",
+  "minorUnitDigits": null,
+  "documentPeriod": null,
+  "yTolerance": 3.0,
+  "rules": {
+    "creditCard": {
+      "sections": [],
+      "excludeDetailPatterns": ["^SU PAGO"],
+      "excludeWhenColumnsPresent": [],
+      "refundPrefixPatterns": ["^REINTEGRO\\s+"],
+      "amountOnFollowingRow": []
+    }
+  }
+}

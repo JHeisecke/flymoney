@@ -1,0 +1,31 @@
+{
+  "id": "gnb-cuenta",
+  "displayName": "Banco GNB — Estado de cuenta",
+  "bankID": "gnb",
+  "currencyCode": "PYG",
+  "timeZoneIdentifier": "America/Asuncion",
+  "detection": ["bancognb\\.com\\.py", "Cuenta Básica"],
+  "minimumDetectionScore": 1,
+  "tableHeaderPatterns": ["Débitos", "Créditos", "SaldoDiario"],
+  "columns": [
+    { "column": "operationDate", "start": 0.00,  "end": 0.095 },
+    { "column": "postingDate",   "start": 0.095, "end": 0.145 },
+    { "column": "detail",        "start": 0.145, "end": 0.33  },
+    { "column": "reference",     "start": 0.33,  "end": 0.55  },
+    { "column": "debit",         "start": 0.55,  "end": 0.73  },
+    { "column": "credit",        "start": 0.73,  "end": 0.86  },
+    { "column": "balance",       "start": 0.86,  "end": 1.00  }
+  ],
+  "dateFormat": "d/M",
+  "groupingSeparator": ".",
+  "decimalSeparator": ",",
+  "minorUnitDigits": null,
+  "documentPeriod": { "pattern": "Mes:\\s+\\S+/(\\d{4})", "dateFormat": "yyyy" },
+  "yTolerance": 6.0,
+  "rules": {
+    "bankAccount": {
+      "includeDetailPatterns": ["^POS ", "^Transferencia enviada"],
+      "ambiguousDetailPatterns": ["^Transferencia enviada"]
+    }
+  }
+}
