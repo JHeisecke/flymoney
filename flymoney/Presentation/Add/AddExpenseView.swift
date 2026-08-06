@@ -10,12 +10,21 @@ import SwiftUI
 struct AddExpenseView: View {
 	@State private var viewModel: AddExpenseViewModel
 	@State private var showSuggestions = false
+	@State private var showImportSheet = false
 	@Environment(\.haptics) private var haptics
 	let assembly: AppAssembly
+	var onImportCompleted: (@MainActor () async -> Void)?
+	var onViewImportInHistory: (@MainActor () -> Void)?
 
-	init(viewModel: AddExpenseViewModel, assembly: AppAssembly) {
+	init(
+		viewModel: AddExpenseViewModel, assembly: AppAssembly,
+		onImportCompleted: (@MainActor () async -> Void)? = nil,
+		onViewImportInHistory: (@MainActor () -> Void)? = nil
+	) {
 		_viewModel = State(initialValue: viewModel)
 		self.assembly = assembly
+		self.onImportCompleted = onImportCompleted
+		self.onViewImportInHistory = onViewImportInHistory
 	}
 
 	var body: some View {
@@ -25,6 +34,7 @@ struct AddExpenseView: View {
 				.multilineTextAlignment(.center)
 				.padding(.top, Theme.Spacing.sm)
 				.padding(.bottom, Theme.Spacing.s26)
+				.overlay(alignment: .trailing) { importButton }
 
 			HeroAmountView(
 				form: viewModel.form,
@@ -89,6 +99,32 @@ struct AddExpenseView: View {
 		.onChange(of: viewModel.saveError) { _, error in
 			if error != nil { haptics.error() }
 		}
+		.sheet(isPresented: $showImportSheet) {
+			ImportStatementHost(
+				viewModel: assembly.makeImportStatementViewModel(),
+				onCommitted: { await onImportCompleted?() },
+				onDismiss: { showImportSheet = false },
+				onViewHistory: {
+					showImportSheet = false
+					onViewImportInHistory?()
+				}
+			)
+		}
+	}
+
+	/// Overlaid on the eyebrow row, whose intrinsic height is shorter than a
+	/// 44×44 tap target — `.contentShape(.rect)` lets the button's tappable
+	/// area extend beyond its visible glyph rather than shrinking the target.
+	private var importButton: some View {
+		Button(String(localized: "Import statement"), systemImage: "doc.badge.plus") {
+			showImportSheet = true
+		}
+		.labelStyle(.iconOnly)
+		.font(Theme.Typography.title17)
+		.foregroundStyle(Theme.Colors.accent)
+		.frame(width: 44, height: 44)
+		.contentShape(.rect)
+		.buttonStyle(.hapticPlain)
 	}
 
 	private var savedToast: some View {

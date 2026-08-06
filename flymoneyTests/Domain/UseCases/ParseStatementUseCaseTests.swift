@@ -148,16 +148,16 @@ struct ParseStatementUseCaseTests {
 		for row in kept {
 			await stack.expenses.seed(
 				Expense(amount: row.amount, titleID: UUID(), date: row.date, detail: row.rawDetail),
-				importFingerprint: row.fingerprint
+				importFingerprint: row.fingerprint ?? ""
 			)
 		}
 
 		let secondDraft = try await stack.useCase.execute(fileURL: URL(fileURLWithPath: "/tmp/statement.pdf"), profileID: nil)
 		let secondRows = allRows(secondDraft)
 
-		let keptFingerprints = Set(kept.map(\.fingerprint))
+		let keptFingerprints = Set(kept.map { $0.fingerprint ?? "" })
 		for row in secondRows {
-			if keptFingerprints.contains(row.fingerprint) {
+			if keptFingerprints.contains(row.fingerprint ?? "") {
 				#expect(row.alreadyImported, "expected \(row.fingerprint) to be flagged alreadyImported")
 			} else {
 				#expect(!row.alreadyImported, "expected \(row.fingerprint) to NOT be flagged alreadyImported")
@@ -222,7 +222,7 @@ struct ParseStatementUseCaseTests {
 
 		await stack.expenses.seed(
 			Expense(amount: target.amount, titleID: UUID(), date: target.date, detail: target.rawDetail),
-			importFingerprint: target.fingerprint
+			importFingerprint: target.fingerprint ?? ""
 		)
 
 		let secondDraft = try await stack.useCase.execute(fileURL: URL(fileURLWithPath: "/tmp/statement.pdf"), profileID: nil)

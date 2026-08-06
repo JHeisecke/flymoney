@@ -122,4 +122,14 @@ final class AddExpenseViewModel {
 	func clearSavedFlag() {
 		didJustSave = false
 	}
+
+	/// Re-fetches the currently-shown budget/limits without disturbing the
+	/// in-progress form — for when something outside this screen (a statement
+	/// import) may have changed a title's spend.
+	func refreshAfterExternalChange() async {
+		if let selectedTitleID {
+			await loadBudget(for: selectedTitleID)
+		}
+		limitsByTitleID = (try? await fetchLimits.execute(currentMonth)) ?? [:]
+	}
 }

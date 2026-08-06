@@ -42,7 +42,9 @@ struct StatementImportRow: Identifiable, Equatable, Sendable {
 	let amount: Money
 	let rawDetail: String
 	let reference: String?
-	let fingerprint: String
+	/// `nil` for a row Stage 17 adds by hand — it never came through the
+	/// mapper, so it must not fabricate one.
+	let fingerprint: String?
 	/// Exact: this fingerprint is already stored.
 	let alreadyImported: Bool
 	/// Inexact: same day + amount, different (or no) origin.

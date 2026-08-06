@@ -153,6 +153,15 @@ final class AppAssembly {
 		CommitStatementImportUseCaseImpl(writer: statementImportWriter, currencyProvider: currencyProvider)
 	}
 
+	func makeImportStatementViewModel() -> ImportStatementViewModel {
+		ImportStatementViewModel(
+			parseStatement: makeParseStatementUseCase(),
+			commitStatementImport: makeCommitStatementImportUseCase(),
+			fetchTitles: makeFetchExpenseTitlesUseCase(),
+			profileRepository: statementProfileRepository
+		)
+	}
+
 	func makeImportSharedMonthUseCase() -> any ImportSharedMonthUseCase {
 		ImportSharedMonthUseCaseImpl()
 	}

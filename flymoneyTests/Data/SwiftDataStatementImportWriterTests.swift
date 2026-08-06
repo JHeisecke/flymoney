@@ -124,8 +124,9 @@ struct SwiftDataStatementImportWriterTests {
 		#expect(try await aliases.alias(forNormalizedDetail: "COPETROL")?.titleID != nil)
 
 		let expenses = SwiftDataExpenseRepository(modelContainer: container)
-		let stored = try await expenses.existingFingerprints([row.fingerprint])
-		#expect(stored.contains(row.fingerprint))
+		let fingerprint = row.fingerprint ?? ""
+		let stored = try await expenses.existingFingerprints([fingerprint])
+		#expect(stored.contains(fingerprint))
 	}
 
 	@Test("rememberAlias false writes no alias")
