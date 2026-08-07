@@ -20,7 +20,7 @@ struct MonthHeaderView: View {
 			}
 			.buttonStyle(.hapticPlain)
 			.labelStyle(.iconOnly)
-			.foregroundStyle(Theme.Colors.inkQuaternary)
+			.foregroundStyle(Theme.Colors.inkSecondary)
 
 			Text(label)
 				.font(Theme.Typography.title16)
