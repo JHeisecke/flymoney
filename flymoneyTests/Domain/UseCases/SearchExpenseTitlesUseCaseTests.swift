@@ -79,9 +79,13 @@ struct SearchExpenseTitlesUseCaseTests {
 			createdAt: Date(timeIntervalSince1970: 1),
 			lastUsedAt: Date(timeIntervalSince1970: 9999999999)
 		))
+		// Created after the other title but before its last use: that middle
+		// value is what makes this a test of precedence. Sharing a timestamp
+		// with the other title's key made the two keys equal, and Swift's sort
+		// is not stable — the assertion passed or failed on scheduling.
 		try await titles.upsert(ExpenseTitle(
 			name: "New creation, no use",
-			createdAt: Date(timeIntervalSince1970: 9999999999),
+			createdAt: Date(timeIntervalSince1970: 5000000000),
 			lastUsedAt: nil
 		))
 

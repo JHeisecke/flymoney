@@ -7,9 +7,13 @@
 
 import SwiftUI
 
-/// One staged row inside an opened group. The merchant leads and the date sits
-/// under it in a smaller, quieter type — scanning a group should read as a list
-/// of names, with the date as a footnote.
+/// One staged row inside an opened group. The row leads with the category it
+/// will be saved under — renaming the group renames every row with it — and the
+/// date sits below in a smaller, quieter type.
+///
+/// The parsed detail appears only when it differs from the group's own: within
+/// a group it is otherwise the same string on every row, and the group header
+/// already shows it.
 ///
 /// Four flags can co-occur and are shown independently, never collapsed into
 /// one badge. They render as chips here and as full sentences in
@@ -17,6 +21,10 @@ import SwiftUI
 /// sentences either way.
 struct ImportRowCard: View {
 	let row: EditableRow
+	/// The group's category name — what this row commits as.
+	let titleName: String
+	/// The group's parsed detail, to decide whether this row's own is worth showing.
+	let groupRawDetail: String
 	let onToggleIncluded: @Sendable (Bool) -> Void
 	let onTap: () -> Void
 	let onDelete: () -> Void
@@ -33,14 +41,15 @@ struct ImportRowCard: View {
 
 				VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
 					VStack(alignment: .leading, spacing: 2) {
-						Text(row.rawDetail)
+						Text(titleName.isEmpty ? row.rawDetail : titleName)
 							.font(Theme.Typography.body16)
 							.foregroundStyle(row.isIncluded ? Theme.Colors.ink : Theme.Colors.inkQuaternary)
 							.lineLimit(2)
 							.multilineTextAlignment(.leading)
-						Text(row.date.formatted(date: .abbreviated, time: .omitted))
+						Text(dateAndDetail)
 							.font(Theme.Typography.caption12)
 							.foregroundStyle(Theme.Colors.inkQuaternary)
+							.lineLimit(1)
 					}
 					flagChips
 				}
@@ -71,6 +80,15 @@ struct ImportRowCard: View {
 			}
 			Button(String(localized: "Delete"), systemImage: "trash", role: .destructive, action: onDelete)
 		}
+	}
+
+	/// The date, plus this row's own detail when the parser read something
+	/// different from the rest of the group — a split or wrapped line.
+	private var dateAndDetail: String {
+		let date = row.date.formatted(date: .abbreviated, time: .omitted)
+		guard row.rawDetail.localizedCaseInsensitiveCompare(groupRawDetail) != .orderedSame,
+			  !row.rawDetail.isEmpty else { return date }
+		return "\(date) · \(row.rawDetail)"
 	}
 
 	@ViewBuilder private var flagChips: some View {

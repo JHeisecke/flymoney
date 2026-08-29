@@ -258,6 +258,8 @@ struct ImportGroupCard: View {
 		ForEach(group.rows) { row in
 			ImportRowCard(
 				row: row,
+				titleName: group.titleName,
+				groupRawDetail: group.rawDetail,
 				onToggleIncluded: { onToggleRow(row.id, $0) },
 				onTap: { onTapRow(row) },
 				onDelete: { onDeleteRow(row.id) }

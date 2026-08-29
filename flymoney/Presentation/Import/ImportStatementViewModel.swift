@@ -40,7 +40,10 @@ final class ImportStatementViewModel {
 	private let calendar: Calendar
 	// Read from `deinit`, which runs nonisolated — safe because by the time
 	// deinit runs no other reference (and so no concurrent mutator) exists.
-	private nonisolated(unsafe) var stagedFileURL: URL?
+	// `@ObservationIgnored` because nothing observes it — and because without it
+	// the `@Observable` macro wraps the property, and the wrapper is what made
+	// `nonisolated(unsafe)` "have no effect".
+	@ObservationIgnored private nonisolated(unsafe) var stagedFileURL: URL?
 
 	init(
 		parseStatement: any ParseStatementUseCase,

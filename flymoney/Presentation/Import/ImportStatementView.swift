@@ -215,17 +215,27 @@ struct ImportStatementView: View {
 				suggestions: viewModel.suggestions(for: namingQueries[group.id] ?? group.titleName),
 				limitsByTitleID: viewModel.limitsByTitleID,
 				isNewName: viewModel.isNewTitleName(group.titleName),
+				// `ImportGroupCard` takes these as `@Sendable` because SwiftUI's
+				// `Binding` setters are — but SwiftUI only ever calls them on the
+				// main actor, which is what `assumeIsolated` states here rather
+				// than hopping and losing the edit's ordering.
 				onRename: { newName in
-					namingQueries[group.id] = newName
-					viewModel.rename(groupID: group.id, to: newName)
+					MainActor.assumeIsolated {
+						namingQueries[group.id] = newName
+						viewModel.rename(groupID: group.id, to: newName)
+					}
 				},
 				onSelectExisting: {
 					namingQueries[group.id] = $0.name
 					viewModel.selectExistingTitle(groupID: group.id, title: $0)
 				},
-				onSetRememberAlias: { viewModel.setRememberAlias(groupID: group.id, $0) },
+				onSetRememberAlias: { value in
+					MainActor.assumeIsolated { viewModel.setRememberAlias(groupID: group.id, value) }
+				},
 				onSetExcluded: { viewModel.setGroupExcluded(groupID: group.id, $0) },
-				onToggleRow: { rowID, included in viewModel.setRowIncluded(groupID: group.id, rowID: rowID, included) },
+				onToggleRow: { rowID, included in
+					MainActor.assumeIsolated { viewModel.setRowIncluded(groupID: group.id, rowID: rowID, included) }
+				},
 				onTapRow: { row in editingRow = EditingRowTarget(id: row.id, groupID: group.id, row: row) },
 				onDeleteRow: { rowID in viewModel.deleteRow(groupID: group.id, rowID: rowID) },
 				onAddRow: { editingRow = EditingRowTarget(id: UUID(), groupID: group.id, row: nil) },

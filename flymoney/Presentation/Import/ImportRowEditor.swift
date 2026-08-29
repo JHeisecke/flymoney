@@ -103,20 +103,26 @@ struct ImportRowEditor: View {
 		.onAppear { syncAmountText() }
 	}
 
+	/// Read-only on purpose: the category belongs to the group, and every row in
+	/// it shares one. It used to wear the same card chrome as the editable
+	/// fields, so it read as a text field that ignored taps — now it reads as a
+	/// caption, and says where it *is* edited.
 	private var titleField: some View {
 		VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
 			Text(String(localized: "Category"))
 				.font(Theme.Typography.caption12)
 				.foregroundStyle(Theme.Colors.textSubtle)
 			Text(groupTitleName)
-				.font(Theme.Typography.body17)
-				.foregroundStyle(Theme.Colors.inkSecondary)
-				.padding(.horizontal, Theme.Spacing.lg)
-				.frame(height: 56)
+				.font(Theme.Typography.title16)
+				.foregroundStyle(Theme.Colors.ink)
 				.frame(maxWidth: .infinity, alignment: .leading)
-				.background(Theme.Colors.card)
-				.clipShape(.rect(cornerRadius: Theme.Radius.md))
+			Text(String(localized: "Every row in this group shares it — rename the group to change it."))
+				.font(Theme.Typography.caption12)
+				.foregroundStyle(Theme.Colors.inkTertiary)
+				.fixedSize(horizontal: false, vertical: true)
 		}
+		.frame(maxWidth: .infinity, alignment: .leading)
+		.accessibilityElement(children: .combine)
 	}
 
 	private var amountField: some View {
