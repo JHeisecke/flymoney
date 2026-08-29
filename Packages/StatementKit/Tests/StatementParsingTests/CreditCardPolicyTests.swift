@@ -24,7 +24,7 @@ struct CreditCardPolicyTests {
             excludeDetailPatterns: ["^IVA LEY"],
             excludeWhenColumnsPresent: [.taxFlag],
             refundPrefixPatterns: ["^REINTEGRO\\s+"],
-            amountOnFollowingRow: [.foreignPurchase]
+            deferredAmount: .sections([.foreignPurchase])
         ))
     )
 

@@ -30,7 +30,8 @@ struct CreditCardRowPolicy: StatementRowPolicy {
             raw,
             groupingSeparator: profile.groupingSeparator,
             decimalSeparator: profile.decimalSeparator,
-            exponent: exponent
+            exponent: exponent,
+            creditSuffixes: profile.creditSuffixes
         ) else { return nil }
         return StatementAmount(minorUnits: minorUnits, currencyCode: profile.currencyCode)
     }

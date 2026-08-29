@@ -92,7 +92,7 @@ public struct DefaultStatementRowParser: StatementRowParser {
         let documentPeriod = try resolveDocumentPeriod(pages: pages, profile: profile)
         let policy = makePolicy(for: profile.rules)
         let sectionRules = sections(of: profile.rules)
-        let amountOnFollowingRow = deferredSections(of: profile.rules)
+        let deferredAmountRule = deferredAmount(of: profile.rules)
         let refundPrefixPatterns = refundPrefixes(of: profile.rules)
 
         var pushed: [(candidate: TransactionCandidate, section: SectionKind?)] = []
@@ -138,29 +138,36 @@ public struct DefaultStatementRowParser: StatementRowParser {
                     continue
                 }
 
-                // 2. Continuation: only the detail band is populated.
+                // 2. Continuation: only the detail band is populated, and it sits
+                // close enough to the row it wraps. A band with no preceding row
+                // at all is still an issue; one that is merely too far below its
+                // row (a footer, not a wrap) falls through and is dropped
+                // silently below, like any other non-table band.
                 if cells.byColumn.count == 1, let detail = cells[.detail], !detail.isEmpty {
                     if let last = pushed.last {
-                        let merged = last.candidate.rawDetail + " " + detail
-                        let updated = TransactionCandidate(
-                            cells: last.candidate.cells,
-                            operationDate: last.candidate.operationDate,
-                            rawDetail: merged,
-                            reference: last.candidate.reference,
-                            amount: last.candidate.amount,
-                            pageIndex: last.candidate.pageIndex
-                        )
-                        pushed[pushed.count - 1] = (updated, last.section)
+                        if last.candidate.cells.row.midY - row.midY <= profile.continuationMaxGap {
+                            let merged = last.candidate.rawDetail + " " + detail
+                            let updated = TransactionCandidate(
+                                cells: last.candidate.cells,
+                                operationDate: last.candidate.operationDate,
+                                rawDetail: merged,
+                                reference: last.candidate.reference,
+                                amount: last.candidate.amount,
+                                pageIndex: last.candidate.pageIndex
+                            )
+                            pushed[pushed.count - 1] = (updated, last.section)
+                            continue
+                        }
                     } else {
                         issues.append(StatementParseIssue(kind: .continuationWithoutPrecedingRow, pageIndex: page.index, rowY: row.midY))
+                        continue
                     }
-                    continue
                 }
 
-                // 3. Deferred-amount row: current section defers its amount to the next row.
-                if let section = currentSection, amountOnFollowingRow.contains(section),
+                // 3. Deferred-amount row: this profile's rule says the amount is on the next row.
+                if Self.isDeferred(rule: deferredAmountRule, section: currentSection),
                    let date, let detail = cells[.detail], cells[.amount] == nil {
-                    pending = PendingDeferred(operationDate: date, rawDetail: detail, reference: cells[.reference], cells: cells, pageIndex: page.index, section: section)
+                    pending = PendingDeferred(operationDate: date, rawDetail: detail, reference: cells[.reference], cells: cells, pageIndex: page.index, section: currentSection)
                     continue
                 }
 
@@ -230,9 +237,21 @@ public struct DefaultStatementRowParser: StatementRowParser {
         return []
     }
 
-    private func deferredSections(of rules: StatementRules) -> Set<SectionKind> {
-        if case .creditCard(let rules) = rules { return rules.amountOnFollowingRow }
-        return []
+    private func deferredAmount(of rules: StatementRules) -> DeferredAmountRule? {
+        if case .creditCard(let rules) = rules { return rules.deferredAmount }
+        return nil
+    }
+
+    private static func isDeferred(rule: DeferredAmountRule?, section: SectionKind?) -> Bool {
+        switch rule {
+        case .sections(let sections):
+            guard let section else { return false }
+            return sections.contains(section)
+        case .anyRowWithoutAmount:
+            return true
+        case nil:
+            return false
+        }
     }
 
     private func refundPrefixes(of rules: StatementRules) -> [String] {

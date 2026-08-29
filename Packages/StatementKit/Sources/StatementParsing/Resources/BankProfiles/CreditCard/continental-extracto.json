@@ -1,0 +1,36 @@
+{
+  "id": "continental-extracto",
+  "displayName": "Banco Continental — Extracto de tarjeta",
+  "bankID": "continental",
+  "currencyCode": "PYG",
+  "timeZoneIdentifier": "America/Asuncion",
+  "detection": ["FEC\\. OPERACIÓN", "NRO\\. CUPÓN"],
+  "minimumDetectionScore": 2,
+  "tableHeaderPatterns": ["FEC.OPERACIÓN", "MONTO"],
+  "columns": [
+    { "column": "operationDate", "start": 0.00,  "end": 0.155 },
+    { "column": "postingDate",   "start": 0.155, "end": 0.26  },
+    { "column": "reference",     "start": 0.26,  "end": 0.385 },
+    { "column": "detail",        "start": 0.385, "end": 0.72  },
+    { "column": "rateFlag",      "start": 0.72,  "end": 0.77  },
+    { "column": "taxFlag",       "start": 0.77,  "end": 0.83  },
+    { "column": "amount",        "start": 0.83,  "end": 1.00  }
+  ],
+  "dateFormat": "dd/MM/yy",
+  "groupingSeparator": ".",
+  "decimalSeparator": ",",
+  "minorUnitDigits": null,
+  "documentPeriod": null,
+  "creditSuffixes": ["CR"],
+  "yTolerance": 3.0,
+  "continuationMaxGap": 16.0,
+  "rules": {
+    "creditCard": {
+      "sections": [],
+      "excludeDetailPatterns": ["-IVA LEY", "^SU PAGO"],
+      "excludeWhenColumnsPresent": ["taxFlag"],
+      "refundPrefixPatterns": [],
+      "deferredAmount": "anyRowWithoutAmount"
+    }
+  }
+}

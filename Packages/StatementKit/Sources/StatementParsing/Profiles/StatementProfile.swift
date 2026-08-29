@@ -22,8 +22,15 @@ public struct StatementProfile: Codable, Sendable, Identifiable {
     public let minorUnitDigits: Int?
     /// Required when `dateFormat` carries no year.
     public let documentPeriod: DocumentPeriodRule?
+    /// Trailing markers (e.g. `"CR"`) that mark an amount as a credit — a sign
+    /// convention distinct from a leading `-` or a debit/credit column pair.
+    public let creditSuffixes: [String]
 
     public let yTolerance: Double
+    /// Max vertical gap (points) between a continuation band and the row it
+    /// attaches to. Anything farther is not visually part of that row — a
+    /// footer, not a wrapped detail line.
+    public let continuationMaxGap: Double
 
     public let rules: StatementRules
 
@@ -44,7 +51,9 @@ public struct StatementProfile: Codable, Sendable, Identifiable {
         decimalSeparator: String,
         minorUnitDigits: Int? = nil,
         documentPeriod: DocumentPeriodRule?,
+        creditSuffixes: [String] = [],
         yTolerance: Double,
+        continuationMaxGap: Double = 16.0,
         rules: StatementRules
     ) {
         self.id = id
@@ -61,7 +70,9 @@ public struct StatementProfile: Codable, Sendable, Identifiable {
         self.decimalSeparator = decimalSeparator
         self.minorUnitDigits = minorUnitDigits
         self.documentPeriod = documentPeriod
+        self.creditSuffixes = creditSuffixes
         self.yTolerance = yTolerance
+        self.continuationMaxGap = continuationMaxGap
         self.rules = rules
     }
 }
@@ -117,20 +128,20 @@ public struct CreditCardRules: Codable, Sendable {
     public let excludeWhenColumnsPresent: [StatementColumn]
     /// Stripped for title matching only.
     public let refundPrefixPatterns: [String]
-    public let amountOnFollowingRow: Set<SectionKind>
+    public let deferredAmount: DeferredAmountRule?
 
     public init(
         sections: [SectionRule],
         excludeDetailPatterns: [String],
         excludeWhenColumnsPresent: [StatementColumn],
         refundPrefixPatterns: [String],
-        amountOnFollowingRow: Set<SectionKind>
+        deferredAmount: DeferredAmountRule?
     ) {
         self.sections = sections
         self.excludeDetailPatterns = excludeDetailPatterns
         self.excludeWhenColumnsPresent = excludeWhenColumnsPresent
         self.refundPrefixPatterns = refundPrefixPatterns
-        self.amountOnFollowingRow = amountOnFollowingRow
+        self.deferredAmount = deferredAmount
     }
 }
 

@@ -14,6 +14,7 @@ public struct DefaultStatementProfileMatcher: StatementProfileMatcher {
         let haystack = firstPage.words.map(\.text).joined(separator: " ")
 
         var best: (profile: StatementProfile, score: Int)?
+        var tied = false
         for profile in profiles {
             let score = profile.detection.reduce(into: 0) { count, pattern in
                 if haystack.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil {
@@ -21,10 +22,19 @@ public struct DefaultStatementProfileMatcher: StatementProfileMatcher {
                 }
             }
             guard score >= profile.minimumDetectionScore else { continue }
-            if best == nil || score > best!.score {
+            if let b = best {
+                if score > b.score {
+                    best = (profile, score)
+                    tied = false
+                } else if score == b.score {
+                    tied = true
+                }
+            } else {
                 best = (profile, score)
             }
         }
-        return best?.profile
+        // A tie means "cannot tell" — importing under the wrong bank's rules is
+        // worse than surfacing `noProfile(for:)` and asking.
+        return tied ? nil : best?.profile
     }
 }

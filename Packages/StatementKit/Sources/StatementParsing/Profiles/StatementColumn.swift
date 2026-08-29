@@ -61,3 +61,47 @@ public struct DocumentPeriodRule: Codable, Sendable {
         self.dateFormat = dateFormat
     }
 }
+
+/// A row whose amount is printed on the *next* row instead of its own —
+/// GNB's foreign-currency block gates this on section, but Continental
+/// declares no sections at all, so it needs a gate that isn't section-shaped.
+public enum DeferredAmountRule: Sendable, Equatable {
+    case sections(Set<SectionKind>)
+    /// Deliberately not the universal default — on a sectioned layout it would
+    /// let any amount-less row swallow the next row's amount.
+    case anyRowWithoutAmount
+}
+
+/// Hand-written: the JSON shape is either a bare string (`"anyRowWithoutAmount"`)
+/// or an object (`{"sections": [...]}`) — not the default enum encoding.
+extension DeferredAmountRule: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case sections
+    }
+
+    public init(from decoder: Decoder) throws {
+        if let single = try? decoder.singleValueContainer(), let stringValue = try? single.decode(String.self) {
+            guard stringValue == "anyRowWithoutAmount" else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(
+                    codingPath: decoder.codingPath,
+                    debugDescription: "Unknown DeferredAmountRule string \"\(stringValue)\""
+                ))
+            }
+            self = .anyRowWithoutAmount
+            return
+        }
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self = .sections(try container.decode(Set<SectionKind>.self, forKey: .sections))
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        switch self {
+        case .sections(let sections):
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(sections, forKey: .sections)
+        case .anyRowWithoutAmount:
+            var container = encoder.singleValueContainer()
+            try container.encode("anyRowWithoutAmount")
+        }
+    }
+}

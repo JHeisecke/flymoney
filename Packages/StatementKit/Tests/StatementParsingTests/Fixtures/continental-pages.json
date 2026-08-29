@@ -1,0 +1,5452 @@
+[
+  {
+    "height" : 842,
+    "index" : 0,
+    "width" : 595,
+    "words" : [
+      {
+        "maxX" : 204.8,
+        "midY" : 768.86,
+        "minX" : 152,
+        "text" : "SAMPLENA"
+      },
+      {
+        "maxX" : 277.4,
+        "midY" : 768.86,
+        "minX" : 211.4,
+        "text" : "REDACTEDX,"
+      },
+      {
+        "maxX" : 310.4,
+        "midY" : 768.86,
+        "minX" : 284,
+        "text" : "TEST"
+      },
+      {
+        "maxX" : 350,
+        "midY" : 768.86,
+        "minX" : 317,
+        "text" : "USERX"
+      },
+      {
+        "maxX" : 478,
+        "midY" : 768.86,
+        "minX" : 406,
+        "text" : "000-00-000000\/0"
+      },
+      {
+        "maxX" : 170,
+        "midY" : 740.86,
+        "minX" : 152,
+        "text" : "CAL"
+      },
+      {
+        "maxX" : 194,
+        "midY" : 740.86,
+        "minX" : 176,
+        "text" : "DEL"
+      },
+      {
+        "maxX" : 230,
+        "midY" : 740.86,
+        "minX" : 200,
+        "text" : "NORTE"
+      },
+      {
+        "maxX" : 260,
+        "midY" : 740.86,
+        "minX" : 236,
+        "text" : "CASI"
+      },
+      {
+        "maxX" : 290,
+        "midY" : 740.86,
+        "minX" : 266,
+        "text" : "SURX"
+      },
+      {
+        "maxX" : 182.66,
+        "midY" : 694.85,
+        "minX" : 152,
+        "text" : "CIUDAD"
+      },
+      {
+        "maxX" : 209.8,
+        "midY" : 694.85,
+        "minX" : 205,
+        "text" : "1"
+      },
+      {
+        "maxX" : 411.01,
+        "midY" : 694.85,
+        "minX" : 391,
+        "text" : "Teléf."
+      },
+      {
+        "maxX" : 78.8,
+        "midY" : 687.54,
+        "minX" : 50,
+        "text" : "000000"
+      },
+      {
+        "maxX" : 109.2,
+        "midY" : 687.54,
+        "minX" : 90,
+        "text" : "Nro:"
+      },
+      {
+        "maxX" : 129.6,
+        "midY" : 687.54,
+        "minX" : 120,
+        "text" : "31"
+      },
+      {
+        "maxX" : 248,
+        "midY" : 685.42,
+        "minX" : 152,
+        "text" : "CENTRAL\/ASUNCION"
+      },
+      {
+        "maxX" : 70.56,
+        "midY" : 658.56,
+        "minX" : 35,
+        "text" : "TARJETA"
+      },
+      {
+        "maxX" : 119.4,
+        "midY" : 658.56,
+        "minX" : 93,
+        "text" : "4111"
+      },
+      {
+        "maxX" : 152.4,
+        "midY" : 658.56,
+        "minX" : 126,
+        "text" : "1111"
+      },
+      {
+        "maxX" : 185.4,
+        "midY" : 658.56,
+        "minX" : 159,
+        "text" : "1111"
+      },
+      {
+        "maxX" : 218.4,
+        "midY" : 658.56,
+        "minX" : 192,
+        "text" : "1111"
+      },
+      {
+        "maxX" : 276.4,
+        "midY" : 658.56,
+        "minX" : 250,
+        "text" : "Visa"
+      },
+      {
+        "maxX" : 329.2,
+        "midY" : 658.56,
+        "minX" : 283,
+        "text" : "Clásica"
+      },
+      {
+        "maxX" : 201.46,
+        "midY" : 638.28,
+        "minX" : 168,
+        "text" : "FECHAS"
+      },
+      {
+        "maxX" : 217.51,
+        "midY" : 638.28,
+        "minX" : 203.76,
+        "text" : "DE:"
+      },
+      {
+        "maxX" : 261.17,
+        "midY" : 638.28,
+        "minX" : 230,
+        "text" : "CIERRE"
+      },
+      {
+        "maxX" : 335.3,
+        "midY" : 638.28,
+        "minX" : 278,
+        "text" : "VENCIMIENTO"
+      },
+      {
+        "maxX" : 440,
+        "midY" : 638.28,
+        "minX" : 400,
+        "text" : "RESUMEN"
+      },
+      {
+        "maxX" : 475.12,
+        "midY" : 638.28,
+        "minX" : 442.22,
+        "text" : "ESTADO"
+      },
+      {
+        "maxX" : 526.68,
+        "midY" : 638.28,
+        "minX" : 477.34,
+        "text" : "FINANCIERO"
+      },
+      {
+        "maxX" : 115.26,
+        "midY" : 632.47,
+        "minX" : 68.73,
+        "text" : "VENCIMIENTO"
+      },
+      {
+        "maxX" : 114.11,
+        "midY" : 621.96,
+        "minX" : 69.89,
+        "text" : "AGOSTO\/2026"
+      },
+      {
+        "maxX" : 200.21,
+        "midY" : 621.96,
+        "minX" : 175,
+        "text" : "Actual"
+      },
+      {
+        "maxX" : 269.6,
+        "midY" : 621.96,
+        "minX" : 230,
+        "text" : "24\/07\/26"
+      },
+      {
+        "maxX" : 325.6,
+        "midY" : 621.96,
+        "minX" : 286,
+        "text" : "07\/08\/26"
+      },
+      {
+        "maxX" : 381.57,
+        "midY" : 621.96,
+        "minX" : 358,
+        "text" : "Deuda"
+      },
+      {
+        "maxX" : 411.8,
+        "midY" : 621.96,
+        "minX" : 383.79,
+        "text" : "Anterior"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 621.96,
+        "minX" : 520.55,
+        "text" : "3.797.425"
+      },
+      {
+        "maxX" : 51.05,
+        "midY" : 610.7,
+        "minX" : 46.5,
+        "text" : "D"
+      },
+      {
+        "maxX" : 64.35,
+        "midY" : 610.7,
+        "minX" : 60.5,
+        "text" : "L"
+      },
+      {
+        "maxX" : 79.75,
+        "midY" : 610.7,
+        "minX" : 74.5,
+        "text" : "M"
+      },
+      {
+        "maxX" : 93.75,
+        "midY" : 610.7,
+        "minX" : 88.5,
+        "text" : "M"
+      },
+      {
+        "maxX" : 106,
+        "midY" : 610.7,
+        "minX" : 102.5,
+        "text" : "J"
+      },
+      {
+        "maxX" : 120.7,
+        "midY" : 610.7,
+        "minX" : 116.5,
+        "text" : "V"
+      },
+      {
+        "maxX" : 134.7,
+        "midY" : 610.7,
+        "minX" : 130.5,
+        "text" : "S"
+      },
+      {
+        "maxX" : 203.88,
+        "midY" : 610.7,
+        "minX" : 175,
+        "text" : "Anterior"
+      },
+      {
+        "maxX" : 269.6,
+        "midY" : 610.7,
+        "minX" : 230,
+        "text" : "26\/06\/26"
+      },
+      {
+        "maxX" : 325.6,
+        "midY" : 610.7,
+        "minX" : 286,
+        "text" : "10\/07\/26"
+      },
+      {
+        "maxX" : 365.99,
+        "midY" : 610.7,
+        "minX" : 358,
+        "text" : "(-)"
+      },
+      {
+        "maxX" : 390.9,
+        "midY" : 610.7,
+        "minX" : 368.22,
+        "text" : "Pagos"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 610.7,
+        "minX" : 520.55,
+        "text" : "3.000.000"
+      },
+      {
+        "maxX" : 205.25,
+        "midY" : 601.28,
+        "minX" : 175,
+        "text" : "Próximo"
+      },
+      {
+        "maxX" : 269.6,
+        "midY" : 601.28,
+        "minX" : 230,
+        "text" : "21\/08\/26"
+      },
+      {
+        "maxX" : 325.6,
+        "midY" : 601.28,
+        "minX" : 286,
+        "text" : "08\/09\/26"
+      },
+      {
+        "maxX" : 134.28,
+        "midY" : 598.6,
+        "minX" : 130.5,
+        "text" : "1"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 598.6,
+        "minX" : 358,
+        "text" : "(=)"
+      },
+      {
+        "maxX" : 390.68,
+        "midY" : 598.6,
+        "minX" : 370.22,
+        "text" : "Saldo"
+      },
+      {
+        "maxX" : 432.03,
+        "midY" : 598.6,
+        "minX" : 392.9,
+        "text" : "Financiado"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 598.6,
+        "minX" : 528.65,
+        "text" : "797.425"
+      },
+      {
+        "maxX" : 50.28,
+        "midY" : 586.6,
+        "minX" : 46.5,
+        "text" : "2"
+      },
+      {
+        "maxX" : 64.28,
+        "midY" : 586.6,
+        "minX" : 60.5,
+        "text" : "3"
+      },
+      {
+        "maxX" : 78.28,
+        "midY" : 586.6,
+        "minX" : 74.5,
+        "text" : "4"
+      },
+      {
+        "maxX" : 92.28,
+        "midY" : 586.6,
+        "minX" : 88.5,
+        "text" : "5"
+      },
+      {
+        "maxX" : 106.28,
+        "midY" : 586.6,
+        "minX" : 102.5,
+        "text" : "6"
+      },
+      {
+        "maxX" : 120.28,
+        "midY" : 586.6,
+        "minX" : 116.5,
+        "text" : "7"
+      },
+      {
+        "maxX" : 134.28,
+        "midY" : 586.6,
+        "minX" : 130.5,
+        "text" : "8"
+      },
+      {
+        "maxX" : 196.09,
+        "midY" : 586.6,
+        "minX" : 175,
+        "text" : "T.A.N"
+      },
+      {
+        "maxX" : 219.47,
+        "midY" : 586.6,
+        "minX" : 198.38,
+        "text" : "(Tasa"
+      },
+      {
+        "maxX" : 242.86,
+        "midY" : 586.6,
+        "minX" : 221.76,
+        "text" : "Anual"
+      },
+      {
+        "maxX" : 278.15,
+        "midY" : 586.6,
+        "minX" : 245.15,
+        "text" : "Nominal)"
+      },
+      {
+        "maxX" : 316.75,
+        "midY" : 586.6,
+        "minX" : 292,
+        "text" : "18,10"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 586.6,
+        "minX" : 358,
+        "text" : "(+)"
+      },
+      {
+        "maxX" : 398.67,
+        "midY" : 586.6,
+        "minX" : 370.22,
+        "text" : "Compra"
+      },
+      {
+        "maxX" : 404.9,
+        "midY" : 586.6,
+        "minX" : 400.9,
+        "text" : "y"
+      },
+      {
+        "maxX" : 431.13,
+        "midY" : 586.6,
+        "minX" : 407.12,
+        "text" : "cargos"
+      },
+      {
+        "maxX" : 444.02,
+        "midY" : 586.6,
+        "minX" : 433.35,
+        "text" : "del"
+      },
+      {
+        "maxX" : 461.36,
+        "midY" : 586.6,
+        "minX" : 446.25,
+        "text" : "mes"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 586.6,
+        "minX" : 520.55,
+        "text" : "2.023.590"
+      },
+      {
+        "maxX" : 195.63,
+        "midY" : 577.28,
+        "minX" : 175,
+        "text" : "T.A.E"
+      },
+      {
+        "maxX" : 219.01,
+        "midY" : 577.28,
+        "minX" : 197.93,
+        "text" : "(Tasa"
+      },
+      {
+        "maxX" : 242.4,
+        "midY" : 577.28,
+        "minX" : 221.31,
+        "text" : "Anual"
+      },
+      {
+        "maxX" : 276.79,
+        "midY" : 577.28,
+        "minX" : 244.7,
+        "text" : "Efectiva)"
+      },
+      {
+        "maxX" : 316.75,
+        "midY" : 577.28,
+        "minX" : 292,
+        "text" : "19,84"
+      },
+      {
+        "maxX" : 50.28,
+        "midY" : 574.6,
+        "minX" : 46.5,
+        "text" : "9"
+      },
+      {
+        "maxX" : 68.06,
+        "midY" : 574.6,
+        "minX" : 60.5,
+        "text" : "10"
+      },
+      {
+        "maxX" : 82.06,
+        "midY" : 574.6,
+        "minX" : 74.5,
+        "text" : "11"
+      },
+      {
+        "maxX" : 96.06,
+        "midY" : 574.6,
+        "minX" : 88.5,
+        "text" : "12"
+      },
+      {
+        "maxX" : 110.06,
+        "midY" : 574.6,
+        "minX" : 102.5,
+        "text" : "13"
+      },
+      {
+        "maxX" : 124.06,
+        "midY" : 574.6,
+        "minX" : 116.5,
+        "text" : "14"
+      },
+      {
+        "maxX" : 138.06,
+        "midY" : 574.6,
+        "minX" : 130.5,
+        "text" : "15"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 574.6,
+        "minX" : 358,
+        "text" : "(=)"
+      },
+      {
+        "maxX" : 398.22,
+        "midY" : 574.6,
+        "minX" : 370.22,
+        "text" : "DEUDA"
+      },
+      {
+        "maxX" : 426.23,
+        "midY" : 574.6,
+        "minX" : 400.45,
+        "text" : "TOTAL"
+      },
+      {
+        "maxX" : 444.02,
+        "midY" : 574.6,
+        "minX" : 428.46,
+        "text" : "DEL"
+      },
+      {
+        "maxX" : 483.14,
+        "midY" : 574.6,
+        "minX" : 446.24,
+        "text" : "PERIODO"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 574.6,
+        "minX" : 520.55,
+        "text" : "2.821.015"
+      },
+      {
+        "maxX" : 54.06,
+        "midY" : 562.6,
+        "minX" : 46.5,
+        "text" : "16"
+      },
+      {
+        "maxX" : 68.06,
+        "midY" : 562.6,
+        "minX" : 60.5,
+        "text" : "17"
+      },
+      {
+        "maxX" : 82.06,
+        "midY" : 562.6,
+        "minX" : 74.5,
+        "text" : "18"
+      },
+      {
+        "maxX" : 96.06,
+        "midY" : 562.6,
+        "minX" : 88.5,
+        "text" : "19"
+      },
+      {
+        "maxX" : 110.06,
+        "midY" : 562.6,
+        "minX" : 102.5,
+        "text" : "20"
+      },
+      {
+        "maxX" : 124.06,
+        "midY" : 562.6,
+        "minX" : 116.5,
+        "text" : "21"
+      },
+      {
+        "maxX" : 138.06,
+        "midY" : 562.6,
+        "minX" : 130.5,
+        "text" : "22"
+      },
+      {
+        "maxX" : 219.71,
+        "midY" : 562.6,
+        "minX" : 178,
+        "text" : "COMPRAS"
+      },
+      {
+        "maxX" : 268.3,
+        "midY" : 562.6,
+        "minX" : 222.01,
+        "text" : "NORMALES"
+      },
+      {
+        "maxX" : 276.1,
+        "midY" : 562.6,
+        "minX" : 270.6,
+        "text" : "Y"
+      },
+      {
+        "maxX" : 289.85,
+        "midY" : 562.6,
+        "minX" : 278.39,
+        "text" : "EN"
+      },
+      {
+        "maxX" : 326.52,
+        "midY" : 562.6,
+        "minX" : 292.15,
+        "text" : "CUOTAS"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 562.6,
+        "minX" : 358,
+        "text" : "(+)"
+      },
+      {
+        "maxX" : 393.79,
+        "midY" : 562.6,
+        "minX" : 370.22,
+        "text" : "Deuda"
+      },
+      {
+        "maxX" : 404.91,
+        "midY" : 562.6,
+        "minX" : 396.02,
+        "text" : "en"
+      },
+      {
+        "maxX" : 432.48,
+        "midY" : 562.6,
+        "minX" : 407.14,
+        "text" : "Cuotas"
+      },
+      {
+        "maxX" : 439.15,
+        "midY" : 562.6,
+        "minX" : 434.7,
+        "text" : "a"
+      },
+      {
+        "maxX" : 468.5,
+        "midY" : 562.6,
+        "minX" : 441.38,
+        "text" : "facturar"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 562.6,
+        "minX" : 552.95,
+        "text" : "0"
+      },
+      {
+        "maxX" : 54.06,
+        "midY" : 550.6,
+        "minX" : 46.5,
+        "text" : "23"
+      },
+      {
+        "maxX" : 68.06,
+        "midY" : 550.6,
+        "minX" : 60.5,
+        "text" : "24"
+      },
+      {
+        "maxX" : 82.06,
+        "midY" : 550.6,
+        "minX" : 74.5,
+        "text" : "25"
+      },
+      {
+        "maxX" : 96.06,
+        "midY" : 550.6,
+        "minX" : 88.5,
+        "text" : "26"
+      },
+      {
+        "maxX" : 110.06,
+        "midY" : 550.6,
+        "minX" : 102.5,
+        "text" : "27"
+      },
+      {
+        "maxX" : 124.06,
+        "midY" : 550.6,
+        "minX" : 116.5,
+        "text" : "28"
+      },
+      {
+        "maxX" : 138.06,
+        "midY" : 550.6,
+        "minX" : 130.5,
+        "text" : "29"
+      },
+      {
+        "maxX" : 198.84,
+        "midY" : 550.6,
+        "minX" : 175,
+        "text" : "LÍNEA"
+      },
+      {
+        "maxX" : 212.6,
+        "midY" : 550.6,
+        "minX" : 201.14,
+        "text" : "DE"
+      },
+      {
+        "maxX" : 252.01,
+        "midY" : 550.6,
+        "minX" : 214.89,
+        "text" : "CRÉDITO"
+      },
+      {
+        "maxX" : 332.52,
+        "midY" : 550.6,
+        "minX" : 283,
+        "text" : "DISPONIBLE"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 550.6,
+        "minX" : 358,
+        "text" : "(+)"
+      },
+      {
+        "maxX" : 407.13,
+        "midY" : 550.6,
+        "minX" : 370.22,
+        "text" : "Int\/Cargos"
+      },
+      {
+        "maxX" : 439.14,
+        "midY" : 550.6,
+        "minX" : 409.35,
+        "text" : "Deveng."
+      },
+      {
+        "maxX" : 450.26,
+        "midY" : 550.6,
+        "minX" : 441.37,
+        "text" : "en"
+      },
+      {
+        "maxX" : 471.61,
+        "midY" : 550.6,
+        "minX" : 452.49,
+        "text" : "susp."
+      },
+      {
+        "maxX" : 557,
+        "midY" : 550.6,
+        "minX" : 552.95,
+        "text" : "0"
+      },
+      {
+        "maxX" : 54.06,
+        "midY" : 538.6,
+        "minX" : 46.5,
+        "text" : "30"
+      },
+      {
+        "maxX" : 68.06,
+        "midY" : 538.6,
+        "minX" : 60.5,
+        "text" : "31"
+      },
+      {
+        "maxX" : 223.55,
+        "midY" : 538.6,
+        "minX" : 179,
+        "text" : "5.500.000"
+      },
+      {
+        "maxX" : 329.55,
+        "midY" : 538.6,
+        "minX" : 285,
+        "text" : "2.678.985"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 538.6,
+        "minX" : 358,
+        "text" : "(=)"
+      },
+      {
+        "maxX" : 398.22,
+        "midY" : 538.6,
+        "minX" : 370.22,
+        "text" : "DEUDA"
+      },
+      {
+        "maxX" : 426.23,
+        "midY" : 538.6,
+        "minX" : 400.45,
+        "text" : "TOTAL"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 537.98,
+        "minX" : 520.55,
+        "text" : "2.821.015"
+      },
+      {
+        "maxX" : 50.14,
+        "midY" : 519.76,
+        "minX" : 30,
+        "text" : "OBS.:"
+      },
+      {
+        "maxX" : 63.69,
+        "midY" : 519.76,
+        "minX" : 52,
+        "text" : "Las"
+      },
+      {
+        "maxX" : 105.19,
+        "midY" : 519.76,
+        "minX" : 65.7,
+        "text" : "operaciones"
+      },
+      {
+        "maxX" : 147.91,
+        "midY" : 519.76,
+        "minX" : 107.21,
+        "text" : "consignadas"
+      },
+      {
+        "maxX" : 157.99,
+        "midY" : 519.76,
+        "minX" : 149.93,
+        "text" : "en"
+      },
+      {
+        "maxX" : 173.71,
+        "midY" : 519.76,
+        "minX" : 160,
+        "text" : "este"
+      },
+      {
+        "maxX" : 203.53,
+        "midY" : 519.76,
+        "minX" : 175.72,
+        "text" : "extracto,"
+      },
+      {
+        "maxX" : 223.67,
+        "midY" : 519.76,
+        "minX" : 205.54,
+        "text" : "serán"
+      },
+      {
+        "maxX" : 268.8,
+        "midY" : 519.76,
+        "minX" : 225.69,
+        "text" : "consideradas"
+      },
+      {
+        "maxX" : 288.55,
+        "midY" : 519.76,
+        "minX" : 270.82,
+        "text" : "como"
+      },
+      {
+        "maxX" : 326.03,
+        "midY" : 519.76,
+        "minX" : 290.56,
+        "text" : "aceptadas,"
+      },
+      {
+        "maxX" : 338.52,
+        "midY" : 519.76,
+        "minX" : 328.04,
+        "text" : "por"
+      },
+      {
+        "maxX" : 346.18,
+        "midY" : 519.76,
+        "minX" : 340.54,
+        "text" : "el"
+      },
+      {
+        "maxX" : 373.98,
+        "midY" : 519.76,
+        "minX" : 348.19,
+        "text" : "usuario,"
+      },
+      {
+        "maxX" : 381.23,
+        "midY" : 519.76,
+        "minX" : 376,
+        "text" : "si"
+      },
+      {
+        "maxX" : 391.31,
+        "midY" : 519.76,
+        "minX" : 383.25,
+        "text" : "no"
+      },
+      {
+        "maxX" : 405.01,
+        "midY" : 519.76,
+        "minX" : 393.32,
+        "text" : "son"
+      },
+      {
+        "maxX" : 438.46,
+        "midY" : 519.76,
+        "minX" : 407.03,
+        "text" : "objetadas"
+      },
+      {
+        "maxX" : 461.03,
+        "midY" : 519.76,
+        "minX" : 440.48,
+        "text" : "dentro"
+      },
+      {
+        "maxX" : 471.11,
+        "midY" : 519.76,
+        "minX" : 463.05,
+        "text" : "de"
+      },
+      {
+        "maxX" : 482.39,
+        "midY" : 519.76,
+        "minX" : 473.12,
+        "text" : "los"
+      },
+      {
+        "maxX" : 492.47,
+        "midY" : 519.76,
+        "minX" : 484.4,
+        "text" : "15"
+      },
+      {
+        "maxX" : 508.18,
+        "midY" : 519.76,
+        "minX" : 494.48,
+        "text" : "días"
+      },
+      {
+        "maxX" : 518.26,
+        "midY" : 519.76,
+        "minX" : 510.2,
+        "text" : "de"
+      },
+      {
+        "maxX" : 527.93,
+        "midY" : 519.76,
+        "minX" : 520.28,
+        "text" : "su"
+      },
+      {
+        "maxX" : 559.35,
+        "midY" : 519.76,
+        "minX" : 529.95,
+        "text" : "remisión."
+      },
+      {
+        "maxX" : 50.95,
+        "midY" : 506.63,
+        "minX" : 35,
+        "text" : "FEC."
+      },
+      {
+        "maxX" : 94.9,
+        "midY" : 506.63,
+        "minX" : 52.89,
+        "text" : "OPERACIÓN"
+      },
+      {
+        "maxX" : 119.95,
+        "midY" : 506.63,
+        "minX" : 104,
+        "text" : "FEC."
+      },
+      {
+        "maxX" : 156.9,
+        "midY" : 506.63,
+        "minX" : 121.89,
+        "text" : "PROCESO"
+      },
+      {
+        "maxX" : 188.5,
+        "midY" : 506.63,
+        "minX" : 171,
+        "text" : "NRO."
+      },
+      {
+        "maxX" : 215.72,
+        "midY" : 506.63,
+        "minX" : 190.45,
+        "text" : "CUPÓN"
+      },
+      {
+        "maxX" : 341.12,
+        "midY" : 506.63,
+        "minX" : 310,
+        "text" : "DETALLE"
+      },
+      {
+        "maxX" : 453.28,
+        "midY" : 506.63,
+        "minX" : 442,
+        "text" : "FIN"
+      },
+      {
+        "maxX" : 474.28,
+        "midY" : 506.63,
+        "minX" : 463,
+        "text" : "IVA"
+      },
+      {
+        "maxX" : 533.05,
+        "midY" : 506.63,
+        "minX" : 507,
+        "text" : "MONTO"
+      },
+      {
+        "maxX" : 116.8,
+        "midY" : 487.54,
+        "minX" : 40,
+        "text" : "0000000000000000"
+      },
+      {
+        "maxX" : 179.2,
+        "midY" : 487.54,
+        "minX" : 160,
+        "text" : "TEST"
+      },
+      {
+        "maxX" : 222.4,
+        "midY" : 487.54,
+        "minX" : 184,
+        "text" : "SAMPLENA"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 475.54,
+        "minX" : 43,
+        "text" : "27\/06\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 475.54,
+        "minX" : 105,
+        "text" : "29\/06\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 475.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 242.6,
+        "midY" : 475.54,
+        "minX" : 233,
+        "text" : "LA"
+      },
+      {
+        "maxX" : 295.4,
+        "midY" : 475.54,
+        "minX" : 247.4,
+        "text" : "FERNETERIA"
+      },
+      {
+        "maxX" : 377,
+        "midY" : 475.54,
+        "minX" : 353,
+        "text" : "AsuPY"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 475.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 475.54,
+        "minX" : 520.2,
+        "text" : "50.000"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 463.54,
+        "minX" : 43,
+        "text" : "29\/06\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 463.54,
+        "minX" : 105,
+        "text" : "29\/06\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 463.54,
+        "minX" : 218.2,
+        "text" : "0"
+      },
+      {
+        "maxX" : 242.6,
+        "midY" : 463.54,
+        "minX" : 233,
+        "text" : "SU"
+      },
+      {
+        "maxX" : 266.6,
+        "midY" : 463.54,
+        "minX" : 247.4,
+        "text" : "PAGO"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 463.54,
+        "minX" : 271.4,
+        "text" : "GRACIAS"
+      },
+      {
+        "maxX" : 561,
+        "midY" : 463.54,
+        "minX" : 505.8,
+        "text" : "2.000.000CR"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 451.54,
+        "minX" : 43,
+        "text" : "29\/06\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 451.54,
+        "minX" : 105,
+        "text" : "01\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 451.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 261.8,
+        "midY" : 451.54,
+        "minX" : 233,
+        "text" : "OPENAI"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 451.54,
+        "minX" : 266.6,
+        "text" : "*CHATGPT"
+      },
+      {
+        "maxX" : 338.6,
+        "midY" : 451.54,
+        "minX" : 309.8,
+        "text" : "SUBSCR"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 451.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 254.2,
+        "midY" : 439.54,
+        "minX" : 244.6,
+        "text" : "20"
+      },
+      {
+        "maxX" : 292.6,
+        "midY" : 439.54,
+        "minX" : 273.4,
+        "text" : "LIQ."
+      },
+      {
+        "maxX" : 321.4,
+        "midY" : 439.54,
+        "minX" : 297.4,
+        "text" : "MARCA"
+      },
+      {
+        "maxX" : 340.6,
+        "midY" : 439.54,
+        "minX" : 326.2,
+        "text" : "U$:"
+      },
+      {
+        "maxX" : 383.8,
+        "midY" : 439.54,
+        "minX" : 359.8,
+        "text" : "20.00"
+      },
+      {
+        "maxX" : 422.2,
+        "midY" : 439.54,
+        "minX" : 388.6,
+        "text" : "COTIZ.:"
+      },
+      {
+        "maxX" : 475,
+        "midY" : 439.54,
+        "minX" : 441.4,
+        "text" : "6222.00"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 439.54,
+        "minX" : 515.4,
+        "text" : "124.440"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 427.54,
+        "minX" : 43,
+        "text" : "29\/06\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 427.54,
+        "minX" : 105,
+        "text" : "01\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 427.54,
+        "minX" : 184.6,
+        "text" : "25309665"
+      },
+      {
+        "maxX" : 309.8,
+        "midY" : 427.54,
+        "minX" : 233,
+        "text" : "618094361758-IVA"
+      },
+      {
+        "maxX" : 329,
+        "midY" : 427.54,
+        "minX" : 314.6,
+        "text" : "LEY"
+      },
+      {
+        "maxX" : 401,
+        "midY" : 427.54,
+        "minX" : 333.8,
+        "text" : "6380-SERVICIOS"
+      },
+      {
+        "maxX" : 425,
+        "midY" : 427.54,
+        "minX" : 405.8,
+        "text" : "DIGI"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 427.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 427.54,
+        "minX" : 520.2,
+        "text" : "12.444"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 415.54,
+        "minX" : 43,
+        "text" : "30\/06\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 415.54,
+        "minX" : 105,
+        "text" : "01\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 415.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 271.4,
+        "midY" : 415.54,
+        "minX" : 233,
+        "text" : "CINEMARK"
+      },
+      {
+        "maxX" : 314.6,
+        "midY" : 415.54,
+        "minX" : 276.2,
+        "text" : "PARAGUAY"
+      },
+      {
+        "maxX" : 338.6,
+        "midY" : 415.54,
+        "minX" : 319.4,
+        "text" : "VPOS"
+      },
+      {
+        "maxX" : 377,
+        "midY" : 415.54,
+        "minX" : 343.4,
+        "text" : "WEASUPY"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 415.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 415.54,
+        "minX" : 520.2,
+        "text" : "48.000"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 403.54,
+        "minX" : 43,
+        "text" : "01\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 403.54,
+        "minX" : 105,
+        "text" : "01\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 403.54,
+        "minX" : 184.6,
+        "text" : "25309665"
+      },
+      {
+        "maxX" : 257,
+        "midY" : 403.54,
+        "minX" : 233,
+        "text" : "CARGO"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 403.54,
+        "minX" : 261.8,
+        "text" : "POR"
+      },
+      {
+        "maxX" : 314.6,
+        "midY" : 403.54,
+        "minX" : 281,
+        "text" : "COMPRAS"
+      },
+      {
+        "maxX" : 391.4,
+        "midY" : 403.54,
+        "minX" : 319.4,
+        "text" : "INTERNACIONALES"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 403.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 479,
+        "midY" : 403.54,
+        "minX" : 464.6,
+        "text" : "10%"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 403.54,
+        "minX" : 525,
+        "text" : "2.489"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 391.54,
+        "minX" : 43,
+        "text" : "01\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 391.54,
+        "minX" : 105,
+        "text" : "01\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 391.54,
+        "minX" : 218.2,
+        "text" : "0"
+      },
+      {
+        "maxX" : 257,
+        "midY" : 391.54,
+        "minX" : 233,
+        "text" : "MANT."
+      },
+      {
+        "maxX" : 271.4,
+        "midY" : 391.54,
+        "minX" : 261.8,
+        "text" : "DE"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 391.54,
+        "minX" : 276.2,
+        "text" : "CUENTA"
+      },
+      {
+        "maxX" : 333.8,
+        "midY" : 391.54,
+        "minX" : 309.8,
+        "text" : "ANUAL"
+      },
+      {
+        "maxX" : 425,
+        "midY" : 391.54,
+        "minX" : 372.2,
+        "text" : "CTA.001\/003"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 391.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 479,
+        "midY" : 391.54,
+        "minX" : 464.6,
+        "text" : "10%"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 391.54,
+        "minX" : 520.2,
+        "text" : "75.758"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 379.54,
+        "minX" : 43,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 379.54,
+        "minX" : 105,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 379.54,
+        "minX" : 184.6,
+        "text" : "25450514"
+      },
+      {
+        "maxX" : 257,
+        "midY" : 379.54,
+        "minX" : 233,
+        "text" : "CARGO"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 379.54,
+        "minX" : 261.8,
+        "text" : "POR"
+      },
+      {
+        "maxX" : 314.6,
+        "midY" : 379.54,
+        "minX" : 281,
+        "text" : "COMPRAS"
+      },
+      {
+        "maxX" : 391.4,
+        "midY" : 379.54,
+        "minX" : 319.4,
+        "text" : "INTERNACIONALES"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 379.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 479,
+        "midY" : 379.54,
+        "minX" : 464.6,
+        "text" : "10%"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 379.54,
+        "minX" : 525,
+        "text" : "5.874"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 367.54,
+        "minX" : 43,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 367.54,
+        "minX" : 105,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 367.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 367.54,
+        "minX" : 233,
+        "text" : "PETROBRAS"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 367.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 367.54,
+        "minX" : 515.4,
+        "text" : "150.000"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 355.54,
+        "minX" : 43,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 355.54,
+        "minX" : 105,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 355.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 266.6,
+        "midY" : 355.54,
+        "minX" : 233,
+        "text" : "PEDIDOS"
+      },
+      {
+        "maxX" : 281,
+        "midY" : 355.54,
+        "minX" : 271.4,
+        "text" : "YA"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 355.54,
+        "minX" : 285.8,
+        "text" : "PLUS"
+      },
+      {
+        "maxX" : 377,
+        "midY" : 355.54,
+        "minX" : 353,
+        "text" : "ASUPY"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 355.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 355.54,
+        "minX" : 534.6,
+        "text" : "100"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 343.54,
+        "minX" : 43,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 343.54,
+        "minX" : 105,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 343.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 266.6,
+        "midY" : 343.54,
+        "minX" : 233,
+        "text" : "PEDIDOS"
+      },
+      {
+        "maxX" : 281,
+        "midY" : 343.54,
+        "minX" : 271.4,
+        "text" : "YA"
+      },
+      {
+        "maxX" : 377,
+        "midY" : 343.54,
+        "minX" : 353,
+        "text" : "ASUPY"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 343.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 343.54,
+        "minX" : 520.2,
+        "text" : "55.000"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 331.54,
+        "minX" : 43,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 331.54,
+        "minX" : 105,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 331.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 261.8,
+        "midY" : 331.54,
+        "minX" : 233,
+        "text" : "AIRBNB"
+      },
+      {
+        "maxX" : 271.4,
+        "midY" : 331.54,
+        "minX" : 266.6,
+        "text" : "*"
+      },
+      {
+        "maxX" : 324.2,
+        "midY" : 331.54,
+        "minX" : 276.2,
+        "text" : "HM55C4ZYQ2"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 331.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 268.6,
+        "midY" : 319.54,
+        "minX" : 244.6,
+        "text" : "47.24"
+      },
+      {
+        "maxX" : 292.6,
+        "midY" : 319.54,
+        "minX" : 273.4,
+        "text" : "LIQ."
+      },
+      {
+        "maxX" : 321.4,
+        "midY" : 319.54,
+        "minX" : 297.4,
+        "text" : "MARCA"
+      },
+      {
+        "maxX" : 340.6,
+        "midY" : 319.54,
+        "minX" : 326.2,
+        "text" : "U$:"
+      },
+      {
+        "maxX" : 383.8,
+        "midY" : 319.54,
+        "minX" : 359.8,
+        "text" : "47.24"
+      },
+      {
+        "maxX" : 422.2,
+        "midY" : 319.54,
+        "minX" : 388.6,
+        "text" : "COTIZ.:"
+      },
+      {
+        "maxX" : 475,
+        "midY" : 319.54,
+        "minX" : 441.4,
+        "text" : "6217.00"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 319.54,
+        "minX" : 515.4,
+        "text" : "293.691"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 307.54,
+        "minX" : 43,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 307.54,
+        "minX" : 105,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 307.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 266.6,
+        "midY" : 307.54,
+        "minX" : 233,
+        "text" : "PEDIDOS"
+      },
+      {
+        "maxX" : 324.2,
+        "midY" : 307.54,
+        "minX" : 271.4,
+        "text" : "YA-PROPINAS"
+      },
+      {
+        "maxX" : 377,
+        "midY" : 307.54,
+        "minX" : 353,
+        "text" : "ASUPY"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 307.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 307.54,
+        "minX" : 525,
+        "text" : "4.000"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 295.54,
+        "minX" : 43,
+        "text" : "04\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 295.54,
+        "minX" : 105,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 295.54,
+        "minX" : 184.6,
+        "text" : "25457995"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 295.54,
+        "minX" : 233,
+        "text" : "CONTIDESCUENTOS"
+      },
+      {
+        "maxX" : 561,
+        "midY" : 295.54,
+        "minX" : 520.2,
+        "text" : "30.000CR"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 283.54,
+        "minX" : 43,
+        "text" : "03\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 283.54,
+        "minX" : 105,
+        "text" : "06\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 283.54,
+        "minX" : 184.6,
+        "text" : "25526857"
+      },
+      {
+        "maxX" : 266.6,
+        "midY" : 283.54,
+        "minX" : 233,
+        "text" : "PEDIDOS"
+      },
+      {
+        "maxX" : 281,
+        "midY" : 283.54,
+        "minX" : 271.4,
+        "text" : "YA"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 283.54,
+        "minX" : 285.8,
+        "text" : "PLUS"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 283.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 561,
+        "midY" : 283.54,
+        "minX" : 534.6,
+        "text" : "100CR"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 271.54,
+        "minX" : 43,
+        "text" : "05\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 271.54,
+        "minX" : 105,
+        "text" : "06\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 271.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 252.2,
+        "midY" : 271.54,
+        "minX" : 233,
+        "text" : "CTRO"
+      },
+      {
+        "maxX" : 285.8,
+        "midY" : 271.54,
+        "minX" : 257,
+        "text" : "MEDICO"
+      },
+      {
+        "maxX" : 329,
+        "midY" : 271.54,
+        "minX" : 290.6,
+        "text" : "BAUTISTA"
+      },
+      {
+        "maxX" : 377,
+        "midY" : 271.54,
+        "minX" : 353,
+        "text" : "ASUPY"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 271.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 271.54,
+        "minX" : 515.4,
+        "text" : "253.876"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 259.54,
+        "minX" : 43,
+        "text" : "08\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 259.54,
+        "minX" : 105,
+        "text" : "09\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 259.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 259.54,
+        "minX" : 233,
+        "text" : "APPLE.COM"
+      },
+      {
+        "maxX" : 300.2,
+        "midY" : 259.54,
+        "minX" : 281,
+        "text" : "BILL"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 259.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 263.8,
+        "midY" : 247.54,
+        "minX" : 244.6,
+        "text" : "0.99"
+      },
+      {
+        "maxX" : 292.6,
+        "midY" : 247.54,
+        "minX" : 273.4,
+        "text" : "LIQ."
+      },
+      {
+        "maxX" : 321.4,
+        "midY" : 247.54,
+        "minX" : 297.4,
+        "text" : "MARCA"
+      },
+      {
+        "maxX" : 340.6,
+        "midY" : 247.54,
+        "minX" : 326.2,
+        "text" : "U$:"
+      },
+      {
+        "maxX" : 383.8,
+        "midY" : 247.54,
+        "minX" : 364.6,
+        "text" : "0.99"
+      },
+      {
+        "maxX" : 422.2,
+        "midY" : 247.54,
+        "minX" : 388.6,
+        "text" : "COTIZ.:"
+      },
+      {
+        "maxX" : 475,
+        "midY" : 247.54,
+        "minX" : 441.4,
+        "text" : "6216.00"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 247.54,
+        "minX" : 525,
+        "text" : "6.153"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 235.54,
+        "minX" : 43,
+        "text" : "08\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 235.54,
+        "minX" : 105,
+        "text" : "09\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 235.54,
+        "minX" : 184.6,
+        "text" : "25722634"
+      },
+      {
+        "maxX" : 309.8,
+        "midY" : 235.54,
+        "minX" : 233,
+        "text" : "618998874172-IVA"
+      },
+      {
+        "maxX" : 329,
+        "midY" : 235.54,
+        "minX" : 314.6,
+        "text" : "LEY"
+      },
+      {
+        "maxX" : 401,
+        "midY" : 235.54,
+        "minX" : 333.8,
+        "text" : "6380-SERVICIOS"
+      },
+      {
+        "maxX" : 425,
+        "midY" : 235.54,
+        "minX" : 405.8,
+        "text" : "DIGI"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 235.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 235.54,
+        "minX" : 534.6,
+        "text" : "615"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 223.54,
+        "minX" : 43,
+        "text" : "09\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 223.54,
+        "minX" : 105,
+        "text" : "09\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 223.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 266.6,
+        "midY" : 223.54,
+        "minX" : 233,
+        "text" : "Spotify"
+      },
+      {
+        "maxX" : 319.4,
+        "midY" : 223.54,
+        "minX" : 271.4,
+        "text" : "P4464AFA57"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 223.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 263.8,
+        "midY" : 211.54,
+        "minX" : 244.6,
+        "text" : "5.99"
+      },
+      {
+        "maxX" : 292.6,
+        "midY" : 211.54,
+        "minX" : 273.4,
+        "text" : "LIQ."
+      },
+      {
+        "maxX" : 321.4,
+        "midY" : 211.54,
+        "minX" : 297.4,
+        "text" : "MARCA"
+      },
+      {
+        "maxX" : 340.6,
+        "midY" : 211.54,
+        "minX" : 326.2,
+        "text" : "U$:"
+      },
+      {
+        "maxX" : 383.8,
+        "midY" : 211.54,
+        "minX" : 364.6,
+        "text" : "5.99"
+      },
+      {
+        "maxX" : 422.2,
+        "midY" : 211.54,
+        "minX" : 388.6,
+        "text" : "COTIZ.:"
+      },
+      {
+        "maxX" : 475,
+        "midY" : 211.54,
+        "minX" : 441.4,
+        "text" : "6216.00"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 211.54,
+        "minX" : 520.2,
+        "text" : "37.233"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 199.54,
+        "minX" : 43,
+        "text" : "09\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 199.54,
+        "minX" : 105,
+        "text" : "09\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 199.54,
+        "minX" : 184.6,
+        "text" : "25725012"
+      },
+      {
+        "maxX" : 309.8,
+        "midY" : 199.54,
+        "minX" : 233,
+        "text" : "619099297690-IVA"
+      },
+      {
+        "maxX" : 329,
+        "midY" : 199.54,
+        "minX" : 314.6,
+        "text" : "LEY"
+      },
+      {
+        "maxX" : 401,
+        "midY" : 199.54,
+        "minX" : 333.8,
+        "text" : "6380-SERVICIOS"
+      },
+      {
+        "maxX" : 425,
+        "midY" : 199.54,
+        "minX" : 405.8,
+        "text" : "DIGI"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 199.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 199.54,
+        "minX" : 525,
+        "text" : "3.723"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 187.54,
+        "minX" : 43,
+        "text" : "09\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 187.54,
+        "minX" : 105,
+        "text" : "09\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 187.54,
+        "minX" : 184.6,
+        "text" : "25722634"
+      },
+      {
+        "maxX" : 257,
+        "midY" : 187.54,
+        "minX" : 233,
+        "text" : "CARGO"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 187.54,
+        "minX" : 261.8,
+        "text" : "POR"
+      },
+      {
+        "maxX" : 314.6,
+        "midY" : 187.54,
+        "minX" : 281,
+        "text" : "COMPRAS"
+      },
+      {
+        "maxX" : 391.4,
+        "midY" : 187.54,
+        "minX" : 319.4,
+        "text" : "INTERNACIONALES"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 187.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 479,
+        "midY" : 187.54,
+        "minX" : 464.6,
+        "text" : "10%"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 187.54,
+        "minX" : 534.6,
+        "text" : "123"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 175.54,
+        "minX" : 43,
+        "text" : "09\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 175.54,
+        "minX" : 105,
+        "text" : "09\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 175.54,
+        "minX" : 184.6,
+        "text" : "25725012"
+      },
+      {
+        "maxX" : 257,
+        "midY" : 175.54,
+        "minX" : 233,
+        "text" : "CARGO"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 175.54,
+        "minX" : 261.8,
+        "text" : "POR"
+      },
+      {
+        "maxX" : 314.6,
+        "midY" : 175.54,
+        "minX" : 281,
+        "text" : "COMPRAS"
+      },
+      {
+        "maxX" : 391.4,
+        "midY" : 175.54,
+        "minX" : 319.4,
+        "text" : "INTERNACIONALES"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 175.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 479,
+        "midY" : 175.54,
+        "minX" : 464.6,
+        "text" : "10%"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 175.54,
+        "minX" : 534.6,
+        "text" : "745"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 163.54,
+        "minX" : 43,
+        "text" : "10\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 163.54,
+        "minX" : 105,
+        "text" : "10\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 163.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 163.54,
+        "minX" : 233,
+        "text" : "PETROBRAS"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 163.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 163.54,
+        "minX" : 515.4,
+        "text" : "100.000"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 151.54,
+        "minX" : 43,
+        "text" : "11\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 151.54,
+        "minX" : 105,
+        "text" : "10\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 151.54,
+        "minX" : 184.6,
+        "text" : "25772942"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 151.54,
+        "minX" : 233,
+        "text" : "CONTIDESCUENTOS"
+      },
+      {
+        "maxX" : 561,
+        "midY" : 151.54,
+        "minX" : 520.2,
+        "text" : "20.000CR"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 139.54,
+        "minX" : 43,
+        "text" : "12\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 139.54,
+        "minX" : 105,
+        "text" : "13\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 139.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 252.2,
+        "midY" : 139.54,
+        "minX" : 233,
+        "text" : "FCIA"
+      },
+      {
+        "maxX" : 281,
+        "midY" : 139.54,
+        "minX" : 257,
+        "text" : "PUNTO"
+      },
+      {
+        "maxX" : 333.8,
+        "midY" : 139.54,
+        "minX" : 285.8,
+        "text" : "FARMA-P228"
+      },
+      {
+        "maxX" : 377,
+        "midY" : 139.54,
+        "minX" : 353,
+        "text" : "LAMPY"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 139.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 139.54,
+        "minX" : 515.4,
+        "text" : "151.462"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 127.54,
+        "minX" : 43,
+        "text" : "13\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 127.54,
+        "minX" : 105,
+        "text" : "13\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 127.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 271.4,
+        "midY" : 127.54,
+        "minX" : 233,
+        "text" : "PHYSICAL"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 127.54,
+        "minX" : 276.2,
+        "text" : "STUDIO"
+      },
+      {
+        "maxX" : 377,
+        "midY" : 127.54,
+        "minX" : 353,
+        "text" : "ASUPY"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 127.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 127.54,
+        "minX" : 515.4,
+        "text" : "250.000"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 115.54,
+        "minX" : 43,
+        "text" : "15\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 115.54,
+        "minX" : 105,
+        "text" : "15\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 115.54,
+        "minX" : 218.2,
+        "text" : "0"
+      },
+      {
+        "maxX" : 242.6,
+        "midY" : 115.54,
+        "minX" : 233,
+        "text" : "SU"
+      },
+      {
+        "maxX" : 266.6,
+        "midY" : 115.54,
+        "minX" : 247.4,
+        "text" : "PAGO"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 115.54,
+        "minX" : 271.4,
+        "text" : "GRACIAS"
+      },
+      {
+        "maxX" : 561,
+        "midY" : 115.54,
+        "minX" : 505.8,
+        "text" : "1.000.000CR"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 103.54,
+        "minX" : 43,
+        "text" : "17\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 103.54,
+        "minX" : 105,
+        "text" : "17\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 103.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 103.54,
+        "minX" : 233,
+        "text" : "PETROBRAS"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 103.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 103.54,
+        "minX" : 515.4,
+        "text" : "150.000"
+      },
+      {
+        "maxX" : 288.33,
+        "midY" : 34.28,
+        "minX" : 262.65,
+        "text" : "Página"
+      },
+      {
+        "maxX" : 295.21,
+        "midY" : 34.28,
+        "minX" : 290.63,
+        "text" : "1"
+      },
+      {
+        "maxX" : 332.35,
+        "midY" : 34.28,
+        "minX" : 306.68,
+        "text" : "SIGUE"
+      }
+    ]
+  },
+  {
+    "height" : 842,
+    "index" : 1,
+    "width" : 595,
+    "words" : [
+      {
+        "maxX" : 204.8,
+        "midY" : 768.86,
+        "minX" : 152,
+        "text" : "SAMPLENA"
+      },
+      {
+        "maxX" : 277.4,
+        "midY" : 768.86,
+        "minX" : 211.4,
+        "text" : "REDACTEDX,"
+      },
+      {
+        "maxX" : 310.4,
+        "midY" : 768.86,
+        "minX" : 284,
+        "text" : "TEST"
+      },
+      {
+        "maxX" : 350,
+        "midY" : 768.86,
+        "minX" : 317,
+        "text" : "USERX"
+      },
+      {
+        "maxX" : 478,
+        "midY" : 768.86,
+        "minX" : 406,
+        "text" : "000-00-000000\/0"
+      },
+      {
+        "maxX" : 170,
+        "midY" : 740.86,
+        "minX" : 152,
+        "text" : "CAL"
+      },
+      {
+        "maxX" : 194,
+        "midY" : 740.86,
+        "minX" : 176,
+        "text" : "DEL"
+      },
+      {
+        "maxX" : 230,
+        "midY" : 740.86,
+        "minX" : 200,
+        "text" : "NORTE"
+      },
+      {
+        "maxX" : 260,
+        "midY" : 740.86,
+        "minX" : 236,
+        "text" : "CASI"
+      },
+      {
+        "maxX" : 290,
+        "midY" : 740.86,
+        "minX" : 266,
+        "text" : "SURX"
+      },
+      {
+        "maxX" : 182.66,
+        "midY" : 694.85,
+        "minX" : 152,
+        "text" : "CIUDAD"
+      },
+      {
+        "maxX" : 209.8,
+        "midY" : 694.85,
+        "minX" : 205,
+        "text" : "1"
+      },
+      {
+        "maxX" : 411.01,
+        "midY" : 694.85,
+        "minX" : 391,
+        "text" : "Teléf."
+      },
+      {
+        "maxX" : 78.8,
+        "midY" : 687.54,
+        "minX" : 50,
+        "text" : "000000"
+      },
+      {
+        "maxX" : 109.2,
+        "midY" : 687.54,
+        "minX" : 90,
+        "text" : "Nro:"
+      },
+      {
+        "maxX" : 129.6,
+        "midY" : 687.54,
+        "minX" : 120,
+        "text" : "31"
+      },
+      {
+        "maxX" : 248,
+        "midY" : 685.42,
+        "minX" : 152,
+        "text" : "CENTRAL\/ASUNCION"
+      },
+      {
+        "maxX" : 70.56,
+        "midY" : 658.56,
+        "minX" : 35,
+        "text" : "TARJETA"
+      },
+      {
+        "maxX" : 119.4,
+        "midY" : 658.56,
+        "minX" : 93,
+        "text" : "4111"
+      },
+      {
+        "maxX" : 152.4,
+        "midY" : 658.56,
+        "minX" : 126,
+        "text" : "1111"
+      },
+      {
+        "maxX" : 185.4,
+        "midY" : 658.56,
+        "minX" : 159,
+        "text" : "1111"
+      },
+      {
+        "maxX" : 218.4,
+        "midY" : 658.56,
+        "minX" : 192,
+        "text" : "1111"
+      },
+      {
+        "maxX" : 276.4,
+        "midY" : 658.56,
+        "minX" : 250,
+        "text" : "Visa"
+      },
+      {
+        "maxX" : 329.2,
+        "midY" : 658.56,
+        "minX" : 283,
+        "text" : "Clásica"
+      },
+      {
+        "maxX" : 201.46,
+        "midY" : 638.28,
+        "minX" : 168,
+        "text" : "FECHAS"
+      },
+      {
+        "maxX" : 217.51,
+        "midY" : 638.28,
+        "minX" : 203.76,
+        "text" : "DE:"
+      },
+      {
+        "maxX" : 261.17,
+        "midY" : 638.28,
+        "minX" : 230,
+        "text" : "CIERRE"
+      },
+      {
+        "maxX" : 335.3,
+        "midY" : 638.28,
+        "minX" : 278,
+        "text" : "VENCIMIENTO"
+      },
+      {
+        "maxX" : 440,
+        "midY" : 638.28,
+        "minX" : 400,
+        "text" : "RESUMEN"
+      },
+      {
+        "maxX" : 475.12,
+        "midY" : 638.28,
+        "minX" : 442.22,
+        "text" : "ESTADO"
+      },
+      {
+        "maxX" : 526.68,
+        "midY" : 638.28,
+        "minX" : 477.34,
+        "text" : "FINANCIERO"
+      },
+      {
+        "maxX" : 115.26,
+        "midY" : 632.47,
+        "minX" : 68.73,
+        "text" : "VENCIMIENTO"
+      },
+      {
+        "maxX" : 114.11,
+        "midY" : 621.96,
+        "minX" : 69.89,
+        "text" : "AGOSTO\/2026"
+      },
+      {
+        "maxX" : 200.21,
+        "midY" : 621.96,
+        "minX" : 175,
+        "text" : "Actual"
+      },
+      {
+        "maxX" : 269.6,
+        "midY" : 621.96,
+        "minX" : 230,
+        "text" : "24\/07\/26"
+      },
+      {
+        "maxX" : 325.6,
+        "midY" : 621.96,
+        "minX" : 286,
+        "text" : "07\/08\/26"
+      },
+      {
+        "maxX" : 381.57,
+        "midY" : 621.96,
+        "minX" : 358,
+        "text" : "Deuda"
+      },
+      {
+        "maxX" : 411.8,
+        "midY" : 621.96,
+        "minX" : 383.79,
+        "text" : "Anterior"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 621.96,
+        "minX" : 520.55,
+        "text" : "3.797.425"
+      },
+      {
+        "maxX" : 51.05,
+        "midY" : 610.7,
+        "minX" : 46.5,
+        "text" : "D"
+      },
+      {
+        "maxX" : 64.35,
+        "midY" : 610.7,
+        "minX" : 60.5,
+        "text" : "L"
+      },
+      {
+        "maxX" : 79.75,
+        "midY" : 610.7,
+        "minX" : 74.5,
+        "text" : "M"
+      },
+      {
+        "maxX" : 93.75,
+        "midY" : 610.7,
+        "minX" : 88.5,
+        "text" : "M"
+      },
+      {
+        "maxX" : 106,
+        "midY" : 610.7,
+        "minX" : 102.5,
+        "text" : "J"
+      },
+      {
+        "maxX" : 120.7,
+        "midY" : 610.7,
+        "minX" : 116.5,
+        "text" : "V"
+      },
+      {
+        "maxX" : 134.7,
+        "midY" : 610.7,
+        "minX" : 130.5,
+        "text" : "S"
+      },
+      {
+        "maxX" : 203.88,
+        "midY" : 610.7,
+        "minX" : 175,
+        "text" : "Anterior"
+      },
+      {
+        "maxX" : 269.6,
+        "midY" : 610.7,
+        "minX" : 230,
+        "text" : "26\/06\/26"
+      },
+      {
+        "maxX" : 325.6,
+        "midY" : 610.7,
+        "minX" : 286,
+        "text" : "10\/07\/26"
+      },
+      {
+        "maxX" : 365.99,
+        "midY" : 610.7,
+        "minX" : 358,
+        "text" : "(-)"
+      },
+      {
+        "maxX" : 390.9,
+        "midY" : 610.7,
+        "minX" : 368.22,
+        "text" : "Pagos"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 610.7,
+        "minX" : 520.55,
+        "text" : "3.000.000"
+      },
+      {
+        "maxX" : 205.25,
+        "midY" : 601.28,
+        "minX" : 175,
+        "text" : "Próximo"
+      },
+      {
+        "maxX" : 269.6,
+        "midY" : 601.28,
+        "minX" : 230,
+        "text" : "21\/08\/26"
+      },
+      {
+        "maxX" : 325.6,
+        "midY" : 601.28,
+        "minX" : 286,
+        "text" : "08\/09\/26"
+      },
+      {
+        "maxX" : 134.28,
+        "midY" : 598.6,
+        "minX" : 130.5,
+        "text" : "1"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 598.6,
+        "minX" : 358,
+        "text" : "(=)"
+      },
+      {
+        "maxX" : 390.68,
+        "midY" : 598.6,
+        "minX" : 370.22,
+        "text" : "Saldo"
+      },
+      {
+        "maxX" : 432.03,
+        "midY" : 598.6,
+        "minX" : 392.9,
+        "text" : "Financiado"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 598.6,
+        "minX" : 528.65,
+        "text" : "797.425"
+      },
+      {
+        "maxX" : 50.28,
+        "midY" : 586.6,
+        "minX" : 46.5,
+        "text" : "2"
+      },
+      {
+        "maxX" : 64.28,
+        "midY" : 586.6,
+        "minX" : 60.5,
+        "text" : "3"
+      },
+      {
+        "maxX" : 78.28,
+        "midY" : 586.6,
+        "minX" : 74.5,
+        "text" : "4"
+      },
+      {
+        "maxX" : 92.28,
+        "midY" : 586.6,
+        "minX" : 88.5,
+        "text" : "5"
+      },
+      {
+        "maxX" : 106.28,
+        "midY" : 586.6,
+        "minX" : 102.5,
+        "text" : "6"
+      },
+      {
+        "maxX" : 120.28,
+        "midY" : 586.6,
+        "minX" : 116.5,
+        "text" : "7"
+      },
+      {
+        "maxX" : 134.28,
+        "midY" : 586.6,
+        "minX" : 130.5,
+        "text" : "8"
+      },
+      {
+        "maxX" : 196.09,
+        "midY" : 586.6,
+        "minX" : 175,
+        "text" : "T.A.N"
+      },
+      {
+        "maxX" : 219.47,
+        "midY" : 586.6,
+        "minX" : 198.38,
+        "text" : "(Tasa"
+      },
+      {
+        "maxX" : 242.86,
+        "midY" : 586.6,
+        "minX" : 221.76,
+        "text" : "Anual"
+      },
+      {
+        "maxX" : 278.15,
+        "midY" : 586.6,
+        "minX" : 245.15,
+        "text" : "Nominal)"
+      },
+      {
+        "maxX" : 316.75,
+        "midY" : 586.6,
+        "minX" : 292,
+        "text" : "18,10"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 586.6,
+        "minX" : 358,
+        "text" : "(+)"
+      },
+      {
+        "maxX" : 398.67,
+        "midY" : 586.6,
+        "minX" : 370.22,
+        "text" : "Compra"
+      },
+      {
+        "maxX" : 404.9,
+        "midY" : 586.6,
+        "minX" : 400.9,
+        "text" : "y"
+      },
+      {
+        "maxX" : 431.13,
+        "midY" : 586.6,
+        "minX" : 407.12,
+        "text" : "cargos"
+      },
+      {
+        "maxX" : 444.02,
+        "midY" : 586.6,
+        "minX" : 433.35,
+        "text" : "del"
+      },
+      {
+        "maxX" : 461.36,
+        "midY" : 586.6,
+        "minX" : 446.25,
+        "text" : "mes"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 586.6,
+        "minX" : 520.55,
+        "text" : "2.023.590"
+      },
+      {
+        "maxX" : 195.63,
+        "midY" : 577.28,
+        "minX" : 175,
+        "text" : "T.A.E"
+      },
+      {
+        "maxX" : 219.01,
+        "midY" : 577.28,
+        "minX" : 197.93,
+        "text" : "(Tasa"
+      },
+      {
+        "maxX" : 242.4,
+        "midY" : 577.28,
+        "minX" : 221.31,
+        "text" : "Anual"
+      },
+      {
+        "maxX" : 276.79,
+        "midY" : 577.28,
+        "minX" : 244.7,
+        "text" : "Efectiva)"
+      },
+      {
+        "maxX" : 316.75,
+        "midY" : 577.28,
+        "minX" : 292,
+        "text" : "19,84"
+      },
+      {
+        "maxX" : 50.28,
+        "midY" : 574.6,
+        "minX" : 46.5,
+        "text" : "9"
+      },
+      {
+        "maxX" : 68.06,
+        "midY" : 574.6,
+        "minX" : 60.5,
+        "text" : "10"
+      },
+      {
+        "maxX" : 82.06,
+        "midY" : 574.6,
+        "minX" : 74.5,
+        "text" : "11"
+      },
+      {
+        "maxX" : 96.06,
+        "midY" : 574.6,
+        "minX" : 88.5,
+        "text" : "12"
+      },
+      {
+        "maxX" : 110.06,
+        "midY" : 574.6,
+        "minX" : 102.5,
+        "text" : "13"
+      },
+      {
+        "maxX" : 124.06,
+        "midY" : 574.6,
+        "minX" : 116.5,
+        "text" : "14"
+      },
+      {
+        "maxX" : 138.06,
+        "midY" : 574.6,
+        "minX" : 130.5,
+        "text" : "15"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 574.6,
+        "minX" : 358,
+        "text" : "(=)"
+      },
+      {
+        "maxX" : 398.22,
+        "midY" : 574.6,
+        "minX" : 370.22,
+        "text" : "DEUDA"
+      },
+      {
+        "maxX" : 426.23,
+        "midY" : 574.6,
+        "minX" : 400.45,
+        "text" : "TOTAL"
+      },
+      {
+        "maxX" : 444.02,
+        "midY" : 574.6,
+        "minX" : 428.46,
+        "text" : "DEL"
+      },
+      {
+        "maxX" : 483.14,
+        "midY" : 574.6,
+        "minX" : 446.24,
+        "text" : "PERIODO"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 574.6,
+        "minX" : 520.55,
+        "text" : "2.821.015"
+      },
+      {
+        "maxX" : 54.06,
+        "midY" : 562.6,
+        "minX" : 46.5,
+        "text" : "16"
+      },
+      {
+        "maxX" : 68.06,
+        "midY" : 562.6,
+        "minX" : 60.5,
+        "text" : "17"
+      },
+      {
+        "maxX" : 82.06,
+        "midY" : 562.6,
+        "minX" : 74.5,
+        "text" : "18"
+      },
+      {
+        "maxX" : 96.06,
+        "midY" : 562.6,
+        "minX" : 88.5,
+        "text" : "19"
+      },
+      {
+        "maxX" : 110.06,
+        "midY" : 562.6,
+        "minX" : 102.5,
+        "text" : "20"
+      },
+      {
+        "maxX" : 124.06,
+        "midY" : 562.6,
+        "minX" : 116.5,
+        "text" : "21"
+      },
+      {
+        "maxX" : 138.06,
+        "midY" : 562.6,
+        "minX" : 130.5,
+        "text" : "22"
+      },
+      {
+        "maxX" : 219.71,
+        "midY" : 562.6,
+        "minX" : 178,
+        "text" : "COMPRAS"
+      },
+      {
+        "maxX" : 268.3,
+        "midY" : 562.6,
+        "minX" : 222.01,
+        "text" : "NORMALES"
+      },
+      {
+        "maxX" : 276.1,
+        "midY" : 562.6,
+        "minX" : 270.6,
+        "text" : "Y"
+      },
+      {
+        "maxX" : 289.85,
+        "midY" : 562.6,
+        "minX" : 278.39,
+        "text" : "EN"
+      },
+      {
+        "maxX" : 326.52,
+        "midY" : 562.6,
+        "minX" : 292.15,
+        "text" : "CUOTAS"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 562.6,
+        "minX" : 358,
+        "text" : "(+)"
+      },
+      {
+        "maxX" : 393.79,
+        "midY" : 562.6,
+        "minX" : 370.22,
+        "text" : "Deuda"
+      },
+      {
+        "maxX" : 404.91,
+        "midY" : 562.6,
+        "minX" : 396.02,
+        "text" : "en"
+      },
+      {
+        "maxX" : 432.48,
+        "midY" : 562.6,
+        "minX" : 407.14,
+        "text" : "Cuotas"
+      },
+      {
+        "maxX" : 439.15,
+        "midY" : 562.6,
+        "minX" : 434.7,
+        "text" : "a"
+      },
+      {
+        "maxX" : 468.5,
+        "midY" : 562.6,
+        "minX" : 441.38,
+        "text" : "facturar"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 562.6,
+        "minX" : 552.95,
+        "text" : "0"
+      },
+      {
+        "maxX" : 54.06,
+        "midY" : 550.6,
+        "minX" : 46.5,
+        "text" : "23"
+      },
+      {
+        "maxX" : 68.06,
+        "midY" : 550.6,
+        "minX" : 60.5,
+        "text" : "24"
+      },
+      {
+        "maxX" : 82.06,
+        "midY" : 550.6,
+        "minX" : 74.5,
+        "text" : "25"
+      },
+      {
+        "maxX" : 96.06,
+        "midY" : 550.6,
+        "minX" : 88.5,
+        "text" : "26"
+      },
+      {
+        "maxX" : 110.06,
+        "midY" : 550.6,
+        "minX" : 102.5,
+        "text" : "27"
+      },
+      {
+        "maxX" : 124.06,
+        "midY" : 550.6,
+        "minX" : 116.5,
+        "text" : "28"
+      },
+      {
+        "maxX" : 138.06,
+        "midY" : 550.6,
+        "minX" : 130.5,
+        "text" : "29"
+      },
+      {
+        "maxX" : 198.84,
+        "midY" : 550.6,
+        "minX" : 175,
+        "text" : "LÍNEA"
+      },
+      {
+        "maxX" : 212.6,
+        "midY" : 550.6,
+        "minX" : 201.14,
+        "text" : "DE"
+      },
+      {
+        "maxX" : 252.01,
+        "midY" : 550.6,
+        "minX" : 214.89,
+        "text" : "CRÉDITO"
+      },
+      {
+        "maxX" : 332.52,
+        "midY" : 550.6,
+        "minX" : 283,
+        "text" : "DISPONIBLE"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 550.6,
+        "minX" : 358,
+        "text" : "(+)"
+      },
+      {
+        "maxX" : 407.13,
+        "midY" : 550.6,
+        "minX" : 370.22,
+        "text" : "Int\/Cargos"
+      },
+      {
+        "maxX" : 439.14,
+        "midY" : 550.6,
+        "minX" : 409.35,
+        "text" : "Deveng."
+      },
+      {
+        "maxX" : 450.26,
+        "midY" : 550.6,
+        "minX" : 441.37,
+        "text" : "en"
+      },
+      {
+        "maxX" : 471.61,
+        "midY" : 550.6,
+        "minX" : 452.49,
+        "text" : "susp."
+      },
+      {
+        "maxX" : 557,
+        "midY" : 550.6,
+        "minX" : 552.95,
+        "text" : "0"
+      },
+      {
+        "maxX" : 54.06,
+        "midY" : 538.6,
+        "minX" : 46.5,
+        "text" : "30"
+      },
+      {
+        "maxX" : 68.06,
+        "midY" : 538.6,
+        "minX" : 60.5,
+        "text" : "31"
+      },
+      {
+        "maxX" : 223.55,
+        "midY" : 538.6,
+        "minX" : 179,
+        "text" : "5.500.000"
+      },
+      {
+        "maxX" : 329.55,
+        "midY" : 538.6,
+        "minX" : 285,
+        "text" : "2.678.985"
+      },
+      {
+        "maxX" : 368,
+        "midY" : 538.6,
+        "minX" : 358,
+        "text" : "(=)"
+      },
+      {
+        "maxX" : 398.22,
+        "midY" : 538.6,
+        "minX" : 370.22,
+        "text" : "DEUDA"
+      },
+      {
+        "maxX" : 426.23,
+        "midY" : 538.6,
+        "minX" : 400.45,
+        "text" : "TOTAL"
+      },
+      {
+        "maxX" : 557,
+        "midY" : 537.98,
+        "minX" : 520.55,
+        "text" : "2.821.015"
+      },
+      {
+        "maxX" : 50.14,
+        "midY" : 519.76,
+        "minX" : 30,
+        "text" : "OBS.:"
+      },
+      {
+        "maxX" : 63.69,
+        "midY" : 519.76,
+        "minX" : 52,
+        "text" : "Las"
+      },
+      {
+        "maxX" : 105.19,
+        "midY" : 519.76,
+        "minX" : 65.7,
+        "text" : "operaciones"
+      },
+      {
+        "maxX" : 147.91,
+        "midY" : 519.76,
+        "minX" : 107.21,
+        "text" : "consignadas"
+      },
+      {
+        "maxX" : 157.99,
+        "midY" : 519.76,
+        "minX" : 149.93,
+        "text" : "en"
+      },
+      {
+        "maxX" : 173.71,
+        "midY" : 519.76,
+        "minX" : 160,
+        "text" : "este"
+      },
+      {
+        "maxX" : 203.53,
+        "midY" : 519.76,
+        "minX" : 175.72,
+        "text" : "extracto,"
+      },
+      {
+        "maxX" : 223.67,
+        "midY" : 519.76,
+        "minX" : 205.54,
+        "text" : "serán"
+      },
+      {
+        "maxX" : 268.8,
+        "midY" : 519.76,
+        "minX" : 225.69,
+        "text" : "consideradas"
+      },
+      {
+        "maxX" : 288.55,
+        "midY" : 519.76,
+        "minX" : 270.82,
+        "text" : "como"
+      },
+      {
+        "maxX" : 326.03,
+        "midY" : 519.76,
+        "minX" : 290.56,
+        "text" : "aceptadas,"
+      },
+      {
+        "maxX" : 338.52,
+        "midY" : 519.76,
+        "minX" : 328.04,
+        "text" : "por"
+      },
+      {
+        "maxX" : 346.18,
+        "midY" : 519.76,
+        "minX" : 340.54,
+        "text" : "el"
+      },
+      {
+        "maxX" : 373.98,
+        "midY" : 519.76,
+        "minX" : 348.19,
+        "text" : "usuario,"
+      },
+      {
+        "maxX" : 381.23,
+        "midY" : 519.76,
+        "minX" : 376,
+        "text" : "si"
+      },
+      {
+        "maxX" : 391.31,
+        "midY" : 519.76,
+        "minX" : 383.25,
+        "text" : "no"
+      },
+      {
+        "maxX" : 405.01,
+        "midY" : 519.76,
+        "minX" : 393.32,
+        "text" : "son"
+      },
+      {
+        "maxX" : 438.46,
+        "midY" : 519.76,
+        "minX" : 407.03,
+        "text" : "objetadas"
+      },
+      {
+        "maxX" : 461.03,
+        "midY" : 519.76,
+        "minX" : 440.48,
+        "text" : "dentro"
+      },
+      {
+        "maxX" : 471.11,
+        "midY" : 519.76,
+        "minX" : 463.05,
+        "text" : "de"
+      },
+      {
+        "maxX" : 482.39,
+        "midY" : 519.76,
+        "minX" : 473.12,
+        "text" : "los"
+      },
+      {
+        "maxX" : 492.47,
+        "midY" : 519.76,
+        "minX" : 484.4,
+        "text" : "15"
+      },
+      {
+        "maxX" : 508.18,
+        "midY" : 519.76,
+        "minX" : 494.48,
+        "text" : "días"
+      },
+      {
+        "maxX" : 518.26,
+        "midY" : 519.76,
+        "minX" : 510.2,
+        "text" : "de"
+      },
+      {
+        "maxX" : 527.93,
+        "midY" : 519.76,
+        "minX" : 520.28,
+        "text" : "su"
+      },
+      {
+        "maxX" : 559.35,
+        "midY" : 519.76,
+        "minX" : 529.95,
+        "text" : "remisión."
+      },
+      {
+        "maxX" : 50.95,
+        "midY" : 506.63,
+        "minX" : 35,
+        "text" : "FEC."
+      },
+      {
+        "maxX" : 94.9,
+        "midY" : 506.63,
+        "minX" : 52.89,
+        "text" : "OPERACIÓN"
+      },
+      {
+        "maxX" : 119.95,
+        "midY" : 506.63,
+        "minX" : 104,
+        "text" : "FEC."
+      },
+      {
+        "maxX" : 156.9,
+        "midY" : 506.63,
+        "minX" : 121.89,
+        "text" : "PROCESO"
+      },
+      {
+        "maxX" : 188.5,
+        "midY" : 506.63,
+        "minX" : 171,
+        "text" : "NRO."
+      },
+      {
+        "maxX" : 215.72,
+        "midY" : 506.63,
+        "minX" : 190.45,
+        "text" : "CUPÓN"
+      },
+      {
+        "maxX" : 341.12,
+        "midY" : 506.63,
+        "minX" : 310,
+        "text" : "DETALLE"
+      },
+      {
+        "maxX" : 453.28,
+        "midY" : 506.63,
+        "minX" : 442,
+        "text" : "FIN"
+      },
+      {
+        "maxX" : 474.28,
+        "midY" : 506.63,
+        "minX" : 463,
+        "text" : "IVA"
+      },
+      {
+        "maxX" : 533.05,
+        "midY" : 506.63,
+        "minX" : 507,
+        "text" : "MONTO"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 487.54,
+        "minX" : 43,
+        "text" : "18\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 487.54,
+        "minX" : 105,
+        "text" : "17\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 487.54,
+        "minX" : 184.6,
+        "text" : "26109770"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 487.54,
+        "minX" : 233,
+        "text" : "CONTIDESCUENTOS"
+      },
+      {
+        "maxX" : 561,
+        "midY" : 487.54,
+        "minX" : 520.2,
+        "text" : "30.000CR"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 475.54,
+        "minX" : 43,
+        "text" : "18\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 475.54,
+        "minX" : 105,
+        "text" : "20\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 475.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 475.54,
+        "minX" : 233,
+        "text" : "APPLE.COM"
+      },
+      {
+        "maxX" : 300.2,
+        "midY" : 475.54,
+        "minX" : 281,
+        "text" : "BILL"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 475.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 263.8,
+        "midY" : 463.54,
+        "minX" : 244.6,
+        "text" : "2.99"
+      },
+      {
+        "maxX" : 292.6,
+        "midY" : 463.54,
+        "minX" : 273.4,
+        "text" : "LIQ."
+      },
+      {
+        "maxX" : 321.4,
+        "midY" : 463.54,
+        "minX" : 297.4,
+        "text" : "MARCA"
+      },
+      {
+        "maxX" : 340.6,
+        "midY" : 463.54,
+        "minX" : 326.2,
+        "text" : "U$:"
+      },
+      {
+        "maxX" : 383.8,
+        "midY" : 463.54,
+        "minX" : 364.6,
+        "text" : "2.99"
+      },
+      {
+        "maxX" : 422.2,
+        "midY" : 463.54,
+        "minX" : 388.6,
+        "text" : "COTIZ.:"
+      },
+      {
+        "maxX" : 475,
+        "midY" : 463.54,
+        "minX" : 441.4,
+        "text" : "6184.00"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 463.54,
+        "minX" : 520.2,
+        "text" : "18.490"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 451.54,
+        "minX" : 43,
+        "text" : "18\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 451.54,
+        "minX" : 105,
+        "text" : "20\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 451.54,
+        "minX" : 184.6,
+        "text" : "26134521"
+      },
+      {
+        "maxX" : 309.8,
+        "midY" : 451.54,
+        "minX" : 233,
+        "text" : "619802905783-IVA"
+      },
+      {
+        "maxX" : 329,
+        "midY" : 451.54,
+        "minX" : 314.6,
+        "text" : "LEY"
+      },
+      {
+        "maxX" : 401,
+        "midY" : 451.54,
+        "minX" : 333.8,
+        "text" : "6380-SERVICIOS"
+      },
+      {
+        "maxX" : 425,
+        "midY" : 451.54,
+        "minX" : 405.8,
+        "text" : "DIGI"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 451.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 451.54,
+        "minX" : 525,
+        "text" : "1.849"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 439.54,
+        "minX" : 43,
+        "text" : "19\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 439.54,
+        "minX" : 105,
+        "text" : "20\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 439.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 266.6,
+        "midY" : 439.54,
+        "minX" : 233,
+        "text" : "BARRITA"
+      },
+      {
+        "maxX" : 377,
+        "midY" : 439.54,
+        "minX" : 353,
+        "text" : "ASUPY"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 439.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 439.54,
+        "minX" : 520.2,
+        "text" : "94.000"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 427.54,
+        "minX" : 43,
+        "text" : "19\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 427.54,
+        "minX" : 105,
+        "text" : "20\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 427.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 261.8,
+        "midY" : 427.54,
+        "minX" : 233,
+        "text" : "DLOCAL"
+      },
+      {
+        "maxX" : 290.6,
+        "midY" : 427.54,
+        "minX" : 266.6,
+        "text" : "*BOLT"
+      },
+      {
+        "maxX" : 377,
+        "midY" : 427.54,
+        "minX" : 353,
+        "text" : "123PY"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 427.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 427.54,
+        "minX" : 520.2,
+        "text" : "31.500"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 415.54,
+        "minX" : 43,
+        "text" : "20\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 415.54,
+        "minX" : 105,
+        "text" : "20\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 415.54,
+        "minX" : 184.6,
+        "text" : "26134521"
+      },
+      {
+        "maxX" : 257,
+        "midY" : 415.54,
+        "minX" : 233,
+        "text" : "CARGO"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 415.54,
+        "minX" : 261.8,
+        "text" : "POR"
+      },
+      {
+        "maxX" : 314.6,
+        "midY" : 415.54,
+        "minX" : 281,
+        "text" : "COMPRAS"
+      },
+      {
+        "maxX" : 391.4,
+        "midY" : 415.54,
+        "minX" : 319.4,
+        "text" : "INTERNACIONALES"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 415.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 479,
+        "midY" : 415.54,
+        "minX" : 464.6,
+        "text" : "10%"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 415.54,
+        "minX" : 534.6,
+        "text" : "370"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 403.54,
+        "minX" : 43,
+        "text" : "21\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 403.54,
+        "minX" : 105,
+        "text" : "21\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 403.54,
+        "minX" : 165.4,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 242.6,
+        "midY" : 403.54,
+        "minX" : 233,
+        "text" : "F."
+      },
+      {
+        "maxX" : 285.8,
+        "midY" : 403.54,
+        "minX" : 247.4,
+        "text" : "CATEDRAL"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 403.54,
+        "minX" : 290.6,
+        "text" : "RCA"
+      },
+      {
+        "maxX" : 353,
+        "midY" : 403.54,
+        "minX" : 309.8,
+        "text" : "ARGENTINA"
+      },
+      {
+        "maxX" : 362.6,
+        "midY" : 403.54,
+        "minX" : 357.8,
+        "text" : "3"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 403.54,
+        "minX" : 442.4,
+        "text" : "SI"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 403.54,
+        "minX" : 515.4,
+        "text" : "106.150"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 391.54,
+        "minX" : 43,
+        "text" : "22\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 391.54,
+        "minX" : 105,
+        "text" : "21\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 391.54,
+        "minX" : 184.6,
+        "text" : "26261668"
+      },
+      {
+        "maxX" : 305,
+        "midY" : 391.54,
+        "minX" : 233,
+        "text" : "CONTIDESCUENTOS"
+      },
+      {
+        "maxX" : 561,
+        "midY" : 391.54,
+        "minX" : 520.2,
+        "text" : "10.615CR"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 379.54,
+        "minX" : 43,
+        "text" : "24\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 379.54,
+        "minX" : 105,
+        "text" : "24\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 379.54,
+        "minX" : 218.2,
+        "text" : "0"
+      },
+      {
+        "maxX" : 276.2,
+        "midY" : 379.54,
+        "minX" : 233,
+        "text" : "MANTENIM."
+      },
+      {
+        "maxX" : 314.6,
+        "midY" : 379.54,
+        "minX" : 281,
+        "text" : "MENSUAL"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 379.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 479,
+        "midY" : 379.54,
+        "minX" : 464.6,
+        "text" : "10%"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 379.54,
+        "minX" : 520.2,
+        "text" : "17.727"
+      },
+      {
+        "maxX" : 81.4,
+        "midY" : 367.54,
+        "minX" : 43,
+        "text" : "25\/07\/26"
+      },
+      {
+        "maxX" : 143.4,
+        "midY" : 367.54,
+        "minX" : 105,
+        "text" : "24\/07\/26"
+      },
+      {
+        "maxX" : 223,
+        "midY" : 367.54,
+        "minX" : 218.2,
+        "text" : "0"
+      },
+      {
+        "maxX" : 261.8,
+        "midY" : 367.54,
+        "minX" : 233,
+        "text" : "SEGURO"
+      },
+      {
+        "maxX" : 319.4,
+        "midY" : 367.54,
+        "minX" : 266.6,
+        "text" : "CANCELACION"
+      },
+      {
+        "maxX" : 333.8,
+        "midY" : 367.54,
+        "minX" : 324.2,
+        "text" : "DE"
+      },
+      {
+        "maxX" : 362.6,
+        "midY" : 367.54,
+        "minX" : 338.6,
+        "text" : "DEUDA"
+      },
+      {
+        "maxX" : 452,
+        "midY" : 367.54,
+        "minX" : 442.4,
+        "text" : "NO"
+      },
+      {
+        "maxX" : 479,
+        "midY" : 367.54,
+        "minX" : 464.6,
+        "text" : "10%"
+      },
+      {
+        "maxX" : 549,
+        "midY" : 367.54,
+        "minX" : 525,
+        "text" : "9.795"
+      },
+      {
+        "maxX" : 56,
+        "midY" : 265.15,
+        "minX" : 40,
+        "text" : "Dias"
+      },
+      {
+        "maxX" : 76.45,
+        "midY" : 265.15,
+        "minX" : 58.22,
+        "text" : "Mora"
+      },
+      {
+        "maxX" : 147.9,
+        "midY" : 265.15,
+        "minX" : 115,
+        "text" : "Intereses"
+      },
+      {
+        "maxX" : 154.8,
+        "midY" : 265.15,
+        "minX" : 150.13,
+        "text" : "+"
+      },
+      {
+        "maxX" : 201.12,
+        "midY" : 265.15,
+        "minX" : 190,
+        "text" : "Int."
+      },
+      {
+        "maxX" : 226.02,
+        "midY" : 265.15,
+        "minX" : 203.34,
+        "text" : "Morat."
+      },
+      {
+        "maxX" : 264.48,
+        "midY" : 265.15,
+        "minX" : 228.24,
+        "text" : "+Punitorio"
+      },
+      {
+        "maxX" : 271.38,
+        "midY" : 265.15,
+        "minX" : 266.7,
+        "text" : "+"
+      },
+      {
+        "maxX" : 312.9,
+        "midY" : 265.15,
+        "minX" : 300,
+        "text" : "IVA"
+      },
+      {
+        "maxX" : 365.34,
+        "midY" : 265.15,
+        "minX" : 315.12,
+        "text" : "s\/Cgos-Comis"
+      },
+      {
+        "maxX" : 372.24,
+        "midY" : 265.15,
+        "minX" : 367.57,
+        "text" : "+"
+      },
+      {
+        "maxX" : 412.9,
+        "midY" : 265.15,
+        "minX" : 400,
+        "text" : "IVA"
+      },
+      {
+        "maxX" : 454.25,
+        "midY" : 265.15,
+        "minX" : 415.12,
+        "text" : "s\/Intereses"
+      },
+      {
+        "maxX" : 461.14,
+        "midY" : 265.15,
+        "minX" : 456.47,
+        "text" : "="
+      },
+      {
+        "maxX" : 505.34,
+        "midY" : 265.15,
+        "minX" : 480,
+        "text" : "Gastos"
+      },
+      {
+        "maxX" : 544.46,
+        "midY" : 265.15,
+        "minX" : 507.57,
+        "text" : "Finacieros"
+      },
+      {
+        "maxX" : 62.8,
+        "midY" : 255.54,
+        "minX" : 58,
+        "text" : "0"
+      },
+      {
+        "maxX" : 145.8,
+        "midY" : 255.54,
+        "minX" : 117,
+        "text" : "43.099"
+      },
+      {
+        "maxX" : 204.8,
+        "midY" : 255.54,
+        "minX" : 200,
+        "text" : "0"
+      },
+      {
+        "maxX" : 348.8,
+        "midY" : 255.54,
+        "minX" : 320,
+        "text" : "11.289"
+      },
+      {
+        "maxX" : 434,
+        "midY" : 255.54,
+        "minX" : 410,
+        "text" : "4.310"
+      },
+      {
+        "maxX" : 528.8,
+        "midY" : 255.54,
+        "minX" : 500,
+        "text" : "58.698"
+      },
+      {
+        "maxX" : 78.46,
+        "midY" : 238.28,
+        "minX" : 45,
+        "text" : "Compras"
+      },
+      {
+        "maxX" : 89.93,
+        "midY" : 238.28,
+        "minX" : 80.76,
+        "text" : "no"
+      },
+      {
+        "maxX" : 138.53,
+        "midY" : 238.28,
+        "minX" : 92.22,
+        "text" : "Financiables"
+      },
+      {
+        "maxX" : 145.64,
+        "midY" : 238.28,
+        "minX" : 140.82,
+        "text" : "+"
+      },
+      {
+        "maxX" : 206.14,
+        "midY" : 238.28,
+        "minX" : 180,
+        "text" : "Gastos"
+      },
+      {
+        "maxX" : 251.07,
+        "midY" : 238.28,
+        "minX" : 208.43,
+        "text" : "Financieros"
+      },
+      {
+        "maxX" : 258.18,
+        "midY" : 238.28,
+        "minX" : 253.36,
+        "text" : "+"
+      },
+      {
+        "maxX" : 334.47,
+        "midY" : 238.28,
+        "minX" : 290,
+        "text" : "%S\/Compra"
+      },
+      {
+        "maxX" : 378.94,
+        "midY" : 238.28,
+        "minX" : 336.76,
+        "text" : "Financiable"
+      },
+      {
+        "maxX" : 427.97,
+        "midY" : 238.28,
+        "minX" : 400,
+        "text" : "Importe"
+      },
+      {
+        "maxX" : 439.44,
+        "midY" : 238.28,
+        "minX" : 430.26,
+        "text" : "en"
+      },
+      {
+        "maxX" : 460.52,
+        "midY" : 238.28,
+        "minX" : 441.73,
+        "text" : "Mora"
+      },
+      {
+        "maxX" : 467.63,
+        "midY" : 238.28,
+        "minX" : 462.82,
+        "text" : "="
+      },
+      {
+        "maxX" : 519.26,
+        "midY" : 238.28,
+        "minX" : 500,
+        "text" : "Pago"
+      },
+      {
+        "maxX" : 548.6,
+        "midY" : 238.28,
+        "minX" : 521.56,
+        "text" : "mínimo"
+      },
+      {
+        "maxX" : 123.6,
+        "midY" : 228.54,
+        "minX" : 90,
+        "text" : "131.512"
+      },
+      {
+        "maxX" : 228.8,
+        "midY" : 228.54,
+        "minX" : 200,
+        "text" : "58.698"
+      },
+      {
+        "maxX" : 353.6,
+        "midY" : 228.54,
+        "minX" : 320,
+        "text" : "131.790"
+      },
+      {
+        "maxX" : 414.8,
+        "midY" : 228.54,
+        "minX" : 410,
+        "text" : "0"
+      },
+      {
+        "maxX" : 533.6,
+        "midY" : 228.54,
+        "minX" : 500,
+        "text" : "322.000"
+      },
+      {
+        "maxX" : 82.41,
+        "midY" : 208.67,
+        "minX" : 34,
+        "text" : "¡Aprovechá"
+      },
+      {
+        "maxX" : 135.84,
+        "midY" : 208.67,
+        "minX" : 87.43,
+        "text" : "descuentos"
+      },
+      {
+        "maxX" : 165.05,
+        "midY" : 208.67,
+        "minX" : 140.87,
+        "text" : "todas"
+      },
+      {
+        "maxX" : 184.56,
+        "midY" : 208.67,
+        "minX" : 170.07,
+        "text" : "las"
+      },
+      {
+        "maxX" : 223.46,
+        "midY" : 208.67,
+        "minX" : 189.59,
+        "text" : "semanas"
+      },
+      {
+        "maxX" : 242.98,
+        "midY" : 208.67,
+        "minX" : 228.49,
+        "text" : "con"
+      },
+      {
+        "maxX" : 262.49,
+        "midY" : 208.67,
+        "minX" : 248,
+        "text" : "tus"
+      },
+      {
+        "maxX" : 306.24,
+        "midY" : 208.67,
+        "minX" : 267.52,
+        "text" : "tarjetas"
+      },
+      {
+        "maxX" : 320.91,
+        "midY" : 208.67,
+        "minX" : 311.26,
+        "text" : "de"
+      },
+      {
+        "maxX" : 364.65,
+        "midY" : 208.67,
+        "minX" : 325.93,
+        "text" : "crédito!"
+      },
+      {
+        "maxX" : 379.32,
+        "midY" : 208.67,
+        "minX" : 369.68,
+        "text" : "En"
+      },
+      {
+        "maxX" : 452.13,
+        "midY" : 208.67,
+        "minX" : 384.35,
+        "text" : "supermercados,"
+      },
+      {
+        "maxX" : 505.57,
+        "midY" : 208.67,
+        "minX" : 457.16,
+        "text" : "farmacias,"
+      },
+      {
+        "maxX" : 559,
+        "midY" : 208.67,
+        "minX" : 510.59,
+        "text" : "estaciones"
+      },
+      {
+        "maxX" : 43.6,
+        "midY" : 198.48,
+        "minX" : 34,
+        "text" : "de"
+      },
+      {
+        "maxX" : 91.6,
+        "midY" : 198.48,
+        "minX" : 48.4,
+        "text" : "servicio,"
+      },
+      {
+        "maxX" : 154,
+        "midY" : 198.48,
+        "minX" : 96.4,
+        "text" : "restaurantes"
+      },
+      {
+        "maxX" : 168.4,
+        "midY" : 198.48,
+        "minX" : 158.8,
+        "text" : "¡y"
+      },
+      {
+        "maxX" : 197.2,
+        "midY" : 198.48,
+        "minX" : 173.2,
+        "text" : "mucho"
+      },
+      {
+        "maxX" : 221.2,
+        "midY" : 198.48,
+        "minX" : 202,
+        "text" : "más!"
+      },
+      {
+        "maxX" : 264.4,
+        "midY" : 198.48,
+        "minX" : 226,
+        "text" : "Enterate"
+      },
+      {
+        "maxX" : 278.8,
+        "midY" : 198.48,
+        "minX" : 269.2,
+        "text" : "de"
+      },
+      {
+        "maxX" : 307.6,
+        "midY" : 198.48,
+        "minX" : 283.6,
+        "text" : "todos"
+      },
+      {
+        "maxX" : 326.8,
+        "midY" : 198.48,
+        "minX" : 312.4,
+        "text" : "los"
+      },
+      {
+        "maxX" : 379.6,
+        "midY" : 198.48,
+        "minX" : 331.6,
+        "text" : "beneficios"
+      },
+      {
+        "maxX" : 394,
+        "midY" : 198.48,
+        "minX" : 384.4,
+        "text" : "en"
+      },
+      {
+        "maxX" : 437.2,
+        "midY" : 198.48,
+        "minX" : 398.8,
+        "text" : "nuestras"
+      },
+      {
+        "maxX" : 466,
+        "midY" : 198.48,
+        "minX" : 442,
+        "text" : "redes"
+      },
+      {
+        "maxX" : 514,
+        "midY" : 198.48,
+        "minX" : 470.8,
+        "text" : "sociales."
+      },
+      {
+        "maxX" : 74.68,
+        "midY" : 164.11,
+        "minX" : 35,
+        "text" : "Advertencias:"
+      },
+      {
+        "maxX" : 338.28,
+        "midY" : 162.4,
+        "minX" : 320,
+        "text" : "Usted"
+      },
+      {
+        "maxX" : 362.02,
+        "midY" : 162.4,
+        "minX" : 340.23,
+        "text" : "pagará"
+      },
+      {
+        "maxX" : 369.41,
+        "midY" : 162.4,
+        "minX" : 363.97,
+        "text" : "el"
+      },
+      {
+        "maxX" : 388.09,
+        "midY" : 162.4,
+        "minX" : 371.36,
+        "text" : "saldo"
+      },
+      {
+        "maxX" : 401.71,
+        "midY" : 162.4,
+        "minX" : 390.04,
+        "text" : "que"
+      },
+      {
+        "maxX" : 411.05,
+        "midY" : 162.4,
+        "minX" : 403.66,
+        "text" : "se"
+      },
+      {
+        "maxX" : 438.28,
+        "midY" : 162.4,
+        "minX" : 413,
+        "text" : "muestra"
+      },
+      {
+        "maxX" : 458.67,
+        "midY" : 162.4,
+        "minX" : 454,
+        "text" : "Y"
+      },
+      {
+        "maxX" : 490.18,
+        "midY" : 162.4,
+        "minX" : 460.62,
+        "text" : "terminará"
+      },
+      {
+        "maxX" : 519.37,
+        "midY" : 162.4,
+        "minX" : 492.12,
+        "text" : "pagando"
+      },
+      {
+        "maxX" : 529.1,
+        "midY" : 162.4,
+        "minX" : 521.31,
+        "text" : "un"
+      },
+      {
+        "maxX" : 544.27,
+        "midY" : 162.4,
+        "minX" : 531.04,
+        "text" : "total"
+      },
+      {
+        "maxX" : 214.56,
+        "midY" : 159.63,
+        "minX" : 206,
+        "text" : "Su"
+      },
+      {
+        "maxX" : 233.24,
+        "midY" : 159.63,
+        "minX" : 216.51,
+        "text" : "saldo"
+      },
+      {
+        "maxX" : 253.86,
+        "midY" : 159.63,
+        "minX" : 235.18,
+        "text" : "actual"
+      },
+      {
+        "maxX" : 259.7,
+        "midY" : 159.63,
+        "minX" : 255.81,
+        "text" : "a"
+      },
+      {
+        "maxX" : 267.09,
+        "midY" : 159.63,
+        "minX" : 261.64,
+        "text" : "la"
+      },
+      {
+        "maxX" : 286.16,
+        "midY" : 159.63,
+        "minX" : 269.04,
+        "text" : "fecha"
+      },
+      {
+        "maxX" : 297.44,
+        "midY" : 159.63,
+        "minX" : 288.1,
+        "text" : "es:"
+      },
+      {
+        "maxX" : 327.78,
+        "midY" : 154.63,
+        "minX" : 320,
+        "text" : "en"
+      },
+      {
+        "maxX" : 342.96,
+        "midY" : 154.63,
+        "minX" : 329.73,
+        "text" : "este"
+      },
+      {
+        "maxX" : 369.81,
+        "midY" : 154.63,
+        "minX" : 344.91,
+        "text" : "extracto"
+      },
+      {
+        "maxX" : 379.54,
+        "midY" : 154.63,
+        "minX" : 371.75,
+        "text" : "en"
+      },
+      {
+        "maxX" : 439.45,
+        "midY" : 154.63,
+        "minX" : 381.48,
+        "text" : "aproximadamente:"
+      },
+      {
+        "maxX" : 482.4,
+        "midY" : 154.63,
+        "minX" : 454,
+        "text" : "estimado"
+      },
+      {
+        "maxX" : 494.08,
+        "midY" : 154.63,
+        "minX" : 484.35,
+        "text" : "de:"
+      },
+      {
+        "maxX" : 38.67,
+        "midY" : 152.43,
+        "minX" : 35,
+        "text" : "I)"
+      },
+      {
+        "maxX" : 61.34,
+        "midY" : 152.43,
+        "minX" : 40.33,
+        "text" : "Retraso"
+      },
+      {
+        "maxX" : 69.68,
+        "midY" : 152.43,
+        "minX" : 63.01,
+        "text" : "en"
+      },
+      {
+        "maxX" : 76.02,
+        "midY" : 152.43,
+        "minX" : 71.35,
+        "text" : "el"
+      },
+      {
+        "maxX" : 92.7,
+        "midY" : 152.43,
+        "minX" : 77.68,
+        "text" : "pago:"
+      },
+      {
+        "maxX" : 98.7,
+        "midY" : 152.43,
+        "minX" : 94.36,
+        "text" : "si"
+      },
+      {
+        "maxX" : 107.04,
+        "midY" : 152.43,
+        "minX" : 100.36,
+        "text" : "no"
+      },
+      {
+        "maxX" : 136.04,
+        "midY" : 152.43,
+        "minX" : 108.7,
+        "text" : "recibimos,"
+      },
+      {
+        "maxX" : 142.38,
+        "midY" : 152.43,
+        "minX" : 137.71,
+        "text" : "al"
+      },
+      {
+        "maxX" : 163.72,
+        "midY" : 152.43,
+        "minX" : 144.04,
+        "text" : "menos,"
+      },
+      {
+        "maxX" : 216.89,
+        "midY" : 149.63,
+        "minX" : 206,
+        "text" : "Gs."
+      },
+      {
+        "maxX" : 292.8,
+        "midY" : 149.63,
+        "minX" : 255,
+        "text" : "2.821.015"
+      },
+      {
+        "maxX" : 41.34,
+        "midY" : 145.77,
+        "minX" : 35,
+        "text" : "su"
+      },
+      {
+        "maxX" : 56.35,
+        "midY" : 145.77,
+        "minX" : 43,
+        "text" : "pago"
+      },
+      {
+        "maxX" : 77.35,
+        "midY" : 145.77,
+        "minX" : 58.02,
+        "text" : "minimo"
+      },
+      {
+        "maxX" : 85.69,
+        "midY" : 145.77,
+        "minX" : 79.02,
+        "text" : "en"
+      },
+      {
+        "maxX" : 92.02,
+        "midY" : 145.77,
+        "minX" : 87.36,
+        "text" : "la"
+      },
+      {
+        "maxX" : 108.37,
+        "midY" : 145.77,
+        "minX" : 93.69,
+        "text" : "fecha"
+      },
+      {
+        "maxX" : 120.04,
+        "midY" : 145.77,
+        "minX" : 110.04,
+        "text" : "que"
+      },
+      {
+        "maxX" : 143.39,
+        "midY" : 145.77,
+        "minX" : 121.71,
+        "text" : "aparece"
+      },
+      {
+        "maxX" : 179.07,
+        "midY" : 145.77,
+        "minX" : 145.06,
+        "text" : "arriba,tendrá"
+      },
+      {
+        "maxX" : 45.01,
+        "midY" : 139.11,
+        "minX" : 35,
+        "text" : "que"
+      },
+      {
+        "maxX" : 62.02,
+        "midY" : 139.11,
+        "minX" : 46.68,
+        "text" : "pagar"
+      },
+      {
+        "maxX" : 88.03,
+        "midY" : 139.11,
+        "minX" : 63.69,
+        "text" : "intereses"
+      },
+      {
+        "maxX" : 118.03,
+        "midY" : 139.11,
+        "minX" : 89.7,
+        "text" : "moratorios"
+      },
+      {
+        "maxX" : 122.7,
+        "midY" : 139.11,
+        "minX" : 119.7,
+        "text" : "y"
+      },
+      {
+        "maxX" : 150.38,
+        "midY" : 139.11,
+        "minX" : 124.37,
+        "text" : "punitorios"
+      },
+      {
+        "maxX" : 211.22,
+        "midY" : 135.17,
+        "minX" : 205,
+        "text" : "Si"
+      },
+      {
+        "maxX" : 220.95,
+        "midY" : 135.17,
+        "minX" : 213.17,
+        "text" : "no"
+      },
+      {
+        "maxX" : 243.51,
+        "midY" : 135.17,
+        "minX" : 222.9,
+        "text" : "realiza"
+      },
+      {
+        "maxX" : 266.47,
+        "midY" : 135.17,
+        "minX" : 245.46,
+        "text" : "ningun"
+      },
+      {
+        "maxX" : 285.93,
+        "midY" : 135.17,
+        "minX" : 268.42,
+        "text" : "cargo"
+      },
+      {
+        "maxX" : 315.5,
+        "midY" : 135.17,
+        "minX" : 287.87,
+        "text" : "adicional"
+      },
+      {
+        "maxX" : 40.33,
+        "midY" : 129.43,
+        "minX" : 35,
+        "text" : "II)"
+      },
+      {
+        "maxX" : 56.01,
+        "midY" : 129.43,
+        "minX" : 42,
+        "text" : "Pago"
+      },
+      {
+        "maxX" : 79.02,
+        "midY" : 129.43,
+        "minX" : 57.68,
+        "text" : "mínimo:"
+      },
+      {
+        "maxX" : 86.02,
+        "midY" : 129.43,
+        "minX" : 80.68,
+        "text" : "Si"
+      },
+      {
+        "maxX" : 100.69,
+        "midY" : 129.43,
+        "minX" : 87.69,
+        "text" : "cada"
+      },
+      {
+        "maxX" : 115.36,
+        "midY" : 129.43,
+        "minX" : 102.36,
+        "text" : "mes,"
+      },
+      {
+        "maxX" : 131.71,
+        "midY" : 129.43,
+        "minX" : 117.03,
+        "text" : "usted"
+      },
+      {
+        "maxX" : 151.05,
+        "midY" : 129.43,
+        "minX" : 133.38,
+        "text" : "realiza"
+      },
+      {
+        "maxX" : 180.39,
+        "midY" : 129.43,
+        "minX" : 152.71,
+        "text" : "solamente"
+      },
+      {
+        "maxX" : 186.73,
+        "midY" : 129.43,
+        "minX" : 182.06,
+        "text" : "el"
+      },
+      {
+        "maxX" : 201.74,
+        "midY" : 129.43,
+        "minX" : 188.4,
+        "text" : "pago"
+      },
+      {
+        "maxX" : 216.28,
+        "midY" : 127.4,
+        "minX" : 205,
+        "text" : "con"
+      },
+      {
+        "maxX" : 231.46,
+        "midY" : 127.4,
+        "minX" : 218.23,
+        "text" : "esta"
+      },
+      {
+        "maxX" : 252.86,
+        "midY" : 127.4,
+        "minX" : 233.41,
+        "text" : "tarjeta"
+      },
+      {
+        "maxX" : 258.31,
+        "midY" : 127.4,
+        "minX" : 254.81,
+        "text" : "y"
+      },
+      {
+        "maxX" : 275.43,
+        "midY" : 127.4,
+        "minX" : 260.25,
+        "text" : "cada"
+      },
+      {
+        "maxX" : 290.6,
+        "midY" : 127.4,
+        "minX" : 277.37,
+        "text" : "mes"
+      },
+      {
+        "maxX" : 313.16,
+        "midY" : 127.4,
+        "minX" : 292.54,
+        "text" : "realiza"
+      },
+      {
+        "maxX" : 56.34,
+        "midY" : 122.77,
+        "minX" : 35,
+        "text" : "mínimo,"
+      },
+      {
+        "maxX" : 76.68,
+        "midY" : 122.77,
+        "minX" : 58,
+        "text" : "pagará"
+      },
+      {
+        "maxX" : 89.68,
+        "midY" : 122.77,
+        "minX" : 78.35,
+        "text" : "más"
+      },
+      {
+        "maxX" : 115.69,
+        "midY" : 122.77,
+        "minX" : 91.35,
+        "text" : "intereses"
+      },
+      {
+        "maxX" : 161.71,
+        "midY" : 122.77,
+        "minX" : 117.36,
+        "text" : "compensatorios)"
+      },
+      {
+        "maxX" : 166.38,
+        "midY" : 122.77,
+        "minX" : 163.38,
+        "text" : "y"
+      },
+      {
+        "maxX" : 172.71,
+        "midY" : 122.77,
+        "minX" : 168.04,
+        "text" : "le"
+      },
+      {
+        "maxX" : 192.05,
+        "midY" : 122.77,
+        "minX" : 174.38,
+        "text" : "llevará"
+      },
+      {
+        "maxX" : 219.78,
+        "midY" : 119.63,
+        "minX" : 205,
+        "text" : "sólo:"
+      },
+      {
+        "maxX" : 46.33,
+        "midY" : 116.11,
+        "minX" : 35,
+        "text" : "más"
+      },
+      {
+        "maxX" : 66.01,
+        "midY" : 116.11,
+        "minX" : 48,
+        "text" : "tiempo"
+      },
+      {
+        "maxX" : 83.02,
+        "midY" : 116.11,
+        "minX" : 67.68,
+        "text" : "pagar"
+      },
+      {
+        "maxX" : 96.36,
+        "midY" : 116.11,
+        "minX" : 84.69,
+        "text" : "todo"
+      },
+      {
+        "maxX" : 102.7,
+        "midY" : 116.11,
+        "minX" : 98.03,
+        "text" : "el"
+      },
+      {
+        "maxX" : 120.37,
+        "midY" : 116.11,
+        "minX" : 104.37,
+        "text" : "saldo,"
+      },
+      {
+        "maxX" : 128.71,
+        "midY" : 116.11,
+        "minX" : 122.04,
+        "text" : "de"
+      },
+      {
+        "maxX" : 152.06,
+        "midY" : 116.11,
+        "minX" : 130.38,
+        "text" : "acuerdo"
+      },
+      {
+        "maxX" : 158.4,
+        "midY" : 116.11,
+        "minX" : 153.73,
+        "text" : "al"
+      },
+      {
+        "maxX" : 173.07,
+        "midY" : 116.11,
+        "minX" : 160.06,
+        "text" : "sgte."
+      },
+      {
+        "maxX" : 193.08,
+        "midY" : 116.11,
+        "minX" : 174.74,
+        "text" : "cuadro"
+      },
+      {
+        "maxX" : 211.22,
+        "midY" : 107.63,
+        "minX" : 205,
+        "text" : "El"
+      },
+      {
+        "maxX" : 228.74,
+        "midY" : 107.63,
+        "minX" : 213.17,
+        "text" : "pago"
+      },
+      {
+        "maxX" : 253.63,
+        "midY" : 107.63,
+        "minX" : 230.68,
+        "text" : "mínimo"
+      },
+      {
+        "maxX" : 266.47,
+        "midY" : 107.63,
+        "minX" : 255.58,
+        "text" : "Gs."
+      },
+      {
+        "maxX" : 302.4,
+        "midY" : 107.63,
+        "minX" : 273,
+        "text" : "322.000"
+      },
+      {
+        "maxX" : 363.4,
+        "midY" : 107.63,
+        "minX" : 355,
+        "text" : "10"
+      },
+      {
+        "maxX" : 420.62,
+        "midY" : 107.63,
+        "minX" : 400,
+        "text" : "meses"
+      },
+      {
+        "maxX" : 485.89,
+        "midY" : 107.63,
+        "minX" : 475,
+        "text" : "Gs."
+      },
+      {
+        "maxX" : 532.8,
+        "midY" : 107.63,
+        "minX" : 495,
+        "text" : "2.999.136"
+      },
+      {
+        "maxX" : 55.24,
+        "midY" : 84.63,
+        "minX" : 35,
+        "text" : "Según"
+      },
+      {
+        "maxX" : 89.08,
+        "midY" : 84.63,
+        "minX" : 57.18,
+        "text" : "resolución"
+      },
+      {
+        "maxX" : 113.2,
+        "midY" : 84.63,
+        "minX" : 91.03,
+        "text" : "B.C.P.,"
+      },
+      {
+        "maxX" : 122.54,
+        "midY" : 84.63,
+        "minX" : 115.15,
+        "text" : "su"
+      },
+      {
+        "maxX" : 158.72,
+        "midY" : 84.63,
+        "minX" : 124.49,
+        "text" : "calificación"
+      },
+      {
+        "maxX" : 168.06,
+        "midY" : 84.63,
+        "minX" : 160.66,
+        "text" : "al:"
+      },
+      {
+        "maxX" : 207.24,
+        "midY" : 84.63,
+        "minX" : 180,
+        "text" : "30\/06\/26"
+      },
+      {
+        "maxX" : 237.39,
+        "midY" : 84.63,
+        "minX" : 230,
+        "text" : "es"
+      },
+      {
+        "maxX" : 253.89,
+        "midY" : 84.63,
+        "minX" : 250,
+        "text" : "1"
+      },
+      {
+        "maxX" : 237.33,
+        "midY" : 69.44,
+        "minX" : 230,
+        "text" : "El"
+      },
+      {
+        "maxX" : 257.98,
+        "midY" : 69.44,
+        "minX" : 239.63,
+        "text" : "pago"
+      },
+      {
+        "maxX" : 287.31,
+        "midY" : 69.44,
+        "minX" : 260.27,
+        "text" : "Mínimo"
+      },
+      {
+        "maxX" : 305.65,
+        "midY" : 69.44,
+        "minX" : 289.61,
+        "text" : "será"
+      },
+      {
+        "maxX" : 339.59,
+        "midY" : 69.44,
+        "minX" : 307.95,
+        "text" : "debitado"
+      },
+      {
+        "maxX" : 351.06,
+        "midY" : 69.44,
+        "minX" : 341.89,
+        "text" : "de"
+      },
+      {
+        "maxX" : 362.07,
+        "midY" : 69.44,
+        "minX" : 353.35,
+        "text" : "su"
+      },
+      {
+        "maxX" : 391.42,
+        "midY" : 69.44,
+        "minX" : 364.36,
+        "text" : "cuenta."
+      },
+      {
+        "maxX" : 256.6,
+        "midY" : 60.28,
+        "minX" : 230,
+        "text" : "Cuenta"
+      },
+      {
+        "maxX" : 291.45,
+        "midY" : 60.28,
+        "minX" : 258.89,
+        "text" : "Bancaria"
+      },
+      {
+        "maxX" : 355.87,
+        "midY" : 57.28,
+        "minX" : 310,
+        "text" : "0102194727"
+      },
+      {
+        "maxX" : 424.47,
+        "midY" : 57.28,
+        "minX" : 380,
+        "text" : "SAMPLENA"
+      },
+      {
+        "maxX" : 475.81,
+        "midY" : 57.28,
+        "minX" : 426.76,
+        "text" : "REDACTEDX,"
+      },
+      {
+        "maxX" : 497.36,
+        "midY" : 57.28,
+        "minX" : 478.1,
+        "text" : "TEST"
+      },
+      {
+        "maxX" : 524.86,
+        "midY" : 57.28,
+        "minX" : 499.65,
+        "text" : "USERX"
+      },
+      {
+        "maxX" : 174.89,
+        "midY" : 53.01,
+        "minX" : 73.11,
+        "text" : "0000000000000000000000000"
+      },
+      {
+        "maxX" : 289.47,
+        "midY" : 34.28,
+        "minX" : 263.79,
+        "text" : "Página"
+      },
+      {
+        "maxX" : 296.35,
+        "midY" : 34.28,
+        "minX" : 291.77,
+        "text" : "2"
+      },
+      {
+        "maxX" : 331.2,
+        "midY" : 34.28,
+        "minX" : 307.82,
+        "text" : "FINAL"
+      }
+    ]
+  }
+]

@@ -62,4 +62,52 @@ struct AmountParsingTests {
         let value = AmountParser.parseMinorUnits("", groupingSeparator: ".", decimalSeparator: ",", exponent: pygExponent)
         #expect(value == nil)
     }
+
+    @Test("a declared credit suffix negates the amount")
+    func creditSuffixNegates() {
+        let value = AmountParser.parseMinorUnits(
+            "2.000.000CR", groupingSeparator: ".", decimalSeparator: ",", exponent: pygExponent, creditSuffixes: ["CR"]
+        )
+        #expect(value == -2_000_000)
+    }
+
+    @Test("a smaller credit-suffixed amount negates too")
+    func smallCreditSuffixNegates() {
+        let value = AmountParser.parseMinorUnits(
+            "30.000CR", groupingSeparator: ".", decimalSeparator: ",", exponent: pygExponent, creditSuffixes: ["CR"]
+        )
+        #expect(value == -30_000)
+    }
+
+    @Test("the same profile's bare amount stays positive")
+    func bareAmountStaysPositiveUnderCreditSuffixProfile() {
+        let value = AmountParser.parseMinorUnits(
+            "2.000.000", groupingSeparator: ".", decimalSeparator: ",", exponent: pygExponent, creditSuffixes: ["CR"]
+        )
+        #expect(value == 2_000_000)
+    }
+
+    @Test("credit suffix is case-insensitive")
+    func creditSuffixCaseInsensitive() {
+        let value = AmountParser.parseMinorUnits(
+            "100cr", groupingSeparator: ".", decimalSeparator: ",", exponent: pygExponent, creditSuffixes: ["CR"]
+        )
+        #expect(value == -100)
+    }
+
+    @Test("credit suffix stripped before trailing-minus sign detection")
+    func creditSuffixStrippedBeforeTrailingMinus() {
+        let value = AmountParser.parseMinorUnits(
+            "100-CR", groupingSeparator: ".", decimalSeparator: ",", exponent: pygExponent, creditSuffixes: ["CR"]
+        )
+        #expect(value == -100)
+    }
+
+    @Test("no creditSuffixes declared means CR is a stray character, not a sign")
+    func noDeclaredSuffixesLeavesCRUnstripped() {
+        let value = AmountParser.parseMinorUnits(
+            "2.000.000CR", groupingSeparator: ".", decimalSeparator: ",", exponent: pygExponent
+        )
+        #expect(value == nil)
+    }
 }

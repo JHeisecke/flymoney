@@ -21,7 +21,9 @@
   "decimalSeparator": ",",
   "minorUnitDigits": null,
   "documentPeriod": { "pattern": "Mes:\\s+\\S+/(\\d{4})", "dateFormat": "yyyy" },
+  "creditSuffixes": [],
   "yTolerance": 6.0,
+  "continuationMaxGap": 16.0,
   "rules": {
     "bankAccount": {
       "includeDetailPatterns": ["^POS ", "^Transferencia enviada"],

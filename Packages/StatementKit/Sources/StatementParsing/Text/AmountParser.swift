@@ -9,12 +9,27 @@ public enum AmountParser {
         _ raw: String,
         groupingSeparator: String,
         decimalSeparator: String,
-        exponent: Int
+        exponent: Int,
+        creditSuffixes: [String] = []
     ) -> Int? {
         var text = raw.trimmingCharacters(in: .whitespaces)
         guard !text.isEmpty else { return nil }
 
         var isNegative = false
+
+        // Strip a bank's credit-suffix convention (e.g. Continental's "CR")
+        // before the trailing-minus check below: a suffix leaves the sign
+        // character exposed only after it's gone, e.g. "100-CR" -> "100-".
+        for suffix in creditSuffixes where !suffix.isEmpty {
+            guard text.count >= suffix.count,
+                  String(text.suffix(suffix.count)).caseInsensitiveCompare(suffix) == .orderedSame
+            else { continue }
+            isNegative = true
+            text = String(text.dropLast(suffix.count))
+            break
+        }
+        guard !text.isEmpty else { return nil }
+
         if text.hasPrefix("("), text.hasSuffix(")") {
             isNegative = true
             text = String(text.dropFirst().dropLast())

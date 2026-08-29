@@ -1,10 +1,10 @@
 {
-  "id": "gnb-extracto",
-  "displayName": "Banco GNB — Extracto de tarjeta",
-  "bankID": "gnb",
+  "id": "itau-extracto",
+  "displayName": "Banco Itaú — Extracto de tarjeta",
+  "bankID": "itau",
   "currencyCode": "PYG",
   "timeZoneIdentifier": "America/Asuncion",
-  "detection": ["PUNTOS REWARDS"],
+  "detection": ["PROGRAMA RECOMPENSAS"],
   "minimumDetectionScore": 1,
   "tableHeaderPatterns": ["FEC.OPERACION", "MONTO"],
   "columns": [
@@ -26,14 +26,8 @@
   "continuationMaxGap": 16.0,
   "rules": {
     "creditCard": {
-      "sections": [
-        { "pattern": "^DEBITOSAUTOMATICOSLOCAL$", "kind": "purchase" },
-        { "pattern": "^COMPRALOCAL$",             "kind": "purchase" },
-        { "pattern": "^COMPRAENELEXTERIOR$",      "kind": "foreignPurchase" },
-        { "pattern": "^PAGOS$",                   "kind": "payment" },
-        { "pattern": "^CARGOS$",                  "kind": "fee" }
-      ],
-      "excludeDetailPatterns": ["^IVA LEY", "^Compras Exterior$"],
+      "sections": [{ "pattern": "^COMPRASYCARGOSREALIZADOSENPARAGUAY$", "kind": "purchase" }],
+      "excludeDetailPatterns": [],
       "excludeWhenColumnsPresent": ["taxFlag"],
       "refundPrefixPatterns": ["^REINTEGRO\\s+"],
       "deferredAmount": { "sections": ["foreignPurchase"] }
