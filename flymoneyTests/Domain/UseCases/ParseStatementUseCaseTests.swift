@@ -190,6 +190,33 @@ struct ParseStatementUseCaseTests {
 		#expect(matchedRow.possibleDuplicate?.wasImported == false)
 	}
 
+	@Test("among same-day, same-amount expenses the one under the remembered category is the match")
+	func prefersTheRememberedCategoryAmongCandidates() async throws {
+		let pages = try StatementFixtureLoader.pages("gnb-extracto")
+		let stack = makeStack(pages: pages)
+
+		let firstDraft = try await stack.useCase.execute(fileURL: URL(fileURLWithPath: "/tmp/statement.pdf"), profileID: nil)
+		let group = try #require(firstDraft.groups.first)
+		let target = try #require(group.rows.first)
+
+		// Two expenses share the row's day and amount. One sits under the category
+		// this merchant is already remembered as; that is the one the user would
+		// recognise, and the one the parser should name.
+		let remembered = UUID(), other = UUID()
+		try await stack.titles.upsert(ExpenseTitle(id: remembered, name: "Combustible"))
+		try await stack.titles.upsert(ExpenseTitle(id: other, name: "Comida"))
+		let inOther = UUID(), inRemembered = UUID()
+		try await stack.expenses.add(Expense(id: inOther, amount: target.amount, titleID: other, date: target.date))
+		try await stack.expenses.add(Expense(id: inRemembered, amount: target.amount, titleID: remembered, date: target.date))
+		try await stack.aliases.upsert(TitleAlias(normalizedDetail: group.id, titleID: remembered))
+
+		let secondDraft = try await stack.useCase.execute(fileURL: URL(fileURLWithPath: "/tmp/statement.pdf"), profileID: nil)
+		let matchedRow = try #require(allRows(secondDraft).first { $0.fingerprint == target.fingerprint })
+
+		#expect(matchedRow.possibleDuplicate?.expenseID == inRemembered)
+		#expect(matchedRow.possibleDuplicate?.titleName == "Combustible")
+	}
+
 	@Test("a different day or amount does not flag possibleDuplicate")
 	func differentDayOrAmountDoesNotFlag() async throws {
 		let pages = try StatementFixtureLoader.pages("gnb-extracto")

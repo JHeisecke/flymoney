@@ -257,7 +257,7 @@ struct ImportStatementView: View {
 		if let row = target.row {
 			ImportRowEditor(
 				groupTitleName: groupName,
-				flagNotes: ImportRowFlagCopy.sentences(for: row.flags),
+				flagNotes: ImportRowFlagCopy.sentences(for: row.flags, groupTitleName: groupName),
 				date: row.date, amount: row.amount, rawDetail: row.rawDetail,
 				onSave: { date, amount, rawDetail in
 					viewModel.updateRow(groupID: target.groupID, rowID: row.id, date: date, amount: amount, rawDetail: rawDetail)

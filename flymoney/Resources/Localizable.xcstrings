@@ -294,6 +294,26 @@
         }
       }
     },
+    "Already in %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya está en %@"
+          }
+        }
+      }
+    },
+    "Already in %@ from an earlier import — same day, same amount.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya está en %@ de una importación anterior — mismo día, mismo monto."
+          }
+        }
+      }
+    },
     "Ambiguous": {
       "extractionState": "stale",
       "localizations": {
@@ -1699,6 +1719,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ayer"
+          }
+        }
+      }
+    },
+    "You entered this in %@ by hand — same day, same amount.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo ingresaste a mano en %@ — mismo día, mismo monto."
           }
         }
       }

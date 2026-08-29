@@ -91,7 +91,13 @@ struct ParseStatementUseCaseImpl: ParseStatementUseCase {
 			var possibleDuplicate: PossibleDuplicate?
 			if !alreadyImported {
 				let key = DigestKey(day: transaction.operationDate.startOfDay(in: calendar), minorUnits: transaction.amount.minorUnits)
-				if let match = digestsByDayAndAmount[key]?.first {
+				if let candidates = digestsByDayAndAmount[key], !candidates.isEmpty {
+					// Several expenses can share a day and an amount. Prefer the one
+					// under the title this merchant is already remembered as — that
+					// is the expense the user would recognise as the duplicate, and
+					// the screen reads the two as different strengths of match.
+					let suggestedTitleID = aliasesByNormalizedDetail[transaction.normalizedDetail]?.titleID
+					let match = candidates.first { $0.titleID == suggestedTitleID } ?? candidates[0]
 					possibleDuplicate = PossibleDuplicate(
 						expenseID: match.id, titleName: titleNames[match.titleID] ?? "", wasImported: match.isImported
 					)
