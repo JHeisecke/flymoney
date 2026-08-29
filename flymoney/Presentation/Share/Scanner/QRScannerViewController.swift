@@ -8,6 +8,17 @@
 import AVFoundation
 import UIKit
 
+/// Carries the session across to a background task. `AVCaptureSession` is not
+/// `Sendable`, but Apple documents starting it off the main thread as the
+/// correct thing to do; what is unsafe is reconfiguring a session from two
+/// threads at once, and this screen configures it once, in `viewDidLoad`,
+/// before anything starts. Hence `@unchecked` on a box that can only start.
+private struct SessionHandle: @unchecked Sendable {
+	let session: AVCaptureSession
+
+	func start() { session.startRunning() }
+}
+
 final class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 	var onCode: ((String) -> Void)?
 	var onError: ((String) -> Void)?
@@ -36,8 +47,11 @@ final class QRScannerViewController: UIViewController, AVCaptureMetadataOutputOb
 		view.layer.insertSublayer(preview, at: 0)
 		previewLayer = preview
 
-		DispatchQueue.global(qos: .userInitiated).async {
-			self.session.startRunning()
+		// `startRunning()` blocks until the camera is live, so it stays off the
+		// main actor — via a `Task`, not GCD (see the project's coding standards).
+		let handle = SessionHandle(session: session)
+		Task.detached(priority: .userInitiated) {
+			handle.start()
 		}
 	}
 
