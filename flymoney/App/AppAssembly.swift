@@ -166,7 +166,8 @@ final class AppAssembly {
 			parseStatement: makeParseStatementUseCase(),
 			commitStatementImport: makeCommitStatementImportUseCase(),
 			fetchTitles: makeFetchExpenseTitlesUseCase(),
-			profileRepository: statementProfileRepository
+			profileRepository: statementProfileRepository,
+			fetchLimits: makeFetchEffectiveLimitsUseCase()
 		)
 	}
 

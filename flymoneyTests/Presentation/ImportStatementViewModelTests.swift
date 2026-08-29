@@ -45,6 +45,27 @@ struct ImportStatementViewModelTests {
 		return (vm, commitUseCase)
 	}
 
+
+	/// A view model whose local titles are seeded, for the naming surface —
+	/// the stock `makeVM` starts with an empty repository.
+	private func makeVM(draft: StatementImportDraft, titles: [ExpenseTitle]) async -> ImportStatementViewModel {
+		let repo = InMemoryExpenseTitleRepository()
+		for title in titles { try? await repo.upsert(title) }
+		return ImportStatementViewModel(
+			parseStatement: StubParseStatementUseCase(draft),
+			commitStatementImport: StubCommitStatementImportUseCase(
+				StatementImportResult(expensesAdded: 0, titlesCreated: 0, aliasesLearned: 0, months: [])),
+			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: repo),
+			profileRepository: BundledStatementProfileRepository())
+	}
+
+	private func ambiguousRow(date: Date = .now) -> StatementImportRow {
+		StatementImportRow(
+			id: UUID(), date: date, amount: Money(minorUnits: 200000, currencyCode: "PYG"),
+			rawDetail: "TRANSFERENCIA ENVIADA", reference: nil, fingerprint: "amb",
+			alreadyImported: false, possibleDuplicate: nil, isRefund: false, isAmbiguous: true)
+	}
+
 	private func reviewDraft(_ vm: ImportStatementViewModel) -> EditableDraft? {
 		guard case .review(let draft) = vm.phase else { return nil }
 		return draft
@@ -218,5 +239,131 @@ struct ImportStatementViewModelTests {
 		} else {
 			Issue.record("expected .failed, got \(vm.phase)")
 		}
+	}
+	// MARK: - Naming a group (the autocomplete surface)
+
+	@Test("an empty query offers existing titles rather than nothing")
+	func suggestionsForEmptyQuery() async throws {
+		let d = draft(groups: [StatementImportGroup(id: "COPETROL", rawDetail: "COPETROL", suggestedTitleID: nil, rows: [row(date: .now)])])
+		let vm = await makeVM(draft: d, titles: [ExpenseTitle(name: "Combustible"), ExpenseTitle(name: "Supermercado")])
+		await vm.pickedFile(try sourceFile())
+
+		#expect(vm.suggestions(for: "").count == 2)
+	}
+
+	@Test("a substring match is offered even when it is not a fuzzy match")
+	func suggestionsMatchSubstring() async throws {
+		let d = draft(groups: [StatementImportGroup(id: "COPETROL", rawDetail: "COPETROL", suggestedTitleID: nil, rows: [row(date: .now)])])
+		let vm = await makeVM(draft: d, titles: [ExpenseTitle(name: "Supermercado del barrio"), ExpenseTitle(name: "Combustible")])
+		await vm.pickedFile(try sourceFile())
+
+		let names = vm.suggestions(for: "merca").map(\.name)
+		#expect(names == ["Supermercado del barrio"])
+	}
+
+	@Test("suggestions are deduped when a title matches both passes")
+	func suggestionsDedupe() async throws {
+		let d = draft(groups: [StatementImportGroup(id: "COPETROL", rawDetail: "COPETROL", suggestedTitleID: nil, rows: [row(date: .now)])])
+		let vm = await makeVM(draft: d, titles: [ExpenseTitle(name: "Combustible")])
+		await vm.pickedFile(try sourceFile())
+
+		#expect(vm.suggestions(for: "Combustible").count == 1)
+	}
+
+	@Test("a name matching an existing title is not offered as a new one")
+	func isNewTitleName() async throws {
+		let d = draft(groups: [StatementImportGroup(id: "COPETROL", rawDetail: "COPETROL", suggestedTitleID: nil, rows: [row(date: .now)])])
+		let vm = await makeVM(draft: d, titles: [ExpenseTitle(name: "Combustible")])
+		await vm.pickedFile(try sourceFile())
+
+		#expect(vm.isNewTitleName("Nafta"))
+		#expect(!vm.isNewTitleName("combustible"))   // case-insensitive
+		#expect(!vm.isNewTitleName("   "))           // nothing typed yet
+	}
+
+	@Test("typing away from a picked title unbinds it, so the commit follows the name on screen")
+	func renamingUnbindsThePickedTitle() async throws {
+		let d = draft(groups: [StatementImportGroup(id: "COPETROL", rawDetail: "COPETROL", suggestedTitleID: nil, rows: [row(date: .now)])])
+		let existing = ExpenseTitle(name: "Combustible")
+		let vm = await makeVM(draft: d, titles: [existing])
+		await vm.pickedFile(try sourceFile())
+		let bound = try #require(vm.allTitles.first)
+
+		vm.selectExistingTitle(groupID: "COPETROL", title: bound)
+		#expect(reviewDraft(vm)?.groups.first?.existingTitleID == bound.id)
+
+		vm.rename(groupID: "COPETROL", to: "Nafta")
+		#expect(reviewDraft(vm)?.groups.first?.existingTitleID == nil)
+		#expect(reviewDraft(vm)?.groups.first?.titleName == "Nafta")
+	}
+
+	@Test("re-typing the bound title\u{2019}s own name keeps the binding")
+	func renamingToTheSameNameKeepsTheBinding() async throws {
+		let d = draft(groups: [StatementImportGroup(id: "COPETROL", rawDetail: "COPETROL", suggestedTitleID: nil, rows: [row(date: .now)])])
+		let vm = await makeVM(draft: d, titles: [ExpenseTitle(name: "Combustible")])
+		await vm.pickedFile(try sourceFile())
+		let bound = try #require(vm.allTitles.first)
+
+		vm.selectExistingTitle(groupID: "COPETROL", title: bound)
+		vm.rename(groupID: "COPETROL", to: "combustible")
+
+		#expect(reviewDraft(vm)?.groups.first?.existingTitleID == bound.id)
+	}
+
+	// MARK: - What still needs a decision
+
+	@Test("attention counts ambiguous and possible-duplicate rows, and nothing else")
+	func attentionCountsFlaggedRows() async throws {
+		let duplicate = PossibleDuplicate(expenseID: UUID(), titleName: "Combustible", wasImported: false)
+		let d = draft(groups: [
+			StatementImportGroup(id: "TRANSFER", rawDetail: "TRANSFERENCIA ENVIADA", suggestedTitleID: nil, rows: [ambiguousRow()]),
+			StatementImportGroup(id: "COPETROL", rawDetail: "COPETROL", suggestedTitleID: nil, rows: [
+				row(date: .now, possibleDuplicate: duplicate),
+				row(date: .now)
+			])
+		])
+		let (vm, _) = makeVM(draft: d)
+		await vm.pickedFile(try sourceFile())
+
+		#expect(vm.attentionCount == 2)
+	}
+
+	@Test("excluding a group drops its rows from the attention count")
+	func attentionIgnoresExcludedGroups() async throws {
+		let d = draft(groups: [StatementImportGroup(id: "TRANSFER", rawDetail: "TRANSFERENCIA ENVIADA", suggestedTitleID: nil, rows: [ambiguousRow()])])
+		let (vm, _) = makeVM(draft: d)
+		await vm.pickedFile(try sourceFile())
+		#expect(vm.attentionCount == 1)
+
+		vm.setGroupExcluded(groupID: "TRANSFER", true)
+
+		#expect(vm.attentionCount == 0)
+	}
+
+	@Test("only a group holding a flagged row opens by itself")
+	func groupNeedsAttention() async throws {
+		let d = draft(groups: [
+			StatementImportGroup(id: "TRANSFER", rawDetail: "TRANSFERENCIA ENVIADA", suggestedTitleID: nil, rows: [ambiguousRow()]),
+			StatementImportGroup(id: "COPETROL", rawDetail: "COPETROL", suggestedTitleID: nil, rows: [row(date: .now)])
+		])
+		let (vm, _) = makeVM(draft: d)
+		await vm.pickedFile(try sourceFile())
+		let groups = try #require(reviewDraft(vm)?.groups)
+
+		#expect(vm.groupNeedsAttention(try #require(groups.first { $0.id == "TRANSFER" })))
+		#expect(!vm.groupNeedsAttention(try #require(groups.first { $0.id == "COPETROL" })))
+	}
+
+	@Test("a row added by hand joins its group and the commit count")
+	func addRowJoinsTheGroup() async throws {
+		let d = draft(groups: [StatementImportGroup(id: "COPETROL", rawDetail: "COPETROL", suggestedTitleID: nil, rows: [row(date: .now)])])
+		let (vm, _) = makeVM(draft: d)
+		await vm.pickedFile(try sourceFile())
+
+		vm.addRow(groupID: "COPETROL", date: .now, amount: Money(minorUnits: 12000, currencyCode: "PYG"), rawDetail: "COPETROL")
+
+		let group = try #require(reviewDraft(vm)?.groups.first)
+		#expect(group.rows.count == 2)
+		#expect(reviewDraft(vm)?.includedRows.count == 2)
 	}
 }

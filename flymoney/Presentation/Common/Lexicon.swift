@@ -41,6 +41,11 @@ enum Lexicon {
 	static func cannotDeleteInUse(count: Int) -> LocalizedStringResource {
 		"Can\u{2019}t delete a category with expenses. This one has \(count)."
 	}
+	/// Offered by the import screen's category field when what was typed matches
+	/// no existing title.
+	static func createNamed(_ name: String) -> LocalizedStringResource {
+		"New category: \(name)"
+	}
 	static func spentAcross(count: Int) -> LocalizedStringResource {
 		"spent across \(count) categories"
 	}

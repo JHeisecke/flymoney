@@ -13,19 +13,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		2462A607EF3E44B3B3D52A62 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0072E3C72FEF525100F4D65D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0072E3CE2FEF525100F4D65D;
-			remoteInfo = flymoney;
-		};
 		181B0378206B43B9911F4292 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0072E3C72FEF525100F4D65D /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 7EB630573E6144DFBA2C260A;
 			remoteInfo = flymoneyImport;
+		};
+		2462A607EF3E44B3B3D52A62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0072E3C72FEF525100F4D65D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0072E3CE2FEF525100F4D65D;
+			remoteInfo = flymoney;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -45,12 +45,12 @@
 
 /* Begin PBXFileReference section */
 		0072E3CF2FEF525100F4D65D /* flymoney.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flymoney.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		222D3BF357354187ABE7F393 /* flymoneyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flymoneyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		02E40A89A5B843DCB4B378BC /* flymoneyImport.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = flymoneyImport.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		222D3BF357354187ABE7F393 /* flymoneyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flymoneyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		559BFDEA5AF241DBA0342C53 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		559BFDEA5AF241DBA0342C53 /* Exceptions for "flymoneyImport" folder in "flymoneyImport" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -65,22 +65,22 @@
 			path = flymoney;
 			sourceTree = "<group>";
 		};
-		963BA7795CB14513A3408E5C /* flymoneyTests */ = {
+		4FB139FD17A649D9B779B5C1 /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = flymoneyTests;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		80ABAE0B360C49DE901C5F76 /* flymoneyImport */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				559BFDEA5AF241DBA0342C53 /* Exceptions for "flymoneyImport" folder in "flymoneyImport" target */,
+			);
 			path = flymoneyImport;
 			sourceTree = "<group>";
-			exceptions = (
-				559BFDEA5AF241DBA0342C53 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
-			);
 		};
-		4FB139FD17A649D9B779B5C1 /* Shared */ = {
+		963BA7795CB14513A3408E5C /* flymoneyTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Shared;
+			path = flymoneyTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -176,8 +176,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				80ABAE0B360C49DE901C5F76 /* flymoneyImport */,
 				4FB139FD17A649D9B779B5C1 /* Shared */,
+				80ABAE0B360C49DE901C5F76 /* flymoneyImport */,
 			);
 			name = flymoneyImport;
 			productName = flymoneyImport;
@@ -219,12 +219,12 @@
 					0072E3CE2FEF525100F4D65D = {
 						CreatedOnToolsVersion = 26.2;
 					};
+					7EB630573E6144DFBA2C260A = {
+						CreatedOnToolsVersion = 26.2;
+					};
 					A1FE337177734776BA385F26 = {
 						CreatedOnToolsVersion = 26.2;
 						TestTargetID = 0072E3CE2FEF525100F4D65D;
-					};
-					7EB630573E6144DFBA2C260A = {
-						CreatedOnToolsVersion = 26.2;
 					};
 				};
 			};
@@ -439,7 +439,7 @@
 				DEVELOPMENT_TEAM = UK87X7N6A9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Config/flymoney-Info.plist;
+				INFOPLIST_FILE = "Config/flymoney-Info.plist";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Used to share your month with a friend over a private connection.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Used to scan a friendu2019s share code.";
@@ -476,7 +476,7 @@
 				DEVELOPMENT_TEAM = UK87X7N6A9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Config/flymoney-Info.plist;
+				INFOPLIST_FILE = "Config/flymoney-Info.plist";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Used to share your month with a friend over a private connection.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Used to scan a friendu2019s share code.";
@@ -524,28 +524,6 @@
 			};
 			name = Release;
 		};
-		59BCA4963B5E49A287F526E4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UK87X7N6A9;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jheisecke.flymoneyTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/flymoney.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/flymoney";
-			};
-			name = Debug;
-		};
 		579A3BDAEC8C4FCCB8F34958 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -574,6 +552,28 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		59BCA4963B5E49A287F526E4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UK87X7N6A9;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jheisecke.flymoneyTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/flymoney.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/flymoney";
 			};
 			name = Debug;
 		};

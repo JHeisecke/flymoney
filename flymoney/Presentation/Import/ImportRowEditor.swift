@@ -10,12 +10,20 @@ import SwiftUI
 /// Sheet, mirrors `ExpenseEditView`'s amount/date/note affordances. The title
 /// is edited at the group level (`ImportGroupCard`'s rename) — every row in a
 /// group shares it — so it's shown here read-only for context.
+///
+/// This is where a flag is actually acted on, so it is where the flag's full
+/// sentence lives; the list shows the same fact as a chip. `onDelete` is `nil`
+/// when adding a row, which is also what puts the sheet in create mode.
 struct ImportRowEditor: View {
 	let groupTitleName: String
+	/// Full sentences for whatever the parser flagged on this row — empty for a
+	/// row the user is adding by hand.
+	let flagNotes: [String]
 	@State var date: Date
 	@State var amount: Money
 	@State var rawDetail: String
 	let onSave: (Date, Money, String) -> Void
+	let onDelete: (() -> Void)?
 	let onCancel: () -> Void
 
 	@State private var amountText: String = ""
@@ -27,9 +35,33 @@ struct ImportRowEditor: View {
 
 	private var canSave: Bool { amount.minorUnits != 0 }
 
+	private var isAdding: Bool { onDelete == nil }
+
+	/// What the chip in the list stood for. Reads as a note, not an alarm —
+	/// the row is already staged; this only says why it is worth a look.
+	private var flagNotesBlock: some View {
+		VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+			ForEach(flagNotes, id: \.self) { note in
+				HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.sm) {
+					Image(systemName: "info.circle")
+						.font(Theme.Typography.caption12)
+					Text(note)
+						.font(Theme.Typography.body13)
+						.fixedSize(horizontal: false, vertical: true)
+				}
+			}
+		}
+		.foregroundStyle(Theme.Colors.warning)
+		.frame(maxWidth: .infinity, alignment: .leading)
+		.padding(Theme.Spacing.md)
+		.background(Theme.Colors.warningTint)
+		.clipShape(.rect(cornerRadius: Theme.Radius.md))
+	}
+
 	var body: some View {
 		NavigationStack {
 			VStack(spacing: Theme.Spacing.s18) {
+				if !flagNotes.isEmpty { flagNotesBlock }
 				titleField
 				amountField
 				DateChipView(date: $date)
@@ -37,15 +69,23 @@ struct ImportRowEditor: View {
 
 				Spacer()
 
-				SaveButton(title: "Save", isLoading: false, isDisabled: !canSave) {
+				SaveButton(title: isAdding ? "Add row" : "Save", isLoading: false, isDisabled: !canSave) {
 					onSave(date, amount, rawDetail)
+				}
+
+				if let onDelete {
+					Button(String(localized: "Delete row"), systemImage: "trash", role: .destructive, action: onDelete)
+						.font(Theme.Typography.caption13Strong)
+						.foregroundStyle(Theme.Colors.danger)
+						.buttonStyle(.hapticPlain)
+						.padding(.bottom, Theme.Spacing.sm)
 				}
 			}
 			.padding(.horizontal, Theme.Spacing.xxl)
 			.padding(.top, Theme.Spacing.lg)
 			.background(Theme.Colors.surface)
 			.dismissKeyboardOnTap()
-			.navigationTitle(Text(String(localized: "Edit Row")))
+			.navigationTitle(Text(isAdding ? String(localized: "Add row") : String(localized: "Edit Row")))
 			.toolbar {
 				ToolbarItem(placement: .topBarTrailing) {
 					Button {

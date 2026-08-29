@@ -27,10 +27,15 @@ final class ImportStatementViewModel {
 	private(set) var phase: Phase = .picking
 	/// Local titles, for `MergeMatcher` suggestions in the rename UI.
 	private(set) var allTitles: [ExpenseTitle] = []
+	/// Effective limits for the current month, so the category dropdown can
+	/// caption a title with the room left in it — decorative only: an empty map
+	/// renders rows without captions rather than blocking the import.
+	private(set) var limitsByTitleID: [UUID: Money] = [:]
 
 	private let parseStatement: any ParseStatementUseCase
 	private let commitStatementImport: any CommitStatementImportUseCase
 	private let fetchTitles: any FetchExpenseTitlesUseCase
+	private let fetchLimits: (any FetchEffectiveLimitsUseCase)?
 	private let profileRepository: any StatementProfileRepository
 	private let calendar: Calendar
 	// Read from `deinit`, which runs nonisolated — safe because by the time
@@ -42,11 +47,13 @@ final class ImportStatementViewModel {
 		commitStatementImport: any CommitStatementImportUseCase,
 		fetchTitles: any FetchExpenseTitlesUseCase,
 		profileRepository: any StatementProfileRepository,
+		fetchLimits: (any FetchEffectiveLimitsUseCase)? = nil,
 		calendar: Calendar = .current
 	) {
 		self.parseStatement = parseStatement
 		self.commitStatementImport = commitStatementImport
 		self.fetchTitles = fetchTitles
+		self.fetchLimits = fetchLimits
 		self.profileRepository = profileRepository
 		self.calendar = calendar
 	}
@@ -92,6 +99,10 @@ final class ImportStatementViewModel {
 		let draft = try await parseStatement.execute(fileURL: fileURL, profileID: profileID)
 		let titles = (try? await fetchTitles.execute()) ?? []
 		allTitles = titles
+		let month = CalendarMonth.containing(.now, using: calendar)
+		if let fetchLimits {
+			limitsByTitleID = (try? await fetchLimits.execute(month)) ?? [:]
+		}
 		phase = .review(EditableDraftBuilder.build(from: draft, titles: titles))
 	}
 
@@ -123,10 +134,22 @@ final class ImportStatementViewModel {
 
 	// MARK: - Draft mutation — only meaningful while `.review`
 
+	/// Typing away from a title picked in the dropdown unbinds it. Without this
+	/// the stale `existingTitleID` wins at commit (`SwiftDataStatementImportWriter`
+	/// resolves the id before the name), so the rows would land on the title the
+	/// user just typed away from while the screen showed the new name.
 	func rename(groupID: String, to newName: String) {
-		mutateGroup(groupID) {
-			$0.titleName = newName
-			$0.rememberAlias = true
+		let boundName = { [allTitles] (id: UUID?) -> String? in
+			guard let id else { return nil }
+			return allTitles.first { $0.id == id }?.name
+		}
+		mutateGroup(groupID) { group in
+			if let bound = boundName(group.existingTitleID),
+			   bound.localizedCaseInsensitiveCompare(newName) != .orderedSame {
+				group.existingTitleID = nil
+			}
+			group.titleName = newName
+			group.rememberAlias = true
 		}
 	}
 
@@ -185,6 +208,61 @@ final class ImportStatementViewModel {
 		)
 		draft.groups.append(group)
 		phase = .review(draft)
+	}
+
+	// MARK: - Naming a group
+
+	/// Existing titles worth offering for `query`, fuzzy matches first.
+	///
+	/// Two passes, because they answer different questions: `MergeMatcher` finds
+	/// the title a parsed merchant most likely *is* (it tolerates the typos and
+	/// truncations statements are full of), while the substring pass finds what
+	/// the user is *typing toward*. Fuzzy first, substring appended, deduped —
+	/// so a strong match never falls below a merely alphabetical one.
+	func suggestions(for query: String) -> [ExpenseTitle] {
+		let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+		guard !trimmed.isEmpty else { return Array(allTitles.prefix(suggestionLimit)) }
+
+		let probe = ExpenseTitle(name: trimmed)
+		let fuzzy = (MergeMatcher.findMatches(imported: [probe], local: allTitles)[probe.id] ?? [])
+			.compactMap { match in allTitles.first { $0.id == match.titleID } }
+		let substring = allTitles.filter { $0.name.localizedStandardContains(trimmed) }
+
+		var seen = Set<UUID>()
+		return (fuzzy + substring)
+			.filter { seen.insert($0.id).inserted }
+			.prefix(suggestionLimit)
+			.map { $0 }
+	}
+
+	/// True when `name` matches no existing title, so the field can offer to
+	/// create it rather than leaving the user unsure the name took.
+	func isNewTitleName(_ name: String) -> Bool {
+		let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+		guard !trimmed.isEmpty else { return false }
+		return !allTitles.contains { $0.name.localizedCaseInsensitiveCompare(trimmed) == .orderedSame }
+	}
+
+	private let suggestionLimit = 6
+
+	// MARK: - What still needs a decision
+
+	/// Rows the parser could not settle on its own: an outgoing transfer it
+	/// can't tell from a payment, or a row that resembles one already in the
+	/// store. Excluded groups don't count — the user already decided those.
+	var attentionCount: Int {
+		guard case .review(let draft) = phase else { return 0 }
+		return draft.groups
+			.filter { !$0.isExcluded }
+			.flatMap(\.rows)
+			.filter { $0.flags.isAmbiguous || $0.flags.possibleDuplicate != nil }
+			.count
+	}
+
+	/// Drives which groups open by themselves: a group holding a flagged row
+	/// opens, the rest stay folded.
+	func groupNeedsAttention(_ group: EditableGroup) -> Bool {
+		!group.isExcluded && group.rows.contains { $0.flags.isAmbiguous || $0.flags.possibleDuplicate != nil }
 	}
 
 	func totalsByMonth() -> [CalendarMonth: Money] {
