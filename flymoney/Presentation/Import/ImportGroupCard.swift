@@ -233,7 +233,7 @@ struct ImportGroupCard: View {
 	}
 
 	private var rememberAliasRow: some View {
-		HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.sm) {
+		HStack(alignment: .center, spacing: Theme.Spacing.sm) {
 			Text(rememberAliasText)
 				.font(Theme.Typography.caption12)
 				.foregroundStyle(Theme.Colors.inkTertiary)
@@ -241,7 +241,10 @@ struct ImportGroupCard: View {
 			Toggle(String(localized: "Remember"), isOn: Binding(get: { group.rememberAlias }, set: onSetRememberAlias))
 				.labelsHidden()
 				.toggleStyle(.switch)
-				.tint(Theme.Colors.accent)
+				// Not the accent: it is near-white in dark mode, and the system
+				// switch's thumb is always white — on and off were told apart by
+				// the thumb's position alone.
+				.tint(Theme.Colors.success)
 				.accessibilityLabel(String(localized: "Remember this name for future imports"))
 		}
 	}
