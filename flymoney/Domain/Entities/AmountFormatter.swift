@@ -31,7 +31,11 @@ struct AmountFormatter {
 			}
 			let integerString = String(prefix).filter { $0.isNumber }
 			guard !integerString.isEmpty else {
-				return ("", 0)
+				// A field cleared to empty really is empty. Anything else that
+				// leaves no digits — a lone separator in a currency with no
+				// fraction digits — is a keystroke this currency cannot
+				// represent, so the field keeps what it had rather than blanking.
+				return text.isEmpty ? ("", 0) : (previousText, parse(previousText))
 			}
 			guard let integerValue = Decimal(string: integerString, locale: locale),
 				  integerValue < 1_000_000_000 else {
