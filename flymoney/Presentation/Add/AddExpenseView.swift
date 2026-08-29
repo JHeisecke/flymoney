@@ -6,11 +6,23 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct AddExpenseView: View {
+	/// `.sheet(item:)` needs identity, and a picked file's URL is exactly that
+	/// — a new pick is a new import.
+	private struct PickedStatement: Identifiable {
+		let id = UUID()
+		let url: URL
+	}
+
 	@State private var viewModel: AddExpenseViewModel
 	@State private var showSuggestions = false
-	@State private var showImportSheet = false
+	/// The file picker is presented from *here*, not from inside the import
+	/// sheet. Presenting the sheet first and letting it raise the picker
+	/// `.onAppear` showed an empty sheet for a beat before the picker slid up.
+	@State private var showFilePicker = false
+	@State private var pickedStatement: PickedStatement?
 	@Environment(\.haptics) private var haptics
 	let assembly: AppAssembly
 	var onImportCompleted: (@MainActor () async -> Void)?
@@ -99,13 +111,21 @@ struct AddExpenseView: View {
 		.onChange(of: viewModel.saveError) { _, error in
 			if error != nil { haptics.error() }
 		}
-		.sheet(isPresented: $showImportSheet) {
+		.fileImporter(isPresented: $showFilePicker, allowedContentTypes: [.pdf]) { pickResult in
+			// A cancelled or failed pick now opens nothing. Previously it still
+			// left the empty import sheet on screen for the user to dismiss.
+			if case .success(let url) = pickResult {
+				pickedStatement = PickedStatement(url: url)
+			}
+		}
+		.sheet(item: $pickedStatement) { picked in
 			ImportStatementHost(
 				viewModel: assembly.makeImportStatementViewModel(),
+				fileURL: picked.url,
 				onCommitted: { await onImportCompleted?() },
-				onDismiss: { showImportSheet = false },
+				onDismiss: { pickedStatement = nil },
 				onViewHistory: {
-					showImportSheet = false
+					pickedStatement = nil
 					onViewImportInHistory?()
 				}
 			)
@@ -117,7 +137,7 @@ struct AddExpenseView: View {
 	/// area extend beyond its visible glyph rather than shrinking the target.
 	private var importButton: some View {
 		Button(String(localized: "Import statement"), systemImage: "doc.badge.plus") {
-			showImportSheet = true
+			showFilePicker = true
 		}
 		.labelStyle(.iconOnly)
 		.font(Theme.Typography.title17)

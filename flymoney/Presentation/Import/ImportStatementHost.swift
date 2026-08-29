@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
-import UniformTypeIdentifiers
 
-/// Presents the file picker, then parse, then the review screen. Owns the
-/// staged file's lifetime top to bottom.
+/// Parse, then review, then summary. The file is picked *before* this view is
+/// presented and handed in — the picker used to live here and was raised
+/// `.onAppear`, which meant the sheet animated up empty and the picker only
+/// appeared on top of it a beat later.
 struct ImportStatementHost: View {
 	@State var viewModel: ImportStatementViewModel
+	/// Already picked. Staged (copied out of the security scope) by the view
+	/// model as soon as this view appears.
+	let fileURL: URL
 	/// Fires once, as soon as a commit succeeds — regardless of which button
 	/// the user later taps on the summary. This is where History, Titles and
 	/// Add's own budget indicator get told to refresh.
@@ -22,22 +26,24 @@ struct ImportStatementHost: View {
 	/// Closes the sheet **and** switches to History.
 	let onViewHistory: () -> Void
 
-	@State private var showFilePicker = false
-
 	var body: some View {
 		Group {
 			switch viewModel.phase {
-			case .picking:
-				Color.clear
-			case .parsing:
+			// `.picking` is the view model's initial value and lasts only until
+			// the `.task` below runs. It shares the parsing spinner so the sheet
+			// never presents blank for that frame.
+			case .picking, .parsing:
 				statusView(String(localized: "Reading statement\u{2026}"))
 			case .review(let draft):
 				ImportStatementView(
 					viewModel: viewModel, draft: draft,
 					onCommit: { Task { await viewModel.commit() } },
+					// Dismiss first: `cancel()` resets the phase to `.picking`,
+					// which now renders the spinner, and there is no reason to
+					// show it behind a sheet that is already animating away.
 					onCancel: {
-						viewModel.cancel()
 						onDismiss()
+						viewModel.cancel()
 					}
 				)
 			case .committing:
@@ -52,15 +58,7 @@ struct ImportStatementHost: View {
 				failedView(message)
 			}
 		}
-		.fileImporter(isPresented: $showFilePicker, allowedContentTypes: [.pdf]) { pickResult in
-			switch pickResult {
-			case .success(let url):
-				Task { await viewModel.pickedFile(url) }
-			case .failure:
-				onDismiss()
-			}
-		}
-		.onAppear { showFilePicker = true }
+		.task { await viewModel.pickedFile(fileURL) }
 		.onChange(of: viewModel.phase) { _, newPhase in
 			if case .done = newPhase {
 				Task { await onCommitted() }

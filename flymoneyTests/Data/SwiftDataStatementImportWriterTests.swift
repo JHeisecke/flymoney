@@ -173,4 +173,111 @@ struct SwiftDataStatementImportWriterTests {
 		#expect(result.titlesCreated == 0)
 		#expect(try await titles.allTitles().count == 1)
 	}
+
+	// MARK: - Name-match reuse: a *typed* title name, with no existingTitleID.
+	//
+	// `selectExistingTitle` supplies an id, but `rename` does not — so a user who
+	// types a name that already exists reaches the writer with `existingTitleID
+	// == nil` and only the name to go on.
+
+	@Test("a typed title name matching an existing title reuses it, case-insensitively")
+	func typedNameMatchingExistingTitleReusesIt() async throws {
+		let container = try TestSupport.makeContainer()
+		let writer = SwiftDataStatementImportWriter(modelContainer: container)
+		let titles = SwiftDataExpenseTitleRepository(modelContainer: container, defaultCurrencyCode: "PYG")
+		try await titles.upsert(ExpenseTitle(name: "Groceries"))
+
+		let commit = StatementImportCommit(
+			profileID: "gnb-extracto", currencyCode: "PYG",
+			groups: [
+				StatementImportCommit.ResolvedGroup(
+					normalizedDetail: "BIGGIE", titleName: "groceries", existingTitleID: nil, rememberAlias: true,
+					rows: [makeRow(amount: 700, detail: "BIGGIE")]
+				),
+			]
+		)
+
+		let result = try await writer.write(commit, currencyCode: "PYG")
+		#expect(result.titlesCreated == 0)
+		let all = try await titles.allTitles()
+		#expect(all.count == 1)
+		// The pre-existing casing wins — the import attaches to it rather than renaming it.
+		#expect(all.first?.name == "Groceries")
+	}
+
+	@Test("the alias learned by a name-matched group points at the pre-existing title")
+	func aliasFromNameMatchPointsAtExistingTitle() async throws {
+		let container = try TestSupport.makeContainer()
+		let writer = SwiftDataStatementImportWriter(modelContainer: container)
+		let titles = SwiftDataExpenseTitleRepository(modelContainer: container, defaultCurrencyCode: "PYG")
+		let existing = ExpenseTitle(name: "Groceries")
+		try await titles.upsert(existing)
+
+		let commit = StatementImportCommit(
+			profileID: "gnb-extracto", currencyCode: "PYG",
+			groups: [
+				StatementImportCommit.ResolvedGroup(
+					normalizedDetail: "BIGGIE", titleName: "Groceries", existingTitleID: nil, rememberAlias: true,
+					rows: [makeRow(amount: 700, detail: "BIGGIE")]
+				),
+			]
+		)
+
+		_ = try await writer.write(commit, currencyCode: "PYG")
+		let aliases = SwiftDataTitleAliasRepository(modelContainer: container)
+		let alias = try #require(try await aliases.alias(forNormalizedDetail: "BIGGIE"))
+		#expect(alias.titleID == existing.id)
+	}
+
+	@Test("re-importing the same merchant repoints the alias instead of adding a second one")
+	func repeatedImportUpsertsTheAlias() async throws {
+		let container = try TestSupport.makeContainer()
+		let writer = SwiftDataStatementImportWriter(modelContainer: container)
+		let titles = SwiftDataExpenseTitleRepository(modelContainer: container, defaultCurrencyCode: "PYG")
+
+		func commit(titleName: String, amount: Int) -> StatementImportCommit {
+			StatementImportCommit(
+				profileID: "gnb-extracto", currencyCode: "PYG",
+				groups: [
+					StatementImportCommit.ResolvedGroup(
+						normalizedDetail: "BIGGIE", titleName: titleName, existingTitleID: nil, rememberAlias: true,
+						rows: [makeRow(amount: amount, detail: "BIGGIE", fingerprint: "fp-\(amount)")]
+					),
+				]
+			)
+		}
+
+		_ = try await writer.write(commit(titleName: "Groceries", amount: 700), currencyCode: "PYG")
+		let second = try await writer.write(commit(titleName: "Groceries", amount: 900), currencyCode: "PYG")
+
+		#expect(second.titlesCreated == 0)
+		#expect(try await titles.allTitles().count == 1)
+		let aliases = SwiftDataTitleAliasRepository(modelContainer: container)
+		#expect(try await aliases.alias(forNormalizedDetail: "BIGGIE") != nil)
+	}
+
+	/// Documents a real limitation rather than asserting desired behaviour:
+	/// the match is `caseInsensitiveCompare` only, so accents still fork the
+	/// title. Worth knowing before someone reports "it duplicated my title".
+	@Test("accent differences are NOT matched — Café and Cafe become two titles")
+	func accentDifferencesForkTheTitle() async throws {
+		let container = try TestSupport.makeContainer()
+		let writer = SwiftDataStatementImportWriter(modelContainer: container)
+		let titles = SwiftDataExpenseTitleRepository(modelContainer: container, defaultCurrencyCode: "PYG")
+		try await titles.upsert(ExpenseTitle(name: "Café"))
+
+		let commit = StatementImportCommit(
+			profileID: "gnb-extracto", currencyCode: "PYG",
+			groups: [
+				StatementImportCommit.ResolvedGroup(
+					normalizedDetail: "CAFE", titleName: "Cafe", existingTitleID: nil, rememberAlias: true,
+					rows: [makeRow(amount: 700, detail: "CAFE")]
+				),
+			]
+		)
+
+		let result = try await writer.write(commit, currencyCode: "PYG")
+		#expect(result.titlesCreated == 1)
+		#expect(try await titles.allTitles().count == 2)
+	}
 }
