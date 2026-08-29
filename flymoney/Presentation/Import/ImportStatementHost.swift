@@ -7,14 +7,15 @@
 
 import SwiftUI
 
-/// Parse, then review, then summary. The file is picked *before* this view is
-/// presented and handed in — the picker used to live here and was raised
-/// `.onAppear`, which meant the sheet animated up empty and the picker only
-/// appeared on top of it a beat later.
+/// Parse, then review, then summary. Owns the staged file's lifetime top to
+/// bottom, but does **not** present the file picker — that is raised before
+/// this sheet exists. A sheet whose only job is to raise a second sheet
+/// animates up empty and shows the picker on top of it a beat later.
 struct ImportStatementHost: View {
 	@State var viewModel: ImportStatementViewModel
-	/// Already picked. Staged (copied out of the security scope) by the view
-	/// model as soon as this view appears.
+	/// The file to parse — either picked by the user or drained from the
+	/// share-extension inbox. Staged (copied out of the security scope) by the
+	/// view model as soon as this view appears.
 	let fileURL: URL
 	/// Fires once, as soon as a commit succeeds — regardless of which button
 	/// the user later taps on the summary. This is where History, Titles and
@@ -25,6 +26,14 @@ struct ImportStatementHost: View {
 	let onDismiss: () -> Void
 	/// Closes the sheet **and** switches to History.
 	let onViewHistory: () -> Void
+	/// Forwards every phase transition to the caller. `viewModel` is a stable
+	/// `@State` here, so observing it directly (rather than from `RootView`,
+	/// where it would be read through a reassigned optional on another
+	/// `@Observable`) is the reliable place to detect when a share-extension
+	/// file has resolved — success or failure — so its inbox entry can be removed.
+	var onPhaseChange: ((ImportStatementViewModel.Phase) -> Void)?
+
+	@State private var didStart = false
 
 	var body: some View {
 		Group {
@@ -58,11 +67,16 @@ struct ImportStatementHost: View {
 				failedView(message)
 			}
 		}
-		.task { await viewModel.pickedFile(fileURL) }
+		.task {
+			guard !didStart else { return }
+			didStart = true
+			await viewModel.pickedFile(fileURL)
+		}
 		.onChange(of: viewModel.phase) { _, newPhase in
 			if case .done = newPhase {
 				Task { await onCommitted() }
 			}
+			onPhaseChange?(newPhase)
 		}
 	}
 

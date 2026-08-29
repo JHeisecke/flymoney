@@ -9,3 +9,6 @@ Packages/*/.build/
 # Statement scrubbing terms: a deny-list contains the very PII it redacts.
 # Terms live beside the source PDFs, outside the repo — never commit one.
 scrub-terms.json
+
+# Xcode build output from command-line builds
+build/

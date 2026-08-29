@@ -93,6 +93,84 @@ struct ModelMigrationTests {
 		#expect(ExpenseSchemaV6.versionIdentifier == Schema.Version(6, 0, 0))
 	}
 
+	@Test("full migration chain from V1 preserves expenses and titles; lastUsedAt, detail, importFingerprint default nil")
+	func v1ChainMigratesForward() throws {
+		let url = URL.temporaryDirectory.appending(path: UUID().uuidString + ".sqlite")
+		defer { try? FileManager.default.removeItem(at: url) }
+
+		let titleID = UUID()
+		let expenseID = UUID()
+
+		let v1Schema = Schema(versionedSchema: ExpenseSchemaV1.self)
+		do {
+			let seedConfig = ModelConfiguration(schema: v1Schema, url: url)
+			let seedContainer = try ModelContainer(for: v1Schema, configurations: seedConfig)
+			let seedContext = ModelContext(seedContainer)
+			seedContext.insert(ExpenseSchemaV1.ExpenseTitleModel(
+				id: titleID, name: "Coffee", limitMinorUnits: 50000, currencyCode: "USD", createdAt: .now
+			))
+			seedContext.insert(ExpenseSchemaV1.ExpenseModel(
+				id: expenseID, amountMinorUnits: 1299, currencyCode: "USD", titleID: titleID, date: .now
+			))
+			try seedContext.save()
+		}
+
+		let config = ModelConfiguration(schema: ModelSchema.schema, url: url)
+		let container = try ModelContainer(
+			for: ModelSchema.schema, migrationPlan: ModelMigrationPlan.self, configurations: config)
+		let context = ModelContext(container)
+
+		let titles = try context.fetch(FetchDescriptor<ExpenseTitleModel>())
+		#expect(titles.count == 1)
+		#expect(titles.first?.name == "Coffee")
+		#expect(titles.first?.lastUsedAt == nil)
+
+		let expenses = try context.fetch(FetchDescriptor<ExpenseModel>())
+		#expect(expenses.count == 1)
+		#expect(expenses.first?.id == expenseID)
+		#expect(expenses.first?.detail == nil)
+		#expect(expenses.first?.importFingerprint == nil)
+	}
+
+	@Test("full migration chain from V2 preserves lastUsedAt; detail and importFingerprint default nil")
+	func v2ChainMigratesForward() throws {
+		let url = URL.temporaryDirectory.appending(path: UUID().uuidString + ".sqlite")
+		defer { try? FileManager.default.removeItem(at: url) }
+
+		let titleID = UUID()
+		let expenseID = UUID()
+		let lastUsed = Date(timeIntervalSince1970: 1750000000)
+
+		let v2Schema = Schema(versionedSchema: ExpenseSchemaV2.self)
+		do {
+			let seedConfig = ModelConfiguration(schema: v2Schema, url: url)
+			let seedContainer = try ModelContainer(for: v2Schema, configurations: seedConfig)
+			let seedContext = ModelContext(seedContainer)
+			seedContext.insert(ExpenseSchemaV2.ExpenseTitleModel(
+				id: titleID, name: "Lunch", limitMinorUnits: nil, currencyCode: "USD",
+				createdAt: .now, lastUsedAt: lastUsed
+			))
+			seedContext.insert(ExpenseSchemaV2.ExpenseModel(
+				id: expenseID, amountMinorUnits: 2500, currencyCode: "USD", titleID: titleID, date: .now
+			))
+			try seedContext.save()
+		}
+
+		let config = ModelConfiguration(schema: ModelSchema.schema, url: url)
+		let container = try ModelContainer(
+			for: ModelSchema.schema, migrationPlan: ModelMigrationPlan.self, configurations: config)
+		let context = ModelContext(container)
+
+		let titles = try context.fetch(FetchDescriptor<ExpenseTitleModel>())
+		#expect(titles.count == 1)
+		#expect(titles.first?.lastUsedAt == lastUsed)
+
+		let expenses = try context.fetch(FetchDescriptor<ExpenseModel>())
+		#expect(expenses.count == 1)
+		#expect(expenses.first?.detail == nil)
+		#expect(expenses.first?.importFingerprint == nil)
+	}
+
 	@Test("full migration chain backfills each title's limit into a createdAt-month TitleLimitModel row")
 	func v3toV4BackfillsLimits() throws {
 		let url = URL.temporaryDirectory.appending(path: UUID().uuidString + ".sqlite")
