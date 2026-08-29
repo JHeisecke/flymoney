@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Registering as a PDF handler is what lets a shared statement LAUNCH the
+	     app on the review screen. A share extension cannot open its host app
+	     (NSExtensionContext.open is Today/iMessage only), so the extension's
+	     inbox drop can only be picked up on the next foreground. This is the
+	     supported route for the launch. -->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>PDF Statement</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<!-- Alternate, never Owner: flymoney reads a statement PDF, it is
+			     not the system's PDF authority and must not outrank real PDF
+			     apps in the "Open in" list. -->
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+			</array>
+		</dict>
+	</array>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+</dict>
+</plist>

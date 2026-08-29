@@ -119,6 +119,64 @@ struct StatementImportDrainCoordinatorTests {
 		}
 	}
 
+	@Test("a document opened in place is never deleted — it is the user's own file")
+	func openedInPlaceFileSurvives() async throws {
+		let root = URL.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+		try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+		defer { try? FileManager.default.removeItem(at: root) }
+		let usersFile = root.appending(path: "statement.pdf")
+		try Data("pdf-bytes".utf8).write(to: usersFile)
+
+		let coordinator = StatementImportDrainCoordinator(
+			makeViewModel: { self.makeViewModel(parse: StubParseStatementUseCase(self.draft())) },
+			fileManager: StubDocumentsFileManager(documents: root.appending(path: "Documents")))
+
+		coordinator.presentOpenedFile(usersFile)
+		#expect(coordinator.request == .opened(usersFile))
+
+		await coordinator.viewModel?.pickedFile(usersFile)
+		coordinator.phaseDidChange(coordinator.viewModel!.phase)
+
+		#expect(FileManager.default.fileExists(atPath: usersFile.path(percentEncoded: false)))
+	}
+
+	@Test("a document iOS copied into Documents/Inbox is ours to delete once it resolves")
+	func openedSystemDropboxCopyIsRemoved() async throws {
+		let root = URL.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+		let documents = root.appending(path: "Documents")
+		let dropbox = documents.appending(path: "Inbox")
+		try FileManager.default.createDirectory(at: dropbox, withIntermediateDirectories: true)
+		defer { try? FileManager.default.removeItem(at: root) }
+		let copy = dropbox.appending(path: "statement.pdf")
+		try Data("pdf-bytes".utf8).write(to: copy)
+
+		let coordinator = StatementImportDrainCoordinator(
+			makeViewModel: { self.makeViewModel(parse: StubParseStatementUseCase(self.draft())) },
+			fileManager: StubDocumentsFileManager(documents: documents))
+
+		coordinator.presentOpenedFile(copy)
+		await coordinator.viewModel?.pickedFile(copy)
+		coordinator.phaseDidChange(coordinator.viewModel!.phase)
+
+		#expect(!FileManager.default.fileExists(atPath: copy.path(percentEncoded: false)))
+	}
+
+	@Test("an opened document does not replace an import already on screen")
+	func openedFileDoesNotInterruptAnActiveImport() async throws {
+		try await withTempInbox {
+			let queued = try StatementInbox.write(Data("pdf-bytes".utf8))
+			let coordinator = StatementImportDrainCoordinator {
+				self.makeViewModel(parse: StubParseStatementUseCase(self.draft()))
+			}
+
+			await coordinator.drain()
+			#expect(coordinator.request == .inbox(queued))
+
+			coordinator.presentOpenedFile(URL.temporaryDirectory.appending(path: "other.pdf"))
+			#expect(coordinator.request == .inbox(queued))
+		}
+	}
+
 	@Test("committing or cancelling never re-queues — the entry is already gone by then")
 	func commitAndCancelDoNotDoubleRemove() async throws {
 		try await withTempInbox {
@@ -136,5 +194,29 @@ struct StatementImportDrainCoordinatorTests {
 			coordinator.phaseDidChange(coordinator.viewModel!.phase) // -> .done, must not throw/crash on an already-removed entry
 			#expect(StatementInbox.pending().isEmpty)
 		}
+	}
+}
+
+/// Points `.documentDirectory` at a temp directory so the "did iOS copy this
+/// into our own Documents/Inbox?" rule can be exercised without the app
+/// sandbox's real container.
+private final class StubDocumentsFileManager: FileManager, @unchecked Sendable {
+	private let documents: URL
+
+	init(documents: URL) {
+		self.documents = documents
+		super.init()
+	}
+
+	override func url(
+		for directory: FileManager.SearchPathDirectory,
+		in domain: FileManager.SearchPathDomainMask,
+		appropriateFor url: URL?,
+		create shouldCreate: Bool
+	) throws -> URL {
+		guard directory == .documentDirectory else {
+			return try super.url(for: directory, in: domain, appropriateFor: url, create: shouldCreate)
+		}
+		return documents
 	}
 }

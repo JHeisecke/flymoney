@@ -79,7 +79,18 @@ struct RootView: View {
 				},
 				onPhaseChange: { phase in importCoordinator.phaseDidChange(phase) }
 			)
+			// One identity per file. Without it SwiftUI reuses the previous
+			// presentation's view — and with it the host's `@State` view model,
+			// already resolved and already `didStart` — so the second queued
+			// file never parses, never reports a phase, never gets removed
+			// from the inbox, and re-presents forever.
+			.id(request.id)
 		}
+		// "Open in flymoney" from the share sheet, or any app opening a PDF
+		// with flymoney, lands here — this is the only route that actually
+		// brings the app to the front with a file. A share extension cannot
+		// launch its host app, so its inbox drop waits for `.drain()` below.
+		.onOpenURL { url in importCoordinator.presentOpenedFile(url) }
 		.task { await importCoordinator.drain() }
 		.onChange(of: scenePhase) { _, newPhase in
 			if newPhase == .active { Task { await importCoordinator.drain() } }

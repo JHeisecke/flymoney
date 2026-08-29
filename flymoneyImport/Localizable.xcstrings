@@ -1,0 +1,46 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Added to flymoney" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregado a flymoney"
+          }
+        }
+      }
+    },
+    "Couldn’t add this statement" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo agregar este estado de cuenta"
+          }
+        }
+      }
+    },
+    "Open flymoney and import the file from there." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre flymoney e importa el archivo desde ahí."
+          }
+        }
+      }
+    },
+    "Open the app to review it." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre la app para revisarlo."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

@@ -439,6 +439,7 @@
 				DEVELOPMENT_TEAM = UK87X7N6A9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Config/flymoney-Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Used to share your month with a friend over a private connection.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Used to scan a friendu2019s share code.";
@@ -475,6 +476,7 @@
 				DEVELOPMENT_TEAM = UK87X7N6A9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Config/flymoney-Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Used to share your month with a friend over a private connection.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Used to scan a friendu2019s share code.";

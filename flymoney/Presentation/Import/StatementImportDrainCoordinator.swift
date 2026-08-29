@@ -13,25 +13,35 @@ import Foundation
 /// whose only job is to raise a *second* sheet shows the user a blank one
 /// behind the picker.
 ///
-/// The two cases record **origin**, not presentation — only an inbox file may
-/// be deleted after staging (`phaseDidChange`). A manually picked URL points
-/// at the user's own document in the Files provider, and must never be removed.
+/// The cases record **origin**, not presentation — origin is what decides
+/// whether the file may be deleted after staging (`phaseDidChange`). Deleting
+/// a document the user still owns would be data loss, so the rule is per case
+/// and never inferred from the URL alone.
 enum ImportRequest: Identifiable, Equatable {
-	/// Chosen by the user in the file picker. Not ours to delete.
+	/// Chosen by the user in the file picker. Points at their own document in
+	/// the Files provider. Not ours to delete.
 	case picked(URL)
 	/// Written by the share extension into the App Group inbox. Ours to drain.
 	case inbox(URL)
+	/// Handed over by `onOpenURL` — "Open in flymoney" from the share sheet,
+	/// or a PDF opened from another app. Deletable **only** when iOS copied
+	/// the file into our own `Documents/Inbox/`, which it does for a source
+	/// that does not open documents in place; that copy is ours and nothing
+	/// else ever removes it. When the document opens in place the URL is the
+	/// user's own file, security-scoped, and must survive the import.
+	case opened(URL)
 
 	var id: String {
 		switch self {
 		case .picked(let url): "picked:\(url.absoluteString)"
 		case .inbox(let url): "inbox:\(url.absoluteString)"
+		case .opened(let url): "opened:\(url.absoluteString)"
 		}
 	}
 
 	var fileURL: URL {
 		switch self {
-		case .picked(let url), .inbox(let url): url
+		case .picked(let url), .inbox(let url), .opened(let url): url
 		}
 	}
 }
@@ -47,9 +57,11 @@ final class StatementImportDrainCoordinator {
 	private(set) var viewModel: ImportStatementViewModel?
 
 	private let makeViewModel: () -> ImportStatementViewModel
+	private let fileManager: FileManager
 
-	init(makeViewModel: @escaping () -> ImportStatementViewModel) {
+	init(makeViewModel: @escaping () -> ImportStatementViewModel, fileManager: FileManager = .default) {
 		self.makeViewModel = makeViewModel
+		self.fileManager = fileManager
 	}
 
 	/// The user picked a file. Raised only *after* the picker returns a URL, so
@@ -58,6 +70,20 @@ final class StatementImportDrainCoordinator {
 		guard request == nil else { return }
 		viewModel = makeViewModel()
 		request = .picked(url)
+	}
+
+	/// A document handed over by the system — "Open in flymoney" from the share
+	/// sheet, or any app opening a PDF with flymoney. Unlike the extension's
+	/// inbox drop, this one brings the app to the front, so the review screen
+	/// appears without the user foregrounding anything themselves.
+	///
+	/// An import already on screen wins: replacing it mid-review would throw
+	/// away edits the user has made. The dropped file is announced by the
+	/// system only once, so it is not queued — the user re-opens it.
+	func presentOpenedFile(_ url: URL) {
+		guard request == nil else { return }
+		viewModel = makeViewModel()
+		request = .opened(url)
 	}
 
 	/// One file at a time, oldest first — the review screen is a
@@ -82,13 +108,40 @@ final class StatementImportDrainCoordinator {
 	/// (`.failed`) — never after commit: waiting for commit would re-present
 	/// the same file after every cancel, with no way to dismiss it.
 	///
-	/// Only `.inbox` requests are removed. A `.picked` URL is the user's own
-	/// document in the Files provider — deleting it would destroy their file.
+	/// `.inbox` requests are always removed. An `.opened` request is removed
+	/// only when iOS copied the document into our own `Documents/Inbox/`
+	/// (`isSystemDropbox`) — that copy exists for this import and nothing else
+	/// reclaims it. A `.picked` URL, and an `.opened` one that resolved in
+	/// place, are the user's own document — deleting either would destroy
+	/// their file.
 	func phaseDidChange(_ phase: ImportStatementViewModel.Phase) {
-		guard case .inbox(let url) = request else { return }
 		switch phase {
-		case .review, .failed: StatementInbox.remove(url)
+		case .review, .failed: removeIfOurs()
 		default: break
 		}
+	}
+
+	private func removeIfOurs() {
+		switch request {
+		case .inbox(let url):
+			StatementInbox.remove(url)
+		case .opened(let url) where isSystemDropbox(url):
+			StatementInbox.remove(url)
+		default:
+			break
+		}
+	}
+
+	/// A document opened from a source that does not support opening in place
+	/// arrives as a copy iOS made inside the app's own `Documents/Inbox/`.
+	/// Everything else — a Files document opened in place, a picked file —
+	/// lives outside the sandbox and belongs to the user.
+	private func isSystemDropbox(_ url: URL) -> Bool {
+		guard let documents = try? fileManager.url(
+			for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false
+		) else { return false }
+		let dropbox = documents.appending(path: "Inbox", directoryHint: .isDirectory)
+		return url.resolvingSymlinksInPath().path(percentEncoded: false)
+			.hasPrefix(dropbox.resolvingSymlinksInPath().path(percentEncoded: false))
 	}
 }
