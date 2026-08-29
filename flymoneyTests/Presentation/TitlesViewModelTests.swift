@@ -189,20 +189,11 @@ struct TitlesViewModelTests {
 		#expect(editor.form.nameError != nil)
 	}
 
-	@Test("validation blocks duplicate name", .tags(.viewModel))
-	func validationDuplicateName() async throws {
-		let titles = InMemoryExpenseTitleRepository()
-		try await titles.upsert(ExpenseTitle(name: "Coffee"))
-
-		let vm = makeVM(titles: titles)
-		await vm.load()
-		vm.beginCreate()
-		let editor = try #require(vm.editor)
-		editor.form.name = "Coffee"
-		await vm.save(editor.form)
-
-		#expect(editor.form.nameError != nil)
-	}
+	// Note: creating with an existing name is no longer a validation error — the
+	// create path merges/overrides the limit onto that title (Stage 20, Override
+	// decision). Covered by `createWithExistingNameMerges` /
+	// `createOverridesInheritedLimit`. Renaming onto another title's name in the
+	// edit path still blocks — see `editBlocksRenameCollision`.
 
 	@Test("validation blocks negative limit", .tags(.viewModel))
 	func validationNegativeLimit() async throws {
@@ -312,22 +303,85 @@ struct TitlesViewModelTests {
 		#expect(vm.visibleTitles.isEmpty)
 	}
 
-	@Test("save duplicate-name validation still uses full titles list", .tags(.viewModel))
-	func saveDuplicateNameUsesFullTitles() async throws {
+	@Test("create with an existing name merges the limit onto that title, no duplicate", .tags(.viewModel))
+	func createWithExistingNameMerges() async throws {
 		let titles = InMemoryExpenseTitleRepository()
-		let expenses = InMemoryExpenseRepository()
+		let limits = InMemoryTitleLimitRepository()
 		let existing = ExpenseTitle(name: "Coffee")
 		try await titles.upsert(existing)
-		// Expense in a different month so existing title is not visible this month
-		try await expenses.add(Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: existing.id, date: date(day: 10, month: 1, year: 2026)))
 
-		let vm = makeVM(titles: titles, expenses: expenses, now: date(day: 10, month: 2, year: 2026))
+		let vm = makeVM(titles: titles, limits: limits, now: date(day: 15, month: 6, year: 2026))
 		await vm.load()
-		#expect(vm.visibleTitles.isEmpty)
+
+		vm.beginCreate()
+		let editor = try #require(vm.editor)
+		editor.form.name = "coffee" // different case — still matches
+		editor.form.limitDecimal = 20
+		await vm.save(editor.form)
+
+		await vm.load()
+		#expect(editor.form.nameError == nil)
+		#expect(vm.titles.count == 1) // no duplicate created
+		#expect(vm.limitByTitle[existing.id]?.minorUnits == 2000)
+	}
+
+	@Test("create with an existing name overrides an inherited limit for the viewed month only", .tags(.viewModel))
+	func createOverridesInheritedLimit() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let limits = InMemoryTitleLimitRepository()
+		let coffee = ExpenseTitle(name: "Coffee")
+		try await titles.upsert(coffee)
+		// Limit set in an earlier month, still in force (inherited).
+		let january = CalendarMonth.containing(date(day: 1, month: 1, year: 2026), using: Self.utc)
+		try await limits.setLimit(Money(minorUnits: 5000, currencyCode: "USD"), forTitleID: coffee.id, effectiveMonthKey: january.key)
+
+		let vm = makeVM(titles: titles, limits: limits, now: date(day: 15, month: 6, year: 2026))
+		await vm.load()
+		#expect(vm.limitByTitle[coffee.id]?.minorUnits == 5000) // inherited into June
 
 		vm.beginCreate()
 		let editor = try #require(vm.editor)
 		editor.form.name = "Coffee"
+		editor.form.limitDecimal = 80
+		await vm.save(editor.form)
+		await vm.load()
+
+		#expect(vm.titles.count == 1)
+		#expect(vm.limitByTitle[coffee.id]?.minorUnits == 8000) // June overridden
+		// January untouched.
+		let janResolved = try await limits.limit(forTitleID: coffee.id, monthKey: january.key)
+		#expect(janResolved?.minorUnits == 5000)
+	}
+
+	@Test("visibleTitles includes a title with a limit but no spend", .tags(.viewModel))
+	func visibleTitlesIncludesLimitOnly() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let limits = InMemoryTitleLimitRepository()
+		let coffee = ExpenseTitle(name: "Coffee")
+		try await titles.upsert(coffee)
+		let june = CalendarMonth.containing(date(day: 1, month: 6, year: 2026), using: Self.utc)
+		try await limits.setLimit(Money(minorUnits: 3000, currencyCode: "USD"), forTitleID: coffee.id, effectiveMonthKey: june.key)
+
+		let vm = makeVM(titles: titles, limits: limits, now: date(day: 15, month: 6, year: 2026))
+		await vm.load()
+
+		#expect(vm.visibleTitles.map(\.id).contains(coffee.id))
+	}
+
+	@Test("edit path still blocks renaming onto another title's name", .tags(.viewModel))
+	func editBlocksRenameCollision() async throws {
+		let titles = InMemoryExpenseTitleRepository()
+		let coffee = ExpenseTitle(name: "Coffee")
+		let lunch = ExpenseTitle(name: "Lunch")
+		try await titles.upsert(coffee)
+		try await titles.upsert(lunch)
+
+		let vm = makeVM(titles: titles, now: date(day: 15, month: 6, year: 2026))
+		await vm.load()
+
+		vm.beginEdit(lunch)
+		let editor = try #require(vm.editor)
+		editor.form.name = "Coffee" // rename Lunch → Coffee (collision)
 		await vm.save(editor.form)
 
 		#expect(editor.form.nameError != nil)

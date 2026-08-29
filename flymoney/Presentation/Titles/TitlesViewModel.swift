@@ -17,7 +17,7 @@ final class TitlesViewModel {
 	private(set) var isLoading = false
 
 	var visibleTitles: [ExpenseTitle] {
-		titles.filter { spentByTitle[$0.id] != nil }
+		titles.filter { spentByTitle[$0.id] != nil || limitByTitle[$0.id] != nil }
 	}
 	var loadError: String?
 	var deleteBlocked: LocalizedStringResource?
@@ -94,10 +94,22 @@ final class TitlesViewModel {
 	}
 
 	func save(_ model: TitleEditorModel) async {
-		guard let clean = model.validated(existing: titles) else { return }
+		if model.isEditing {
+			guard let clean = model.validated(existing: titles) else { return }
+			await persist(id: clean.id, name: clean.name, limit: clean.limit, on: model)
+			return
+		}
+		// Create path: an existing name is not a duplicate error — set the entered
+		// limit on that title for the visible month (override); otherwise create.
+		guard let fields = model.cleanedFields() else { return }
+		let match = titles.first { $0.name.localizedCaseInsensitiveCompare(fields.name) == .orderedSame }
+		await persist(id: match?.id, name: match?.name ?? fields.name, limit: fields.limit, on: model)
+	}
+
+	private func persist(id: UUID?, name: String, limit: Money?, on model: TitleEditorModel) async {
 		do {
-			let title = try await upsertTitle.execute(id: clean.id, name: clean.name)
-			try await setTitleLimit.execute(titleID: title.id, limit: clean.limit, effectiveMonth: month)
+			let title = try await upsertTitle.execute(id: id, name: name)
+			try await setTitleLimit.execute(titleID: title.id, limit: limit, effectiveMonth: month)
 			editor = nil
 			await load()
 		} catch {

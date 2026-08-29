@@ -97,11 +97,19 @@ final class AppAssembly {
 		FetchEffectiveLimitsUseCaseImpl(limits: titleLimitRepo)
 	}
 
-	func makeAllTitlesManagementViewModel() -> AllTitlesManagementViewModel {
+	func makeAllTitlesManagementViewModel(
+		month: CalendarMonth = CalendarMonth.containing(.now, using: .current)
+	) -> AllTitlesManagementViewModel {
 		AllTitlesManagementViewModel(
 			fetchTitles: makeFetchExpenseTitlesUseCase(),
 			deleteTitle: makeDeleteExpenseTitleUseCase(),
-			expenses: expenseRepo)
+			expenses: expenseRepo,
+			upsertTitle: makeUpsertExpenseTitleUseCase(),
+			setTitleLimit: makeSetTitleLimitUseCase(),
+			fetchLimits: makeFetchEffectiveLimitsUseCase(),
+			fetchExpenses: makeFetchExpensesForMonthUseCase(),
+			currencyCode: currencyProvider.defaultCurrencyCode,
+			month: month)
 	}
 
 	func makeTitlesViewModel() -> TitlesViewModel {

@@ -49,8 +49,13 @@ struct AllTitlesManagementView: View {
 									.foregroundStyle(Theme.Colors.ink)
 							}
 						} else {
-							Text(title.name)
-								.font(Theme.Typography.body16)
+							Button {
+								viewModel.beginEdit(title)
+							} label: {
+								Text(title.name)
+									.font(Theme.Typography.body16)
+									.foregroundStyle(Theme.Colors.ink)
+							}
 						}
 					}
 					.onDelete { indexSet in
@@ -62,6 +67,13 @@ struct AllTitlesManagementView: View {
 			}
 		}
 		.task { await viewModel.load() }
+		.sheet(item: $viewModel.editor) { editorVM in
+			TitleEditorView(
+				viewModel: editorVM,
+				onSave: { await viewModel.save(editorVM.form) },
+				onCancel: { viewModel.editor = nil })
+				.presentationDragIndicator(.visible)
+		}
 		.alert(
 			Text(String(format: String(localized: "Delete \"%@\"?"), viewModel.pendingDelete?.title.name ?? "")),
 			isPresented: pendingDeletePresented,

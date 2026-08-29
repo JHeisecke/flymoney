@@ -49,6 +49,30 @@ import Observation
 		return start.formatted(.dateTime.month(.wide).year())
     }
 
+	/// Validates name + amount only (no duplicate-name check). Used by the create
+	/// path, where a name that matches an existing title is not an error — the
+	/// caller merges the entered limit onto that title instead.
+	func cleanedFields() -> (name: String, limit: Money?)? {
+		nameError = nil
+		saveError = nil
+		let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+		guard !trimmed.isEmpty else {
+			nameError = String(localized: "Enter a name.")
+			return nil
+		}
+		let limit: Money?
+		if limitDecimal == 0 {
+			limit = nil
+		} else {
+			guard limitDecimal > 0 else {
+				nameError = String(localized: "Enter a valid amount.")
+				return nil
+			}
+			limit = Money(majorUnits: limitDecimal, currencyCode: currencyCode)
+		}
+		return (name: trimmed, limit: limit)
+	}
+
 	func validated(existing: [ExpenseTitle]) -> (id: UUID?, name: String, limit: Money?)? {
 		nameError = nil
 		saveError = nil

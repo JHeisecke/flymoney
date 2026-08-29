@@ -62,7 +62,7 @@ struct TitlesView: View {
         .sheet(isPresented: $showAllTitles, onDismiss: {
             Task { await viewModel.load() }
         }) {
-            AllTitlesManagementView(viewModel: assembly.makeAllTitlesManagementViewModel())
+            AllTitlesManagementView(viewModel: assembly.makeAllTitlesManagementViewModel(month: viewModel.month))
         }
     }
 
