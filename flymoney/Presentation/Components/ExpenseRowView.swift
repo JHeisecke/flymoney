@@ -36,7 +36,7 @@ struct ExpenseRowView: View {
 			Spacer()
 			Text(row.amount.formatted())
 				.font(Theme.Typography.title16)
-				.foregroundStyle(Theme.Colors.ink)
+                .foregroundStyle(row.amount.minorUnits < 0 ? Theme.Colors.success : Theme.Colors.ink)
 				.monospacedDigit()
 		}
 		.padding(.vertical, Theme.Spacing.s14)

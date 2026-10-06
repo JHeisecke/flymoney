@@ -23,6 +23,7 @@ struct FooterRegressionTests {
         "gnb-cuenta-pages",
         "itau-pages",
         "continental-pages",
+        "continental-cuenta-pages",
     ]
 
     /// Full auto-detect path (kind + profile), not an explicit profile id: the

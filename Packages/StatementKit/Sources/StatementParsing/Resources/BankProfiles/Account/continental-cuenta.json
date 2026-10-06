@@ -1,0 +1,35 @@
+{
+  "id": "continental-cuenta",
+  "displayName": "Banco Continental — Movimientos de cuenta",
+  "bankID": "continental",
+  "currencyCode": "PYG",
+  "timeZoneIdentifier": "America/Asuncion",
+  "detection": ["Banco Continental S\\.A\\.E\\.C\\.A\\.", "RUC: 80019270-2"],
+  "minimumDetectionScore": 2,
+  "tableHeaderPatterns": ["Descripción", "Debe", "Haber"],
+  "columns": [
+    { "column": "operationDate", "start": 0.00, "end": 0.105 },
+    { "column": "reference",     "start": 0.17, "end": 0.33  },
+    { "column": "detail",        "start": 0.33, "end": 0.66  },
+    { "column": "debit",         "start": 0.66, "end": 0.75  },
+    { "column": "credit",        "start": 0.75, "end": 0.85  },
+    { "column": "balance",       "start": 0.85, "end": 1.00  }
+  ],
+  "dateFormat": "dd",
+  "groupingSeparator": ".",
+  "decimalSeparator": ",",
+  "minorUnitDigits": null,
+  "documentPeriod": {
+    "pattern": "Desde\\s+el\\s+\\d{2}/(\\d{2}/\\d{4})\\s+hasta\\s+el\\s+\\d{2}/\\1",
+    "dateFormat": "MM/yyyy"
+  },
+  "creditSuffixes": [],
+  "yTolerance": 3.0,
+  "continuationMaxGap": 16.0,
+  "rules": {
+    "bankAccount": {
+      "includeDetailPatterns": ["^TRANS\\.INTERB\\."],
+      "ambiguousDetailPatterns": ["^TRANS\\.INTERB\\."]
+    }
+  }
+}

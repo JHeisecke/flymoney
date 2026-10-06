@@ -1,0 +1,1953 @@
+[
+  {
+    "height" : 792,
+    "index" : 0,
+    "width" : 612,
+    "words" : [
+      {
+        "maxX" : 85.61,
+        "midY" : 761.07,
+        "minX" : 47.52,
+        "text" : "Banco"
+      },
+      {
+        "maxX" : 161.12,
+        "midY" : 761.07,
+        "minX" : 90.06,
+        "text" : "Continental"
+      },
+      {
+        "maxX" : 228.64,
+        "midY" : 761.07,
+        "minX" : 165.57,
+        "text" : "S.A.E.C.A."
+      },
+      {
+        "maxX" : 72.27,
+        "midY" : 745.64,
+        "minX" : 47.52,
+        "text" : "Avda."
+      },
+      {
+        "maxX" : 98.24,
+        "midY" : 745.64,
+        "minX" : 75.39,
+        "text" : "Mcal."
+      },
+      {
+        "maxX" : 126.97,
+        "midY" : 745.64,
+        "minX" : 101.36,
+        "text" : "López"
+      },
+      {
+        "maxX" : 148.8,
+        "midY" : 745.64,
+        "minX" : 130.09,
+        "text" : "Nro."
+      },
+      {
+        "maxX" : 173.72,
+        "midY" : 745.64,
+        "minX" : 151.92,
+        "text" : "3233"
+      },
+      {
+        "maxX" : 185.92,
+        "midY" : 745.64,
+        "minX" : 176.84,
+        "text" : "e\/"
+      },
+      {
+        "maxX" : 209.85,
+        "midY" : 745.64,
+        "minX" : 189.04,
+        "text" : "Gral."
+      },
+      {
+        "maxX" : 241.72,
+        "midY" : 745.64,
+        "minX" : 212.97,
+        "text" : "Garay."
+      },
+      {
+        "maxX" : 482.44,
+        "midY" : 737.31,
+        "minX" : 403.92,
+        "text" : "Movimientos"
+      },
+      {
+        "maxX" : 502.25,
+        "midY" : 737.31,
+        "minX" : 486.88,
+        "text" : "de"
+      },
+      {
+        "maxX" : 550.84,
+        "midY" : 737.31,
+        "minX" : 506.69,
+        "text" : "Cuenta"
+      },
+      {
+        "maxX" : 65.34,
+        "midY" : 734.61,
+        "minX" : 47.52,
+        "text" : "RUC:"
+      },
+      {
+        "maxX" : 109.98,
+        "midY" : 734.61,
+        "minX" : 67.84,
+        "text" : "80019270-2"
+      },
+      {
+        "maxX" : 115.38,
+        "midY" : 734.61,
+        "minX" : 112.48,
+        "text" : "-"
+      },
+      {
+        "maxX" : 184.14,
+        "midY" : 734.61,
+        "minX" : 117.88,
+        "text" : "TELEFONO:(+595)"
+      },
+      {
+        "maxX" : 234.1,
+        "midY" : 734.61,
+        "minX" : 186.64,
+        "text" : "-21-419.3000"
+      },
+      {
+        "maxX" : 95.18,
+        "midY" : 697.95,
+        "minX" : 59.72,
+        "text" : "Cuenta:"
+      },
+      {
+        "maxX" : 204.91,
+        "midY" : 697.95,
+        "minX" : 118.1,
+        "text" : "00000000000000"
+      },
+      {
+        "maxX" : 245.37,
+        "midY" : 697.95,
+        "minX" : 209.47,
+        "text" : "TESTUS"
+      },
+      {
+        "maxX" : 297.82,
+        "midY" : 697.95,
+        "minX" : 248.22,
+        "text" : "SAMPLENA"
+      },
+      {
+        "maxX" : 367.76,
+        "midY" : 697.95,
+        "minX" : 300.67,
+        "text" : "SAMPLENAME,"
+      },
+      {
+        "maxX" : 83.55,
+        "midY" : 675.45,
+        "minX" : 59.76,
+        "text" : "Tipo:"
+      },
+      {
+        "maxX" : 171.17,
+        "midY" : 675.45,
+        "minX" : 117.39,
+        "text" : "AHORRO-GS"
+      },
+      {
+        "maxX" : 88.82,
+        "midY" : 658.77,
+        "minX" : 59.71,
+        "text" : "Oficial:"
+      },
+      {
+        "maxX" : 163.16,
+        "midY" : 658.77,
+        "minX" : 117.39,
+        "text" : "ROBERTOXX"
+      },
+      {
+        "maxX" : 199.11,
+        "midY" : 658.77,
+        "minX" : 165.97,
+        "text" : "CARLOS"
+      },
+      {
+        "maxX" : 229.17,
+        "midY" : 658.77,
+        "minX" : 201.91,
+        "text" : "LOPEZ"
+      },
+      {
+        "maxX" : 256.25,
+        "midY" : 658.77,
+        "minX" : 231.98,
+        "text" : "DIAZ"
+      },
+      {
+        "maxX" : 355.19,
+        "midY" : 658.77,
+        "minX" : 328.95,
+        "text" : "Email:"
+      },
+      {
+        "maxX" : 536.54,
+        "midY" : 658.77,
+        "minX" : 376.05,
+        "text" : "roberto.lopezXX@bancontinental.com.py"
+      },
+      {
+        "maxX" : 88.18,
+        "midY" : 629.73,
+        "minX" : 59.76,
+        "text" : "Desde"
+      },
+      {
+        "maxX" : 99.22,
+        "midY" : 629.73,
+        "minX" : 89.36,
+        "text" : "el"
+      },
+      {
+        "maxX" : 159.67,
+        "midY" : 629.73,
+        "minX" : 117.39,
+        "text" : "01\/08\/2026"
+      },
+      {
+        "maxX" : 295.68,
+        "midY" : 629.73,
+        "minX" : 270.62,
+        "text" : "hasta"
+      },
+      {
+        "maxX" : 306.73,
+        "midY" : 629.73,
+        "minX" : 296.87,
+        "text" : "el"
+      },
+      {
+        "maxX" : 359.98,
+        "midY" : 629.73,
+        "minX" : 317.71,
+        "text" : "31\/08\/2026"
+      },
+      {
+        "maxX" : 79.98,
+        "midY" : 595.17,
+        "minX" : 47.88,
+        "text" : "Saldos"
+      },
+      {
+        "maxX" : 131.85,
+        "midY" : 595.17,
+        "minX" : 82.82,
+        "text" : "Retenidos"
+      },
+      {
+        "maxX" : 416.95,
+        "midY" : 595.17,
+        "minX" : 371.52,
+        "text" : "Resumen"
+      },
+      {
+        "maxX" : 431.71,
+        "midY" : 595.17,
+        "minX" : 419.79,
+        "text" : "de"
+      },
+      {
+        "maxX" : 466.65,
+        "midY" : 595.17,
+        "minX" : 434.55,
+        "text" : "Saldos"
+      },
+      {
+        "maxX" : 68.86,
+        "midY" : 577.17,
+        "minX" : 47.88,
+        "text" : "Total"
+      },
+      {
+        "maxX" : 86.38,
+        "midY" : 577.17,
+        "minX" : 71.27,
+        "text" : "hoy"
+      },
+      {
+        "maxX" : 230.74,
+        "midY" : 577.17,
+        "minX" : 219.26,
+        "text" : "0,0"
+      },
+      {
+        "maxX" : 408.33,
+        "midY" : 577.17,
+        "minX" : 371.52,
+        "text" : "Contable"
+      },
+      {
+        "maxX" : 560.84,
+        "midY" : 577.17,
+        "minX" : 526.78,
+        "text" : "654.053"
+      },
+      {
+        "maxX" : 58.37,
+        "midY" : 559.17,
+        "minX" : 47.88,
+        "text" : "24"
+      },
+      {
+        "maxX" : 84.92,
+        "midY" : 559.17,
+        "minX" : 60.78,
+        "text" : "Horas"
+      },
+      {
+        "maxX" : 230.74,
+        "midY" : 559.17,
+        "minX" : 219.26,
+        "text" : "0,0"
+      },
+      {
+        "maxX" : 415.11,
+        "midY" : 559.17,
+        "minX" : 371.52,
+        "text" : "Disponible"
+      },
+      {
+        "maxX" : 560.84,
+        "midY" : 559.17,
+        "minX" : 526.78,
+        "text" : "654.053"
+      },
+      {
+        "maxX" : 58.37,
+        "midY" : 541.17,
+        "minX" : 47.88,
+        "text" : "48"
+      },
+      {
+        "maxX" : 84.92,
+        "midY" : 541.17,
+        "minX" : 60.78,
+        "text" : "Horas"
+      },
+      {
+        "maxX" : 230.74,
+        "midY" : 541.17,
+        "minX" : 219.26,
+        "text" : "0,0"
+      },
+      {
+        "maxX" : 408.76,
+        "midY" : 541.17,
+        "minX" : 371.52,
+        "text" : "Retenido"
+      },
+      {
+        "maxX" : 560.86,
+        "midY" : 541.17,
+        "minX" : 547.8,
+        "text" : "0,0"
+      },
+      {
+        "maxX" : 64.42,
+        "midY" : 523.17,
+        "minX" : 47.88,
+        "text" : "Mas"
+      },
+      {
+        "maxX" : 76.91,
+        "midY" : 523.17,
+        "minX" : 66.83,
+        "text" : "de"
+      },
+      {
+        "maxX" : 89.81,
+        "midY" : 523.17,
+        "minX" : 79.32,
+        "text" : "48"
+      },
+      {
+        "maxX" : 116.36,
+        "midY" : 523.17,
+        "minX" : 92.22,
+        "text" : "Horas"
+      },
+      {
+        "maxX" : 230.74,
+        "midY" : 523.17,
+        "minX" : 219.26,
+        "text" : "0,0"
+      },
+      {
+        "maxX" : 394.44,
+        "midY" : 523.17,
+        "minX" : 371.52,
+        "text" : "Saldo"
+      },
+      {
+        "maxX" : 430.8,
+        "midY" : 523.17,
+        "minX" : 396.85,
+        "text" : "Anterior"
+      },
+      {
+        "maxX" : 560.83,
+        "midY" : 523.17,
+        "minX" : 531.36,
+        "text" : "610.458"
+      },
+      {
+        "maxX" : 66.78,
+        "midY" : 505.17,
+        "minX" : 47.88,
+        "text" : "Dep."
+      },
+      {
+        "maxX" : 97.16,
+        "midY" : 505.17,
+        "minX" : 69.19,
+        "text" : "Tauser"
+      },
+      {
+        "maxX" : 118.11,
+        "midY" : 505.17,
+        "minX" : 99.57,
+        "text" : "Chq."
+      },
+      {
+        "maxX" : 230.74,
+        "midY" : 505.17,
+        "minX" : 219.26,
+        "text" : "0,0"
+      },
+      {
+        "maxX" : 394.44,
+        "midY" : 505.17,
+        "minX" : 371.52,
+        "text" : "Saldo"
+      },
+      {
+        "maxX" : 440.66,
+        "midY" : 505.17,
+        "minX" : 396.85,
+        "text" : "Bloqueado"
+      },
+      {
+        "maxX" : 560.86,
+        "midY" : 505.17,
+        "minX" : 549.38,
+        "text" : "0,0"
+      },
+      {
+        "maxX" : 394.44,
+        "midY" : 490.35,
+        "minX" : 371.52,
+        "text" : "Saldo"
+      },
+      {
+        "maxX" : 412.82,
+        "midY" : 490.35,
+        "minX" : 396.85,
+        "text" : "Chq"
+      },
+      {
+        "maxX" : 432,
+        "midY" : 490.35,
+        "minX" : 415.23,
+        "text" : "N\/B"
+      },
+      {
+        "maxX" : 439.34,
+        "midY" : 490.35,
+        "minX" : 434.41,
+        "text" : "a"
+      },
+      {
+        "maxX" : 66.78,
+        "midY" : 487.17,
+        "minX" : 47.88,
+        "text" : "Dep."
+      },
+      {
+        "maxX" : 97.16,
+        "midY" : 487.17,
+        "minX" : 69.19,
+        "text" : "Tauser"
+      },
+      {
+        "maxX" : 119.61,
+        "midY" : 487.17,
+        "minX" : 99.57,
+        "text" : "Efec."
+      },
+      {
+        "maxX" : 230.74,
+        "midY" : 487.17,
+        "minX" : 219.26,
+        "text" : "0,0"
+      },
+      {
+        "maxX" : 560.86,
+        "midY" : 485.37,
+        "minX" : 549.38,
+        "text" : "0,0"
+      },
+      {
+        "maxX" : 411.81,
+        "midY" : 480.39,
+        "minX" : 371.52,
+        "text" : "confirmar"
+      },
+      {
+        "maxX" : 389.42,
+        "midY" : 465.57,
+        "minX" : 371.52,
+        "text" : "Días"
+      },
+      {
+        "maxX" : 432.15,
+        "midY" : 465.57,
+        "minX" : 391.83,
+        "text" : "Sobregiro"
+      },
+      {
+        "maxX" : 61.18,
+        "midY" : 447.94,
+        "minX" : 47.52,
+        "text" : "Dia"
+      },
+      {
+        "maxX" : 86.93,
+        "midY" : 447.94,
+        "minX" : 67.03,
+        "text" : "Hora"
+      },
+      {
+        "maxX" : 158.01,
+        "midY" : 447.94,
+        "minX" : 109.27,
+        "text" : "Movimiento"
+      },
+      {
+        "maxX" : 268.01,
+        "midY" : 447.94,
+        "minX" : 219.84,
+        "text" : "Descripción"
+      },
+      {
+        "maxX" : 438.24,
+        "midY" : 447.94,
+        "minX" : 417,
+        "text" : "Debe"
+      },
+      {
+        "maxX" : 505.42,
+        "midY" : 447.94,
+        "minX" : 480.51,
+        "text" : "Haber"
+      },
+      {
+        "maxX" : 566.62,
+        "midY" : 447.94,
+        "minX" : 543.7,
+        "text" : "Saldo"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 430.29,
+        "minX" : 50.59,
+        "text" : "03"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 430.29,
+        "minX" : 61.81,
+        "text" : "19:53:38"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 430.29,
+        "minX" : 111.75,
+        "text" : "56"
+      },
+      {
+        "maxX" : 157.85,
+        "midY" : 430.29,
+        "minX" : 122.97,
+        "text" : "74660519"
+      },
+      {
+        "maxX" : 202.24,
+        "midY" : 430.29,
+        "minX" : 160.35,
+        "text" : "53-CM-WEB"
+      },
+      {
+        "maxX" : 233.92,
+        "midY" : 430.29,
+        "minX" : 220.88,
+        "text" : "lote"
+      },
+      {
+        "maxX" : 239.47,
+        "midY" : 430.29,
+        "minX" : 236.41,
+        "text" : "|"
+      },
+      {
+        "maxX" : 294.28,
+        "midY" : 430.29,
+        "minX" : 241.96,
+        "text" : "000000000000"
+      },
+      {
+        "maxX" : 505.39,
+        "midY" : 430.29,
+        "minX" : 476.82,
+        "text" : "380.000"
+      },
+      {
+        "maxX" : 566.59,
+        "midY" : 430.29,
+        "minX" : 538.02,
+        "text" : "990.458"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 412.29,
+        "minX" : 50.59,
+        "text" : "05"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 412.29,
+        "minX" : 61.81,
+        "text" : "09:49:48"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 412.29,
+        "minX" : 111.75,
+        "text" : "56"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 412.29,
+        "minX" : 122.97,
+        "text" : "556944"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 412.29,
+        "minX" : 151.63,
+        "text" : "95-CM-SYS"
+      },
+      {
+        "maxX" : 377.87,
+        "midY" : 412.29,
+        "minX" : 220.88,
+        "text" : "TRF.INTRBN.SPI-UBBRPYPXARES260805353"
+      },
+      {
+        "maxX" : 505.38,
+        "midY" : 412.29,
+        "minX" : 470.03,
+        "text" : "1.768.500"
+      },
+      {
+        "maxX" : 566.58,
+        "midY" : 412.29,
+        "minX" : 531.23,
+        "text" : "2.758.958"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 394.29,
+        "minX" : 50.59,
+        "text" : "05"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 394.29,
+        "minX" : 61.81,
+        "text" : "09:55:48"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 394.29,
+        "minX" : 111.75,
+        "text" : "83"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 394.29,
+        "minX" : 122.97,
+        "text" : "560098"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 394.29,
+        "minX" : 151.63,
+        "text" : "38-CM-SYS"
+      },
+      {
+        "maxX" : 331.25,
+        "midY" : 394.29,
+        "minX" : 220.88,
+        "text" : "TRANS.INTERB.WEB-83601248"
+      },
+      {
+        "maxX" : 445.24,
+        "midY" : 394.29,
+        "minX" : 416.66,
+        "text" : "250.000"
+      },
+      {
+        "maxX" : 566.58,
+        "midY" : 394.29,
+        "minX" : 531.23,
+        "text" : "2.508.958"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 376.29,
+        "minX" : 50.59,
+        "text" : "05"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 376.29,
+        "minX" : 61.81,
+        "text" : "09:59:33"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 376.29,
+        "minX" : 111.75,
+        "text" : "83"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 376.29,
+        "minX" : 122.97,
+        "text" : "562070"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 376.29,
+        "minX" : 151.63,
+        "text" : "38-CM-SYS"
+      },
+      {
+        "maxX" : 331.25,
+        "midY" : 376.29,
+        "minX" : 220.88,
+        "text" : "TRANS.INTERB.WEB-83602016"
+      },
+      {
+        "maxX" : 445.24,
+        "midY" : 376.29,
+        "minX" : 416.66,
+        "text" : "760.000"
+      },
+      {
+        "maxX" : 566.58,
+        "midY" : 376.29,
+        "minX" : 531.23,
+        "text" : "1.748.958"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 358.29,
+        "minX" : 50.59,
+        "text" : "05"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 358.29,
+        "minX" : 61.81,
+        "text" : "11:17:16"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 358.29,
+        "minX" : 111.75,
+        "text" : "83"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 358.29,
+        "minX" : 122.97,
+        "text" : "605379"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 358.29,
+        "minX" : 151.63,
+        "text" : "38-CM-SYS"
+      },
+      {
+        "maxX" : 331.25,
+        "midY" : 358.29,
+        "minX" : 220.88,
+        "text" : "TRANS.INTERB.WEB-83619228"
+      },
+      {
+        "maxX" : 445.24,
+        "midY" : 358.29,
+        "minX" : 416.66,
+        "text" : "200.000"
+      },
+      {
+        "maxX" : 566.58,
+        "midY" : 358.29,
+        "minX" : 531.23,
+        "text" : "1.548.958"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 340.29,
+        "minX" : 50.59,
+        "text" : "07"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 340.29,
+        "minX" : 61.81,
+        "text" : "14:18:38"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 340.29,
+        "minX" : 111.75,
+        "text" : "83"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 340.29,
+        "minX" : 122.97,
+        "text" : "695825"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 340.29,
+        "minX" : 151.63,
+        "text" : "38-CM-SYS"
+      },
+      {
+        "maxX" : 331.25,
+        "midY" : 340.29,
+        "minX" : 220.88,
+        "text" : "TRANS.INTERB.WEB-84052974"
+      },
+      {
+        "maxX" : 445.24,
+        "midY" : 340.29,
+        "minX" : 416.66,
+        "text" : "200.000"
+      },
+      {
+        "maxX" : 566.58,
+        "midY" : 340.29,
+        "minX" : 531.23,
+        "text" : "1.348.958"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 322.29,
+        "minX" : 50.59,
+        "text" : "10"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 322.29,
+        "minX" : 61.81,
+        "text" : "14:55:49"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 322.29,
+        "minX" : 111.75,
+        "text" : "83"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 322.29,
+        "minX" : 122.97,
+        "text" : "797448"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 322.29,
+        "minX" : 151.63,
+        "text" : "38-CM-SYS"
+      },
+      {
+        "maxX" : 331.25,
+        "midY" : 322.29,
+        "minX" : 220.88,
+        "text" : "TRANS.INTERB.WEB-84496746"
+      },
+      {
+        "maxX" : 445.24,
+        "midY" : 322.29,
+        "minX" : 416.66,
+        "text" : "480.000"
+      },
+      {
+        "maxX" : 566.59,
+        "midY" : 322.29,
+        "minX" : 538.02,
+        "text" : "868.958"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 304.29,
+        "minX" : 50.59,
+        "text" : "10"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 304.29,
+        "minX" : 61.81,
+        "text" : "18:27:08"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 304.29,
+        "minX" : 111.75,
+        "text" : "56"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 304.29,
+        "minX" : 122.97,
+        "text" : "904284"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 304.29,
+        "minX" : 151.63,
+        "text" : "95-CM-SYS"
+      },
+      {
+        "maxX" : 377.87,
+        "midY" : 304.29,
+        "minX" : 220.88,
+        "text" : "TRF.INTRBN.SPI-UBBRPYPXARES260810664"
+      },
+      {
+        "maxX" : 505.38,
+        "midY" : 304.29,
+        "minX" : 470.03,
+        "text" : "1.770.000"
+      },
+      {
+        "maxX" : 566.58,
+        "midY" : 304.29,
+        "minX" : 531.23,
+        "text" : "2.638.958"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 286.29,
+        "minX" : 50.59,
+        "text" : "11"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 286.29,
+        "minX" : 61.81,
+        "text" : "14:54:05"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 286.29,
+        "minX" : 111.75,
+        "text" : "83"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 286.29,
+        "minX" : 122.97,
+        "text" : "202047"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 286.29,
+        "minX" : 151.63,
+        "text" : "38-CM-SYS"
+      },
+      {
+        "maxX" : 331.25,
+        "midY" : 286.29,
+        "minX" : 220.88,
+        "text" : "TRANS.INTERB.WEB-84648826"
+      },
+      {
+        "maxX" : 445.22,
+        "midY" : 286.29,
+        "minX" : 409.87,
+        "text" : "1.193.400"
+      },
+      {
+        "maxX" : 566.58,
+        "midY" : 286.29,
+        "minX" : 531.23,
+        "text" : "1.445.558"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 268.29,
+        "minX" : 50.59,
+        "text" : "21"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 268.29,
+        "minX" : 61.81,
+        "text" : "11:01:37"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 268.29,
+        "minX" : 111.75,
+        "text" : "83"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 268.29,
+        "minX" : 122.97,
+        "text" : "964022"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 268.29,
+        "minX" : 151.63,
+        "text" : "38-CM-SYS"
+      },
+      {
+        "maxX" : 331.25,
+        "midY" : 268.29,
+        "minX" : 220.88,
+        "text" : "TRANS.INTERB.WEB-86102685"
+      },
+      {
+        "maxX" : 445.25,
+        "midY" : 268.29,
+        "minX" : 421.03,
+        "text" : "30.000"
+      },
+      {
+        "maxX" : 566.58,
+        "midY" : 268.29,
+        "minX" : 531.23,
+        "text" : "1.415.558"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 250.29,
+        "minX" : 50.59,
+        "text" : "21"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 250.29,
+        "minX" : 61.81,
+        "text" : "11:03:49"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 250.29,
+        "minX" : 111.75,
+        "text" : "83"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 250.29,
+        "minX" : 122.97,
+        "text" : "965132"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 250.29,
+        "minX" : 151.63,
+        "text" : "38-CM-SYS"
+      },
+      {
+        "maxX" : 331.25,
+        "midY" : 250.29,
+        "minX" : 220.88,
+        "text" : "TRANS.INTERB.WEB-86103161"
+      },
+      {
+        "maxX" : 445.24,
+        "midY" : 250.29,
+        "minX" : 416.66,
+        "text" : "270.000"
+      },
+      {
+        "maxX" : 566.58,
+        "midY" : 250.29,
+        "minX" : 531.23,
+        "text" : "1.145.558"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 232.29,
+        "minX" : 50.59,
+        "text" : "21"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 232.29,
+        "minX" : 61.81,
+        "text" : "12:50:17"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 232.29,
+        "minX" : 111.75,
+        "text" : "56"
+      },
+      {
+        "maxX" : 144.77,
+        "midY" : 232.29,
+        "minX" : 122.97,
+        "text" : "20857"
+      },
+      {
+        "maxX" : 186.27,
+        "midY" : 232.29,
+        "minX" : 147.26,
+        "text" : "95-CM-SYS"
+      },
+      {
+        "maxX" : 377.87,
+        "midY" : 232.29,
+        "minX" : 220.88,
+        "text" : "TRF.INTRBN.SIP-UBBRPYPXARES260821462"
+      },
+      {
+        "maxX" : 505.39,
+        "midY" : 232.29,
+        "minX" : 476.82,
+        "text" : "243.745"
+      },
+      {
+        "maxX" : 566.58,
+        "midY" : 232.29,
+        "minX" : 531.23,
+        "text" : "1.389.303"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 214.29,
+        "minX" : 50.59,
+        "text" : "21"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 214.29,
+        "minX" : 61.81,
+        "text" : "12:54:16"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 214.29,
+        "minX" : 111.75,
+        "text" : "83"
+      },
+      {
+        "maxX" : 144.77,
+        "midY" : 214.29,
+        "minX" : 122.97,
+        "text" : "22979"
+      },
+      {
+        "maxX" : 186.27,
+        "midY" : 214.29,
+        "minX" : 147.26,
+        "text" : "38-CM-SYS"
+      },
+      {
+        "maxX" : 331.25,
+        "midY" : 214.29,
+        "minX" : 220.88,
+        "text" : "TRANS.INTERB.WEB-86126178"
+      },
+      {
+        "maxX" : 445.24,
+        "midY" : 214.29,
+        "minX" : 416.66,
+        "text" : "731.500"
+      },
+      {
+        "maxX" : 566.59,
+        "midY" : 214.29,
+        "minX" : 538.02,
+        "text" : "657.803"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 196.29,
+        "minX" : 50.59,
+        "text" : "25"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 196.29,
+        "minX" : 61.81,
+        "text" : "10:49:13"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 196.29,
+        "minX" : 111.75,
+        "text" : "56"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 196.29,
+        "minX" : 122.97,
+        "text" : "330995"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 196.29,
+        "minX" : 151.63,
+        "text" : "95-CM-SYS"
+      },
+      {
+        "maxX" : 377.87,
+        "midY" : 196.29,
+        "minX" : 220.88,
+        "text" : "TRF.INTRBN.SIP-UBBRPYPXARES260825389"
+      },
+      {
+        "maxX" : 505.39,
+        "midY" : 196.29,
+        "minX" : 476.82,
+        "text" : "296.250"
+      },
+      {
+        "maxX" : 566.59,
+        "midY" : 196.29,
+        "minX" : 538.02,
+        "text" : "954.053"
+      },
+      {
+        "maxX" : 59.31,
+        "midY" : 178.29,
+        "minX" : 50.59,
+        "text" : "25"
+      },
+      {
+        "maxX" : 93.62,
+        "midY" : 178.29,
+        "minX" : 61.81,
+        "text" : "10:51:38"
+      },
+      {
+        "maxX" : 120.47,
+        "midY" : 178.29,
+        "minX" : 111.75,
+        "text" : "83"
+      },
+      {
+        "maxX" : 149.13,
+        "midY" : 178.29,
+        "minX" : 122.97,
+        "text" : "332382"
+      },
+      {
+        "maxX" : 190.63,
+        "midY" : 178.29,
+        "minX" : 151.63,
+        "text" : "38-CM-SYS"
+      },
+      {
+        "maxX" : 331.25,
+        "midY" : 178.29,
+        "minX" : 220.88,
+        "text" : "TRANS.INTERB.WEB-86629408"
+      },
+      {
+        "maxX" : 445.24,
+        "midY" : 178.29,
+        "minX" : 416.66,
+        "text" : "300.000"
+      },
+      {
+        "maxX" : 566.59,
+        "midY" : 178.29,
+        "minX" : 538.02,
+        "text" : "654.053"
+      },
+      {
+        "maxX" : 352.48,
+        "midY" : 159.4,
+        "minX" : 323.28,
+        "text" : "Totales"
+      },
+      {
+        "maxX" : 441.31,
+        "midY" : 159.4,
+        "minX" : 400.7,
+        "text" : "4.414.900"
+      },
+      {
+        "maxX" : 506.83,
+        "midY" : 159.4,
+        "minX" : 466.22,
+        "text" : "4.458.495"
+      },
+      {
+        "maxX" : 63.18,
+        "midY" : 138.45,
+        "minX" : 48.24,
+        "text" : "Este"
+      },
+      {
+        "maxX" : 96.87,
+        "midY" : 138.45,
+        "minX" : 65.67,
+        "text" : "producto"
+      },
+      {
+        "maxX" : 107.14,
+        "midY" : 138.45,
+        "minX" : 99.37,
+        "text" : "se"
+      },
+      {
+        "maxX" : 144.86,
+        "midY" : 138.45,
+        "minX" : 109.64,
+        "text" : "encuentra"
+      },
+      {
+        "maxX" : 175.83,
+        "midY" : 138.45,
+        "minX" : 147.35,
+        "text" : "cubierto"
+      },
+      {
+        "maxX" : 189.96,
+        "midY" : 138.45,
+        "minX" : 178.33,
+        "text" : "por"
+      },
+      {
+        "maxX" : 198.49,
+        "midY" : 138.45,
+        "minX" : 192.46,
+        "text" : "el"
+      },
+      {
+        "maxX" : 222.7,
+        "midY" : 138.45,
+        "minX" : 200.98,
+        "text" : "Fondo"
+      },
+      {
+        "maxX" : 233.82,
+        "midY" : 138.45,
+        "minX" : 225.19,
+        "text" : "de"
+      },
+      {
+        "maxX" : 266.06,
+        "midY" : 138.45,
+        "minX" : 236.31,
+        "text" : "Garantía"
+      },
+      {
+        "maxX" : 277.18,
+        "midY" : 138.45,
+        "minX" : 268.55,
+        "text" : "de"
+      },
+      {
+        "maxX" : 316.44,
+        "midY" : 138.45,
+        "minX" : 279.67,
+        "text" : "Depósitos."
+      },
+      {
+        "maxX" : 330.67,
+        "midY" : 138.45,
+        "minX" : 318.94,
+        "text" : "Las"
+      },
+      {
+        "maxX" : 383.98,
+        "midY" : 138.45,
+        "minX" : 333.17,
+        "text" : "contribuciones"
+      },
+      {
+        "maxX" : 426.95,
+        "midY" : 138.45,
+        "minX" : 386.47,
+        "text" : "obligatorias"
+      },
+      {
+        "maxX" : 464.3,
+        "midY" : 138.45,
+        "minX" : 429.45,
+        "text" : "realizadas"
+      },
+      {
+        "maxX" : 478.42,
+        "midY" : 138.45,
+        "minX" : 466.79,
+        "text" : "por"
+      },
+      {
+        "maxX" : 490.5,
+        "midY" : 138.45,
+        "minX" : 480.92,
+        "text" : "las"
+      },
+      {
+        "maxX" : 526.96,
+        "midY" : 138.45,
+        "minX" : 493,
+        "text" : "entidades"
+      },
+      {
+        "maxX" : 538.08,
+        "midY" : 138.45,
+        "minX" : 529.46,
+        "text" : "de"
+      },
+      {
+        "maxX" : 99.94,
+        "midY" : 128.79,
+        "minX" : 48.24,
+        "text" : "intermediación"
+      },
+      {
+        "maxX" : 139.11,
+        "midY" : 128.79,
+        "minX" : 102.43,
+        "text" : "financiera,"
+      },
+      {
+        "maxX" : 150.27,
+        "midY" : 128.79,
+        "minX" : 141.61,
+        "text" : "en"
+      },
+      {
+        "maxX" : 173,
+        "midY" : 128.79,
+        "minX" : 152.77,
+        "text" : "virtud"
+      },
+      {
+        "maxX" : 179.69,
+        "midY" : 128.79,
+        "minX" : 175.5,
+        "text" : "a"
+      },
+      {
+        "maxX" : 188.34,
+        "midY" : 128.79,
+        "minX" : 182.18,
+        "text" : "lo"
+      },
+      {
+        "maxX" : 224.3,
+        "midY" : 128.79,
+        "minX" : 190.84,
+        "text" : "dispuesto"
+      },
+      {
+        "maxX" : 235.46,
+        "midY" : 128.79,
+        "minX" : 226.8,
+        "text" : "en"
+      },
+      {
+        "maxX" : 243.99,
+        "midY" : 128.79,
+        "minX" : 237.96,
+        "text" : "el"
+      },
+      {
+        "maxX" : 272.96,
+        "midY" : 128.79,
+        "minX" : 246.49,
+        "text" : "Artículo"
+      },
+      {
+        "maxX" : 286.18,
+        "midY" : 128.79,
+        "minX" : 275.46,
+        "text" : "3º,"
+      },
+      {
+        "maxX" : 318.28,
+        "midY" : 128.79,
+        "minX" : 288.67,
+        "text" : "Numeral"
+      },
+      {
+        "maxX" : 325.14,
+        "midY" : 128.79,
+        "minX" : 320.78,
+        "text" : "2"
+      },
+      {
+        "maxX" : 336.26,
+        "midY" : 128.79,
+        "minX" : 327.63,
+        "text" : "de"
+      },
+      {
+        "maxX" : 344.77,
+        "midY" : 128.79,
+        "minX" : 338.75,
+        "text" : "la"
+      },
+      {
+        "maxX" : 359.43,
+        "midY" : 128.79,
+        "minX" : 347.26,
+        "text" : "Ley"
+      },
+      {
+        "maxX" : 411.56,
+        "midY" : 128.79,
+        "minX" : 361.93,
+        "text" : "Nº2334\/2003,"
+      },
+      {
+        "maxX" : 454.38,
+        "midY" : 128.79,
+        "minX" : 414.06,
+        "text" : "constituyen"
+      },
+      {
+        "maxX" : 479.62,
+        "midY" : 128.79,
+        "minX" : 456.87,
+        "text" : "gastos"
+      },
+      {
+        "maxX" : 507.9,
+        "midY" : 128.79,
+        "minX" : 482.12,
+        "text" : "propios"
+      },
+      {
+        "maxX" : 519.02,
+        "midY" : 128.79,
+        "minX" : 510.39,
+        "text" : "de"
+      },
+      {
+        "maxX" : 527.53,
+        "midY" : 128.79,
+        "minX" : 521.51,
+        "text" : "la"
+      },
+      {
+        "maxX" : 555.5,
+        "midY" : 128.79,
+        "minX" : 530.02,
+        "text" : "gestión"
+      },
+      {
+        "maxX" : 56.86,
+        "midY" : 119.14,
+        "minX" : 48.24,
+        "text" : "de"
+      },
+      {
+        "maxX" : 65.38,
+        "midY" : 119.14,
+        "minX" : 59.36,
+        "text" : "la"
+      },
+      {
+        "maxX" : 96.47,
+        "midY" : 119.14,
+        "minX" : 67.87,
+        "text" : "entidad,"
+      },
+      {
+        "maxX" : 112.05,
+        "midY" : 119.14,
+        "minX" : 98.97,
+        "text" : "que"
+      },
+      {
+        "maxX" : 123.34,
+        "midY" : 119.14,
+        "minX" : 114.54,
+        "text" : "no"
+      },
+      {
+        "maxX" : 147.54,
+        "midY" : 119.14,
+        "minX" : 125.83,
+        "text" : "deben"
+      },
+      {
+        "maxX" : 188.62,
+        "midY" : 119.14,
+        "minX" : 150.03,
+        "text" : "trasladarse"
+      },
+      {
+        "maxX" : 237.26,
+        "midY" : 119.14,
+        "minX" : 191.12,
+        "text" : "directamente"
+      },
+      {
+        "maxX" : 258.82,
+        "midY" : 119.14,
+        "minX" : 239.75,
+        "text" : "como"
+      },
+      {
+        "maxX" : 277.78,
+        "midY" : 119.14,
+        "minX" : 261.32,
+        "text" : "tales"
+      },
+      {
+        "maxX" : 284.47,
+        "midY" : 119.14,
+        "minX" : 280.28,
+        "text" : "a"
+      },
+      {
+        "maxX" : 298.56,
+        "midY" : 119.14,
+        "minX" : 286.97,
+        "text" : "sus"
+      },
+      {
+        "maxX" : 329.92,
+        "midY" : 119.14,
+        "minX" : 301.06,
+        "text" : "clientes."
+      },
+      {
+        "maxX" : 340.47,
+        "midY" : 119.14,
+        "minX" : 332.42,
+        "text" : "Es"
+      },
+      {
+        "maxX" : 397.5,
+        "midY" : 119.14,
+        "minX" : 342.97,
+        "text" : "responsabilidad"
+      },
+      {
+        "maxX" : 410.45,
+        "midY" : 119.14,
+        "minX" : 400,
+        "text" : "del"
+      },
+      {
+        "maxX" : 435.82,
+        "midY" : 119.14,
+        "minX" : 412.94,
+        "text" : "cliente"
+      },
+      {
+        "maxX" : 466.34,
+        "midY" : 119.14,
+        "minX" : 438.32,
+        "text" : "verificar"
+      },
+      {
+        "maxX" : 474.23,
+        "midY" : 119.14,
+        "minX" : 468.84,
+        "text" : "si"
+      },
+      {
+        "maxX" : 482.76,
+        "midY" : 119.14,
+        "minX" : 476.73,
+        "text" : "el"
+      },
+      {
+        "maxX" : 507.77,
+        "midY" : 119.14,
+        "minX" : 485.26,
+        "text" : "monto"
+      },
+      {
+        "maxX" : 548.65,
+        "midY" : 119.14,
+        "minX" : 510.26,
+        "text" : "depositado"
+      },
+      {
+        "maxX" : 68.55,
+        "midY" : 109.48,
+        "minX" : 48.24,
+        "text" : "figura"
+      },
+      {
+        "maxX" : 90.12,
+        "midY" : 109.48,
+        "minX" : 71.05,
+        "text" : "como"
+      },
+      {
+        "maxX" : 110.95,
+        "midY" : 109.48,
+        "minX" : 92.62,
+        "text" : "saldo"
+      },
+      {
+        "maxX" : 148.74,
+        "midY" : 109.48,
+        "minX" : 113.45,
+        "text" : "disponible"
+      },
+      {
+        "maxX" : 159.9,
+        "midY" : 109.48,
+        "minX" : 151.23,
+        "text" : "en"
+      },
+      {
+        "maxX" : 170.42,
+        "midY" : 109.48,
+        "minX" : 162.39,
+        "text" : "su"
+      },
+      {
+        "maxX" : 201.52,
+        "midY" : 109.48,
+        "minX" : 172.91,
+        "text" : "extracto"
+      },
+      {
+        "maxX" : 223.11,
+        "midY" : 109.48,
+        "minX" : 204.02,
+        "text" : "antes"
+      },
+      {
+        "maxX" : 234.23,
+        "midY" : 109.48,
+        "minX" : 225.61,
+        "text" : "de"
+      },
+      {
+        "maxX" : 266.83,
+        "midY" : 109.48,
+        "minX" : 236.73,
+        "text" : "disponer"
+      },
+      {
+        "maxX" : 279.78,
+        "midY" : 109.48,
+        "minX" : 269.33,
+        "text" : "del"
+      },
+      {
+        "maxX" : 307.84,
+        "midY" : 109.48,
+        "minX" : 282.27,
+        "text" : "mismo."
+      },
+      {
+        "maxX" : 103.02,
+        "midY" : 79.82,
+        "minX" : 54.75,
+        "text" : "¡Aprovechá"
+      },
+      {
+        "maxX" : 154.3,
+        "midY" : 79.82,
+        "minX" : 106.06,
+        "text" : "descuentos"
+      },
+      {
+        "maxX" : 180.72,
+        "midY" : 79.82,
+        "minX" : 157.34,
+        "text" : "todas"
+      },
+      {
+        "maxX" : 195.44,
+        "midY" : 79.82,
+        "minX" : 183.76,
+        "text" : "las"
+      },
+      {
+        "maxX" : 236.14,
+        "midY" : 79.82,
+        "minX" : 198.48,
+        "text" : "semanas"
+      },
+      {
+        "maxX" : 254.39,
+        "midY" : 79.82,
+        "minX" : 239.18,
+        "text" : "con"
+      },
+      {
+        "maxX" : 270.47,
+        "midY" : 79.82,
+        "minX" : 257.43,
+        "text" : "tus"
+      },
+      {
+        "maxX" : 305.97,
+        "midY" : 79.82,
+        "minX" : 273.51,
+        "text" : "tarjetas"
+      },
+      {
+        "maxX" : 319.52,
+        "midY" : 79.82,
+        "minX" : 309.01,
+        "text" : "de"
+      },
+      {
+        "maxX" : 355.08,
+        "midY" : 79.82,
+        "minX" : 322.56,
+        "text" : "crédito!"
+      },
+      {
+        "maxX" : 369.02,
+        "midY" : 79.82,
+        "minX" : 358.12,
+        "text" : "En"
+      },
+      {
+        "maxX" : 122.93,
+        "midY" : 68.05,
+        "minX" : 54.75,
+        "text" : "supermercados,"
+      },
+      {
+        "maxX" : 170.1,
+        "midY" : 68.05,
+        "minX" : 125.97,
+        "text" : "farmacias,"
+      },
+      {
+        "maxX" : 217.9,
+        "midY" : 68.05,
+        "minX" : 173.14,
+        "text" : "estaciones"
+      },
+      {
+        "maxX" : 231.45,
+        "midY" : 68.05,
+        "minX" : 220.94,
+        "text" : "de"
+      },
+      {
+        "maxX" : 269.5,
+        "midY" : 68.05,
+        "minX" : 234.49,
+        "text" : "servicio,"
+      },
+      {
+        "maxX" : 326.11,
+        "midY" : 68.05,
+        "minX" : 272.55,
+        "text" : "restaurantes"
+      },
+      {
+        "maxX" : 337.25,
+        "midY" : 68.05,
+        "minX" : 329.15,
+        "text" : "¡y"
+      },
+      {
+        "maxX" : 369.11,
+        "midY" : 68.05,
+        "minX" : 340.29,
+        "text" : "mucho"
+      },
+      {
+        "maxX" : 393.03,
+        "midY" : 68.05,
+        "minX" : 372.15,
+        "text" : "más!"
+      },
+      {
+        "maxX" : 91.04,
+        "midY" : 56.28,
+        "minX" : 54.75,
+        "text" : "Enterate"
+      },
+      {
+        "maxX" : 104.59,
+        "midY" : 56.28,
+        "minX" : 94.08,
+        "text" : "de"
+      },
+      {
+        "maxX" : 131.19,
+        "midY" : 56.28,
+        "minX" : 107.63,
+        "text" : "todos"
+      },
+      {
+        "maxX" : 146.09,
+        "midY" : 56.28,
+        "minX" : 134.23,
+        "text" : "los"
+      },
+      {
+        "maxX" : 191.87,
+        "midY" : 56.28,
+        "minX" : 149.13,
+        "text" : "beneficios"
+      },
+      {
+        "maxX" : 205.48,
+        "midY" : 56.28,
+        "minX" : 194.92,
+        "text" : "en"
+      },
+      {
+        "maxX" : 245.08,
+        "midY" : 56.28,
+        "minX" : 208.52,
+        "text" : "nuestras"
+      },
+      {
+        "maxX" : 271.62,
+        "midY" : 56.28,
+        "minX" : 248.12,
+        "text" : "redes"
+      },
+      {
+        "maxX" : 310.77,
+        "midY" : 56.28,
+        "minX" : 274.66,
+        "text" : "sociales."
+      }
+    ]
+  }
+]

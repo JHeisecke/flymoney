@@ -17,6 +17,9 @@ Planning context lives in an **Obsidian vault**, not in this repo:
 ├── Features/<Feature>/         ← AddExpense · History · Sharing · Titles · Import
 │   ├── Stages/                 ← per-stage scope + acceptance criteria
 │   └── Plans/                  ← detailed implementation plans
+├── Features/Import/
+│   ├── Adding a Bank Statement Profile.md   ← READ FIRST before adding any bank statement
+│   └── Scrub Terms - Changelog.md           ← fixture redaction audit trail (no literals)
 ├── Foundation/{Stages,Plans}/  ← Stages 0–2
 ├── MVP/0.1/{Stages,Plans}/     ← Stages 3–7
 ├── Redesign/{Stages,Plans}/    ← Stages 8–12
@@ -110,7 +113,7 @@ Tests use **Swift Testing** (`@Test`/`#expect`), not XCTest.
 ## 5. Project facts
 
 - Xcode project uses **synced folder groups** (`PBXFileSystemSynchronizedRootGroup`). Files added under `flymoney/` auto-join the target — **no `project.pbxproj` editing needed for sources.**
-- Bundle id: `com.jheisecke.flymoney`.
+- Bundle id: `com.jheisecke.cashfly` (app), `com.jheisecke.cashfly.Import` (share extension), App Group `group.com.jheisecke.cashfly`. The scheme and product are named `flymoney`; the bundle id is not.
 - Set/keep: `IPHONEOS_DEPLOYMENT_TARGET = 18.0`, `SWIFT_VERSION = 6.0`, strict concurrency `complete`.
 - Verify builds on iOS 18 simulator before marking a stage done.
 

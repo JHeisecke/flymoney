@@ -14,6 +14,7 @@ struct ProfileUniquenessTests {
         ("gnb-cuenta-pages", .bankAccount),
         ("itau-pages", .creditCard),
         ("continental-pages", .creditCard),
+        ("continental-cuenta-pages", .bankAccount),
     ]
 
     private let repository = BundledStatementProfileRepository()

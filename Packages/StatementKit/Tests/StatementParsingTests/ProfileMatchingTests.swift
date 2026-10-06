@@ -51,7 +51,7 @@ struct ProfileMatchingTests {
         let cardProfiles = try await repository.profiles(ofKind: .creditCard)
         let accountProfiles = try await repository.profiles(ofKind: .bankAccount)
         #expect(Set(cardProfiles.map(\.id)) == ["gnb-extracto", "gnb-movimientos", "itau-extracto", "continental-extracto"])
-        #expect(accountProfiles.map(\.id) == ["gnb-cuenta"])
+        #expect(accountProfiles.map(\.id) == ["continental-cuenta", "gnb-cuenta"])
     }
 
     /// `continental-extracto`'s detection depends on the matcher NOT folding

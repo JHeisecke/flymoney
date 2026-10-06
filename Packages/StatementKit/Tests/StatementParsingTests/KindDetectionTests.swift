@@ -35,6 +35,28 @@ struct KindDetectionTests {
         #expect(detector.detectKind(pages: pages) == .bankAccount)
     }
 
+    @Test("continental-cuenta resolves to bankAccount despite a card word in its promo footer")
+    func continentalCuentaIsBankAccount() throws {
+        let pages = try TestFixtures.pages("continental-cuenta-pages")
+        #expect(detector.detectKind(pages: pages) == .bankAccount)
+
+        // The page ends with "tus tarjetas de crédito!", which scores 1 on the
+        // CARD vocabulary. The margin is 2-to-1, not 2-to-0, so this is pinned
+        // rather than trusted — a future edit to StatementKindSignals that adds
+        // one card signal or drops one account signal would tie it, and a tie
+        // sends the user to the manual picker.
+        let haystack = pages.first?.words.map(\.text).joined(separator: " ") ?? ""
+        func score(_ signals: [String]) -> Int {
+            signals.reduce(into: 0) { count, signal in
+                if haystack.range(of: signal, options: [.caseInsensitive, .diacriticInsensitive]) != nil {
+                    count += 1
+                }
+            }
+        }
+        #expect(score(StatementKindSignals.bankAccount) == 2)
+        #expect(score(StatementKindSignals.creditCard) == 1)
+    }
+
     @Test("a document with no signals returns nil")
     func noSignalsReturnsNil() {
         let page = TextPage(index: 0, width: 100, height: 100, words: [
