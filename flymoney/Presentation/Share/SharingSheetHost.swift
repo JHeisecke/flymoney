@@ -10,11 +10,16 @@ import SwiftUI
 struct SharingSheetHost: View {
 	let assembly: AppAssembly
 	let role: SharingRole
+	var includeExpensesInitially = true
 	@Environment(\.dismiss) private var dismiss
 
 	@State private var vm: SharingViewModel?
 
 	var body: some View {
+		content.onDisappear { vm?.cancel() }
+	}
+
+	@ViewBuilder private var content: some View {
 		if let vm {
 			switch role {
 			case .send:
@@ -34,6 +39,7 @@ struct SharingSheetHost: View {
 			Color.clear
 				.onAppear {
 					vm = assembly.makeSharingViewModel(role: role)
+					vm?.includesExpenses = includeExpensesInitially
 				}
 		}
 	}

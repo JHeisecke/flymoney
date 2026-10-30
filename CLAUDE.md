@@ -121,6 +121,8 @@ Tests use **Swift Testing** (`@Test`/`#expect`), not XCTest.
 
 ## 6. Workflow per stage
 
+When the user explicitly asks to execute a roadmap stage, follow the project skill at `skills/flymoney-execute-stage/SKILL.md`.
+
 1. Read `Stages/Stage N` + `Plans/Stage N - Plan.md` + `Coding Standards.md`.
 2. Run the required skills (§3) for the work type.
 3. Implement within the stage's scope and the architecture boundaries.

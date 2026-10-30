@@ -12,12 +12,16 @@ enum ModelMigrationPlan: SchemaMigrationPlan {
 	static var schemas: [any VersionedSchema.Type] {
 		[
 			ExpenseSchemaV1.self, ExpenseSchemaV2.self, ExpenseSchemaV3.self,
-			ExpenseSchemaV4.self, ExpenseSchemaV5.self, ExpenseSchemaV6.self,
+			ExpenseSchemaV4.self, ExpenseSchemaV5.self, ExpenseSchemaV6.self, ExpenseSchemaV7.self,
+			ExpenseSchemaV8.self,
 		]
 	}
 
 	static var stages: [MigrationStage] {
-		[migrateV1toV2, migrateV2toV3, migrateV3toV4, migrateV4toV5, migrateV5toV6]
+		[
+			migrateV1toV2, migrateV2toV3, migrateV3toV4, migrateV4toV5, migrateV5toV6, migrateV6toV7,
+			migrateV7toV8,
+		]
 	}
 
 	static let migrateV1toV2 = MigrationStage.lightweight(
@@ -51,12 +55,13 @@ enum ModelMigrationPlan: SchemaMigrationPlan {
 			for title in titles {
 				guard let limit = title.limitMinorUnits else { continue }
 				let monthKey = CalendarMonth.containing(title.createdAt, using: .current).key
-				context.insert(TitleLimitModel(
-					titleID: title.id,
-					effectiveMonthKey: monthKey,
-					limitMinorUnits: limit,
-					currencyCode: title.currencyCode
-				))
+				context.insert(
+					TitleLimitModel(
+						titleID: title.id,
+						effectiveMonthKey: monthKey,
+						limitMinorUnits: limit,
+						currencyCode: title.currencyCode
+					))
 			}
 			try context.save()
 		}
@@ -76,4 +81,8 @@ enum ModelMigrationPlan: SchemaMigrationPlan {
 		fromVersion: ExpenseSchemaV5.self,
 		toVersion: ExpenseSchemaV6.self
 	)
+	static let migrateV6toV7 = MigrationStage.lightweight(
+		fromVersion: ExpenseSchemaV6.self, toVersion: ExpenseSchemaV7.self)
+	static let migrateV7toV8 = MigrationStage.lightweight(
+		fromVersion: ExpenseSchemaV7.self, toVersion: ExpenseSchemaV8.self)
 }

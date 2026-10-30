@@ -13,9 +13,9 @@ import Testing
 struct ChunkedTransferTests {
 
 	@Test("chunk count math")
-	func chunkCount() {
+	func chunkCount() throws {
 		let payload = Data(repeating: 0x42, count: 400)
-		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let chunks = try ChunkedTransfer.chunks(of: payload, mtu: 185)
 		#expect(chunks.count > 1)
 		#expect(chunks.last?[4] == 1)
 	}
@@ -23,7 +23,7 @@ struct ChunkedTransferTests {
 	@Test("roundtrip in-order")
 	func roundTrip() throws {
 		let payload = Data(repeating: 0x42, count: 200)
-		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let chunks = try ChunkedTransfer.chunks(of: payload, mtu: 185)
 		let reassembler = ChunkedTransfer.Reassembler()
 		var result: Data?
 		for chunk in chunks {
@@ -38,7 +38,7 @@ struct ChunkedTransferTests {
 	@Test("roundtrip out-of-order")
 	func outOfOrder() throws {
 		let payload = Data(repeating: 0x42, count: 200)
-		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let chunks = try ChunkedTransfer.chunks(of: payload, mtu: 185)
 		let reassembler = ChunkedTransfer.Reassembler()
 		var result: Data?
 		for chunk in chunks.reversed() {
@@ -52,9 +52,9 @@ struct ChunkedTransferTests {
 
 	@Test("dropped chunk detected")
 	func droppedChunk() throws {
-		let payload = Data(repeating: 0x42, count: 200)
-		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
-		guard chunks.count >= 3 else { return }
+		let payload = Data(repeating: 0x42, count: 500)
+		let chunks = try ChunkedTransfer.chunks(of: payload, mtu: 185)
+		try #require(chunks.count >= 3)
 		let reassembler = ChunkedTransfer.Reassembler()
 		for i in 0..<chunks.count where i != 1 {
 			_ = try reassembler.ingest(decryptedFrame: chunks[i])
@@ -66,7 +66,7 @@ struct ChunkedTransferTests {
 	@Test("single chunk")
 	func singleChunk() throws {
 		let payload = Data(repeating: 0x42, count: 10)
-		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let chunks = try ChunkedTransfer.chunks(of: payload, mtu: 185)
 		#expect(chunks.count == 1)
 		let reassembler = ChunkedTransfer.Reassembler()
 		let result = try reassembler.ingest(decryptedFrame: chunks[0])
@@ -94,7 +94,7 @@ struct ChunkedTransferTests {
 	@Test("receivedCount grows with each unique ingested frame")
 	func receivedCountGrowsWithFrames() throws {
 		let payload = Data(repeating: 0x42, count: 200)
-		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let chunks = try ChunkedTransfer.chunks(of: payload, mtu: 185)
 		let reassembler = ChunkedTransfer.Reassembler()
 		for chunk in chunks {
 			let previous = reassembler.receivedCount
@@ -109,7 +109,7 @@ struct ChunkedTransferTests {
 	@Test("receivedCount does not increase on duplicate frame")
 	func receivedCountIgnoresDuplicates() throws {
 		let payload = Data(repeating: 0x42, count: 200)
-		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let chunks = try ChunkedTransfer.chunks(of: payload, mtu: 185)
 		let reassembler = ChunkedTransfer.Reassembler()
 		_ = try reassembler.ingest(decryptedFrame: chunks[0])
 		#expect(reassembler.receivedCount == 1)
@@ -118,9 +118,9 @@ struct ChunkedTransferTests {
 	}
 
 	@Test("missingSeqs returns all sequences when nothing ingested")
-	func missingSeqsWhenEmpty() {
+	func missingSeqsWhenEmpty() throws {
 		let payload = Data(repeating: 0x42, count: 200)
-		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let chunks = try ChunkedTransfer.chunks(of: payload, mtu: 185)
 		let reassembler = ChunkedTransfer.Reassembler()
 		_ = try? reassembler.ingest(decryptedFrame: chunks[0])
 		let missing = reassembler.missingSeqs()
@@ -131,7 +131,7 @@ struct ChunkedTransferTests {
 	@Test("receivedCount reset after complete assembly")
 	func receivedCountResetsAfterComplete() throws {
 		let payload = Data(repeating: 0x42, count: 10)
-		let chunks = ChunkedTransfer.chunks(of: payload, mtu: 185)
+		let chunks = try ChunkedTransfer.chunks(of: payload, mtu: 185)
 		let reassembler = ChunkedTransfer.Reassembler()
 		let result = try reassembler.ingest(decryptedFrame: chunks[0])
 		guard case .complete = result else {

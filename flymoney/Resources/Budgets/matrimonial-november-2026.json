@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "currencyCode": "PYG",
+  "month": {
+    "year": 2026,
+    "month": 11
+  },
+  "entries": [
+    {
+      "id": "af16e681-ec7c-5f7e-a47f-52751004e0e8",
+      "name": "Cuota auto",
+      "iara": 1714982,
+      "javier": null
+    },
+    {
+      "id": "4d7a268e-06d3-55e7-9277-0132eeabac7f",
+      "name": "Seguro auto",
+      "iara": 269500,
+      "javier": null
+    },
+    {
+      "id": "7ad6ba26-3216-5c4d-9a48-6790fdd0100c",
+      "name": "Seguro médico",
+      "iara": 280000,
+      "javier": null
+    },
+    {
+      "id": "a66f838e-3723-5a89-b989-d9f3848825d5",
+      "name": "Contadora",
+      "iara": null,
+      "javier": 250000
+    },
+    {
+      "id": "7c9d8fa3-3b83-5050-8155-dbd9e2d79818",
+      "name": "Lote Altos",
+      "iara": 380000,
+      "javier": 380000
+    },
+    {
+      "id": "08ec264a-eb10-509a-a6ba-4d6d78121684",
+      "name": "Combustible",
+      "iara": 400000,
+      "javier": 600000
+    },
+    {
+      "id": "0e1bba72-e526-5eff-a5ce-9d0616d44581",
+      "name": "Comidas (trabajo)",
+      "iara": 100000,
+      "javier": null
+    },
+    {
+      "id": "5fe9e6f2-c0a7-5621-9385-1530197bb739",
+      "name": "Café (trabajo)",
+      "iara": 168000,
+      "javier": null
+    },
+    {
+      "id": "b92a63e5-acb6-5039-b046-fb3a47a437c7",
+      "name": "Pospago (trabajo)",
+      "iara": 20000,
+      "javier": null
+    },
+    {
+      "id": "ac664b87-b739-5cbe-9305-d09b03c95ead",
+      "name": "Cuota auto papá",
+      "iara": 575000,
+      "javier": null
+    },
+    {
+      "id": "e202e932-edd9-51eb-9205-02216b6a01fb",
+      "name": "Café",
+      "iara": null,
+      "javier": 270000
+    },
+    {
+      "id": "3d152808-6b80-5386-8caa-080b21e567d7",
+      "name": "Salidas",
+      "iara": 460000,
+      "javier": 400000
+    },
+    {
+      "id": "fb1d2752-32d9-5beb-b65a-0acfbd27c901",
+      "name": "Cita",
+      "iara": null,
+      "javier": 550000
+    },
+    {
+      "id": "3d4db38f-6d52-568d-ab29-afdeedf7238e",
+      "name": "Extraordinario",
+      "iara": null,
+      "javier": 4500000
+    },
+    {
+      "id": "ce50ef78-842d-5c94-8bdb-c634176f8581",
+      "name": "Cama",
+      "iara": null,
+      "javier": 1039095
+    },
+    {
+      "id": "593e62ca-4f2f-56df-b8a8-37db5a0e3ca6",
+      "name": "Electrodomésticos",
+      "iara": null,
+      "javier": 369512
+    },
+    {
+      "id": "3fbe7c12-b65a-5b16-a84e-59d1ab4ae75e",
+      "name": "Comer de afuera",
+      "iara": null,
+      "javier": 450000
+    },
+    {
+      "id": "adf46cc8-cabf-5e79-ae70-7b3bf988d5f3",
+      "name": "Derlis",
+      "iara": null,
+      "javier": 300000
+    },
+    {
+      "id": "19695ee8-c482-5804-a7bc-5f4440ae9574",
+      "name": "Internet + plan datos",
+      "iara": null,
+      "javier": 360000
+    },
+    {
+      "id": "0ac3e1ed-5773-50b1-b1e6-79132881ae24",
+      "name": "Gimnasio",
+      "iara": 250000,
+      "javier": 250000
+    },
+    {
+      "id": "a3419533-8fba-53fa-b7b7-8c263c45a6f4",
+      "name": "Supermercado",
+      "iara": null,
+      "javier": 2500000
+    },
+    {
+      "id": "613e9403-da10-5974-8d97-1ed11e964666",
+      "name": "Farmacia",
+      "iara": null,
+      "javier": 500000
+    },
+    {
+      "id": "7e551d75-f4db-556d-b1bd-af6194796c4b",
+      "name": "Expensas",
+      "iara": null,
+      "javier": 1213500
+    },
+    {
+      "id": "0876a67a-efcb-543d-a7f6-835be2a2c1db",
+      "name": "Ahorro",
+      "iara": 1000000,
+      "javier": 3000000
+    },
+    {
+      "id": "027488eb-debd-5607-bcc8-4f13740b7cb2",
+      "name": "Préstamo",
+      "iara": null,
+      "javier": 5000000
+    }
+  ],
+  "flow": "expense"
+}

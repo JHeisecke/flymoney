@@ -7,12 +7,15 @@
 
 import Foundation
 import Testing
+import SwiftData
 @testable import flymoney
 
 final class FakeSharingTransport: SharingTransport, @unchecked Sendable {
 	var nextEvents: [TransferEvent] = []
 	var sentPayload: SharePayload?
 	var receiveCalled = false
+	var cancelCalled = false
+	@MainActor func cancel() { cancelCalled = true }
 
 	func send(_ payload: SharePayload) -> AsyncStream<TransferEvent> {
 		sentPayload = payload
@@ -50,7 +53,8 @@ struct SharingViewModelTests {
 		transport: FakeSharingTransport,
 		expenses: InMemoryExpenseRepository = InMemoryExpenseRepository(),
 		titles: InMemoryExpenseTitleRepository = InMemoryExpenseTitleRepository(),
-		limits: InMemoryTitleLimitRepository = InMemoryTitleLimitRepository()
+		limits: InMemoryTitleLimitRepository = InMemoryTitleLimitRepository(),
+        budgets: (any BudgetUseCases)? = nil
 	) -> SharingViewModel {
 		SharingViewModel(
 			role: role,
@@ -62,7 +66,15 @@ struct SharingViewModelTests {
 			upsertTitle: UpsertExpenseTitleUseCaseImpl(titles: titles),
 			setTitleLimit: SetTitleLimitUseCaseImpl(limits: limits),
 			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: limits),
-			transport: transport)
+			transport: transport, budgetUseCases: budgets)
+	}
+
+	@Test("Unexpected stream completion fails instead of leaving a spinner", arguments: [true, false])
+	func unexpectedCompletion(sending: Bool) async {
+		let transport = FakeSharingTransport()
+		let vm = makeVM(role: sending ? .send(month: CalendarMonth(year: 2026, month: 11)) : .receive, transport: transport)
+		await vm.start()
+		if case .failed = vm.phase {} else { Issue.record("Expected explicit failure") }
 	}
 
 	@Test("sender happy path event trail")
@@ -128,37 +140,27 @@ struct SharingViewModelTests {
 		#expect(vm.phase == .idle)
 	}
 
-	@Test("saveToMyExpenses keepSeparate writes the shared month's limit row")
-	func saveKeepSeparateWritesLimitRow() async throws {
-		let transport = FakeSharingTransport()
-		let expenses = InMemoryExpenseRepository()
-		let titles = InMemoryExpenseTitleRepository()
-		let limits = InMemoryTitleLimitRepository()
-		let month = CalendarMonth(year: 2025, month: 6)
-		let dtoTitleID = UUID()
-		let payload = SharePayload(
-			version: 1,
-			currencyCode: "USD",
-			month: month,
-			titles: [SharePayload.TitleDTO(id: dtoTitleID, name: "Coffee", limitMinorUnits: 5000)],
-			expenses: [SharePayload.ExpenseDTO(id: UUID(), titleID: dtoTitleID, amountMinorUnits: 100, date: Date(timeIntervalSince1970: 1748736000))]
-		)
-		transport.nextEvents = [.received(payload)]
-		let vm = makeVM(role: .receive, transport: transport, expenses: expenses, titles: titles, limits: limits)
 
-		await vm.start()
-		guard case .awaitingMerge = vm.phase else {
-			#expect(Bool(false))
-			return
-		}
-		await vm.saveToMyExpenses()
-
-		#expect(vm.phase == .done)
-		let savedTitle = try await titles.title(named: "Coffee")
-		let savedTitleID = try #require(savedTitle?.id)
-		let resolved = try await limits.limit(forTitleID: savedTitleID, monthKey: month.key)
-		#expect(resolved?.minorUnits == 5000)
-	}
+    @Test("Saving a reviewed share uses the atomic budget writer")
+    func saveKeepSeparateWritesLimitRow() async throws {
+        let transport = FakeSharingTransport()
+        let container = try SwiftDataStack.makeInMemoryContainer()
+        let repo = SwiftDataBudgetRepository(modelContainer: container, currencyCode: "USD")
+        let budgets = BudgetUseCasesImpl(repository: repo, templates: BundledBudgetTemplateRepository())
+        let month = CalendarMonth(year: 2025, month: 6)
+        let id = UUID()
+        let payload = SharePayload(version: 1, currencyCode: "USD", month: month,
+            titles: [.init(id: id, name: "Coffee", limitMinorUnits: 5000)], expenses: [])
+        transport.nextEvents = [.received(payload)]
+        let vm = makeVM(role: .receive, transport: transport, budgets: budgets)
+        await vm.start()
+        #expect(try ModelContext(container).fetchCount(FetchDescriptor<ExpenseTitleModel>()) == 0)
+        await vm.saveToMyExpenses()
+        #expect(vm.phase == .done)
+        let stored = try ModelContext(container).fetch(FetchDescriptor<TitleLimitModel>())
+        #expect(stored.first?.limitMinorUnits == 5000)
+        #expect(stored.first?.effectiveMonthKey == month.key)
+    }
 
 	@Test("export carries the shared month's effective limit")
 	func exportCarriesSharedMonthLimit() async throws {

@@ -35,17 +35,12 @@ struct DateChipView: View {
 				}
 			}
 			.buttonStyle(.hapticPlain)
-			if Calendar.current.isDateInToday(date) {
-				Text(String(localized: "Tap to change date"))
-					.font(Theme.Typography.body13)
-					.foregroundStyle(Theme.Colors.textPlaceholder)
-			}
 		}
 		.popover(isPresented: $isPickerPresented, attachmentAnchor: .point(.bottom)) {
             DatePicker(
                 String(localized: "Date"),
                 selection: $date,
-                in: ...Date.now,
+                in: ...Date.distantFuture,
                 displayedComponents: .date
             )
             .datePickerStyle(.graphical)

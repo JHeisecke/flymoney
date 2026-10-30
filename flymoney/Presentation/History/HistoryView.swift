@@ -14,7 +14,7 @@ struct HistoryView: View {
 	let assembly: AppAssembly
 
 	init(viewModel: HistoryViewModel, assembly: AppAssembly) {
-        self.viewModel = viewModel
+		self.viewModel = viewModel
 		self.assembly = assembly
 	}
 
@@ -29,8 +29,8 @@ struct HistoryView: View {
 				onPrevious: { viewModel.previousMonth() },
 				onNext: { viewModel.nextMonth() }
 			)
-				.padding(.horizontal, Theme.Spacing.xxl)
-				.padding(.top, Theme.Spacing.md)
+			.padding(.horizontal, Theme.Spacing.xxl)
+			.padding(.top, Theme.Spacing.md)
 			HistoryHeroView(total: viewModel.totalSpent, titleCount: viewModel.titleCount)
 				.padding(.horizontal, Theme.Spacing.xxl)
 				.padding(.top, Theme.Spacing.s14)
@@ -45,11 +45,13 @@ struct HistoryView: View {
 		.onChange(of: viewModel.loadError) { _, error in
 			if error != nil { haptics.error() }
 		}
-		.alert("Error",
-			   isPresented: errorAlertBinding,
-			   actions: { Button(String(localized: "OK"), role: .cancel) {} },
-			   message: { Text(viewModel.loadError ?? "") })
-		.sheet(item: $sharingRole) { role in
+		.alert(
+			"Error",
+			isPresented: errorAlertBinding,
+			actions: { Button(String(localized: "OK"), role: .cancel) {} },
+			message: { Text(viewModel.loadError ?? "") }
+		)
+		.sheet(item: $sharingRole, onDismiss: { Task { await viewModel.load() } }) { role in
 			SharingSheetHost(assembly: assembly, role: role)
 				.presentationDetents([.large])
 		}
@@ -58,8 +60,9 @@ struct HistoryView: View {
 				model: model,
 				assembly: assembly,
 				onSave: { await viewModel.save(model) },
-				onCancel: { viewModel.editor = nil })
-				.presentationDragIndicator(.visible)
+				onCancel: { viewModel.editor = nil }
+			)
+			.presentationDragIndicator(.visible)
 		}
 	}
 
@@ -70,17 +73,16 @@ struct HistoryView: View {
 				.tracking(-0.5)
 				.foregroundStyle(Theme.Colors.ink)
 			Spacer()
-//			Menu {
-//				Button(String(localized: "Share this month"), systemImage: "qrcode") {
-//					sharingRole = .send(month: viewModel.month)
-//				}
-//				Button(String(localized: "Receive from a friend"), systemImage: "qrcode.viewfinder") {
-//					sharingRole = .receive
-//				}
-//			} label: {
-//				PillButton(title: "Share month", systemImage: nil, style: .outline) {}
-//					.allowsHitTesting(false)
-//			}
+			Menu {
+				Button("Share this month", systemImage: "qrcode") {
+					sharingRole = .send(month: viewModel.month)
+				}
+				Button("Receive budget", systemImage: "qrcode.viewfinder") { sharingRole = .receive }
+			} label: {
+				Label("Share month", systemImage: "square.and.arrow.up")
+			}
+			.labelStyle(.iconOnly)
+
 		}
 	}
 
@@ -98,7 +100,9 @@ struct HistoryView: View {
 								ExpenseRowView(row: row)
 							}
 							.buttonStyle(.hapticPlain)
-							.accessibilityHint(Text(String(localized: "Edits this expense.")))
+							.accessibilityHint(
+								Text(String(localized: "Edits this expense."))
+							)
 							.listRowInsets(EdgeInsets())
 							.listRowSeparator(.visible, edges: .bottom)
 							.listRowSeparatorTint(Theme.Colors.borderDivider)

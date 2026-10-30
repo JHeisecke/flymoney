@@ -5,10 +5,10 @@
 //  Created by Javier Heisecke on 2026-06-26.
 //
 
-import SwiftUI
-import SwiftData
 import StatementParsing
 import StatementParsingPDFKit
+import SwiftData
+import SwiftUI
 
 @MainActor
 final class AppAssembly {
@@ -18,6 +18,7 @@ final class AppAssembly {
 	private let titleRepo: ExpenseTitleRepository
 	private let titleLimitRepo: TitleLimitRepository
 	private let titleAliasRepo: TitleAliasRepository
+	private let budgetUseCases: any BudgetUseCases
 	private let statementImportWriter: StatementImportWriter
 
 	private let statementExtractor: StatementTextExtracting
@@ -41,6 +42,10 @@ final class AppAssembly {
 		)
 		titleAliasRepo = SwiftDataTitleAliasRepository(modelContainer: container)
 		statementImportWriter = SwiftDataStatementImportWriter(modelContainer: container)
+		budgetUseCases = BudgetUseCasesImpl(
+			repository: SwiftDataBudgetRepository(
+				modelContainer: container, currencyCode: provider.defaultCurrencyCode),
+			templates: BundledBudgetTemplateRepository())
 
 		statementExtractor = PDFKitStatementTextExtractor()
 		statementKindDetector = DefaultStatementKindDetector()
@@ -78,7 +83,9 @@ final class AppAssembly {
 	}
 
 	func makeExportMonthUseCase() -> any ExportMonthUseCase {
-		ExportMonthUseCaseImpl(expenses: expenseRepo, titles: titleRepo, limits: titleLimitRepo, currencyProvider: currencyProvider)
+		ExportMonthUseCaseImpl(
+			expenses: expenseRepo, titles: titleRepo, limits: titleLimitRepo,
+			currencyProvider: currencyProvider)
 	}
 
 	func makeFetchExpenseTitlesUseCase() -> any FetchExpenseTitlesUseCase {
@@ -86,7 +93,8 @@ final class AppAssembly {
 	}
 
 	func makeDeleteExpenseTitleUseCase() -> any DeleteExpenseTitleUseCase {
-		DeleteExpenseTitleUseCaseImpl(titles: titleRepo, expenses: expenseRepo, limits: titleLimitRepo, aliases: titleAliasRepo)
+		DeleteExpenseTitleUseCaseImpl(
+			titles: titleRepo, expenses: expenseRepo, limits: titleLimitRepo, aliases: titleAliasRepo)
 	}
 
 	func makeSetTitleLimitUseCase() -> any SetTitleLimitUseCase {
@@ -183,6 +191,10 @@ final class AppAssembly {
 		BLEQRSharingTransport()
 	}
 
+	func makeBudgetTemplateViewModel() -> BudgetTemplateViewModel {
+		BudgetTemplateViewModel(useCases: budgetUseCases)
+	}
+
 	func makeSharingViewModel(role: SharingRole) -> SharingViewModel {
 		let transport = makeSharingTransport()
 		return SharingViewModel(
@@ -195,8 +207,7 @@ final class AppAssembly {
 			upsertTitle: makeUpsertExpenseTitleUseCase(),
 			setTitleLimit: makeSetTitleLimitUseCase(),
 			fetchLimits: makeFetchEffectiveLimitsUseCase(),
-			transport: transport,
-			bleTransport: transport)
+			transport: transport, budgetUseCases: budgetUseCases)
 	}
 
 	func makeRootView() -> some View {

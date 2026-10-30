@@ -8,6 +8,14 @@
 import Foundation
 
 protocol SharingTransport: Sendable {
-	func send(_ payload: SharePayload) -> AsyncStream<TransferEvent>
-	func receive() -> AsyncStream<TransferEvent>
+	@MainActor func send(_ payload: SharePayload) -> AsyncStream<TransferEvent>
+	@MainActor func receive() -> AsyncStream<TransferEvent>
+	@MainActor func cancel()
+	@MainActor var qrText: String? { get }
+	@MainActor func provideScannedQR(_ text: String)
+}
+
+extension SharingTransport {
+	@MainActor var qrText: String? { nil }
+	@MainActor func provideScannedQR(_ text: String) {}
 }

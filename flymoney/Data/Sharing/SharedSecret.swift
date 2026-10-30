@@ -14,24 +14,24 @@ struct SharedSecret: Sendable {
 
 	static func sender(privateKey: Curve25519.KeyAgreement.PrivateKey,
 					   receiverPublicKey: Curve25519.KeyAgreement.PublicKey,
-					   sessionID: Data) throws -> SharedSecret {
+					   sessionID: Data, purpose: String = "data") throws -> SharedSecret {
 		let raw = try privateKey.sharedSecretFromKeyAgreement(with: receiverPublicKey)
 		let key = raw.hkdfDerivedSymmetricKey(
 			using: SHA256.self,
 			salt: sessionID,
-			sharedInfo: Data("flymoney/v1".utf8),
+			sharedInfo: Data("flymoney/v2/\(purpose)".utf8),
 			outputByteCount: 32)
 		return SharedSecret(key: key, sessionID: sessionID)
 	}
 
 	static func receiver(privateKey: Curve25519.KeyAgreement.PrivateKey,
 						 senderPublicKey: Curve25519.KeyAgreement.PublicKey,
-						 sessionID: Data) throws -> SharedSecret {
+						 sessionID: Data, purpose: String = "data") throws -> SharedSecret {
 		let raw = try privateKey.sharedSecretFromKeyAgreement(with: senderPublicKey)
 		let key = raw.hkdfDerivedSymmetricKey(
 			using: SHA256.self,
 			salt: sessionID,
-			sharedInfo: Data("flymoney/v1".utf8),
+			sharedInfo: Data("flymoney/v2/\(purpose)".utf8),
 			outputByteCount: 32)
 		return SharedSecret(key: key, sessionID: sessionID)
 	}

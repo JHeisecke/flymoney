@@ -87,7 +87,10 @@ enum ExpenseSchemaV2: VersionedSchema {
 		var createdAt: Date
 		var lastUsedAt: Date?
 
-		init(id: UUID, name: String, limitMinorUnits: Int?, currencyCode: String, createdAt: Date, lastUsedAt: Date? = nil) {
+		init(
+			id: UUID, name: String, limitMinorUnits: Int?, currencyCode: String, createdAt: Date,
+			lastUsedAt: Date? = nil
+		) {
 			self.id = id
 			self.name = name
 			self.limitMinorUnits = limitMinorUnits
@@ -113,7 +116,10 @@ enum ExpenseSchemaV3: VersionedSchema {
 		var date: Date
 		var detail: String?
 
-		init(id: UUID, amountMinorUnits: Int, currencyCode: String, titleID: UUID, date: Date, detail: String? = nil) {
+		init(
+			id: UUID, amountMinorUnits: Int, currencyCode: String, titleID: UUID, date: Date,
+			detail: String? = nil
+		) {
 			self.id = id
 			self.amountMinorUnits = amountMinorUnits
 			self.currencyCode = currencyCode
@@ -132,7 +138,10 @@ enum ExpenseSchemaV3: VersionedSchema {
 		var createdAt: Date
 		var lastUsedAt: Date?
 
-		init(id: UUID, name: String, limitMinorUnits: Int?, currencyCode: String, createdAt: Date, lastUsedAt: Date? = nil) {
+		init(
+			id: UUID, name: String, limitMinorUnits: Int?, currencyCode: String, createdAt: Date,
+			lastUsedAt: Date? = nil
+		) {
 			self.id = id
 			self.name = name
 			self.limitMinorUnits = limitMinorUnits
@@ -163,7 +172,10 @@ enum ExpenseSchemaV4: VersionedSchema {
 		var date: Date
 		var detail: String?
 
-		init(id: UUID, amountMinorUnits: Int, currencyCode: String, titleID: UUID, date: Date, detail: String? = nil) {
+		init(
+			id: UUID, amountMinorUnits: Int, currencyCode: String, titleID: UUID, date: Date,
+			detail: String? = nil
+		) {
 			self.id = id
 			self.amountMinorUnits = amountMinorUnits
 			self.currencyCode = currencyCode
@@ -182,7 +194,10 @@ enum ExpenseSchemaV4: VersionedSchema {
 		var createdAt: Date
 		var lastUsedAt: Date?
 
-		init(id: UUID, name: String, limitMinorUnits: Int?, currencyCode: String, createdAt: Date, lastUsedAt: Date? = nil) {
+		init(
+			id: UUID, name: String, limitMinorUnits: Int?, currencyCode: String, createdAt: Date,
+			lastUsedAt: Date? = nil
+		) {
 			self.id = id
 			self.name = name
 			self.limitMinorUnits = limitMinorUnits
@@ -213,7 +228,10 @@ enum ExpenseSchemaV5: VersionedSchema {
 		var date: Date
 		var detail: String?
 
-		init(id: UUID, amountMinorUnits: Int, currencyCode: String, titleID: UUID, date: Date, detail: String? = nil) {
+		init(
+			id: UUID, amountMinorUnits: Int, currencyCode: String, titleID: UUID, date: Date,
+			detail: String? = nil
+		) {
 			self.id = id
 			self.amountMinorUnits = amountMinorUnits
 			self.currencyCode = currencyCode
@@ -235,7 +253,28 @@ enum ExpenseSchemaV6: VersionedSchema {
 	}
 }
 
+enum ExpenseSchemaV7: VersionedSchema {
+	static let versionIdentifier = Schema.Version(7, 0, 0)
+	static var models: [any PersistentModel.Type] {
+		[
+			ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self,
+			BudgetPlanModel.self, BudgetCategoryLinkModel.self, BudgetSharingSelectionModel.self,
+		]
+	}
+}
+
+enum ExpenseSchemaV8: VersionedSchema {
+	static let versionIdentifier = Schema.Version(8, 0, 0)
+	static var models: [any PersistentModel.Type] {
+		[
+			ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self,
+			BudgetPlanModel.self, BudgetCategoryLinkModel.self, BudgetSharingSelectionModel.self,
+			BudgetImportReceiptModel.self,
+		]
+	}
+}
+
 enum ModelSchema {
-	static let models: [any PersistentModel.Type] = [ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self]
+	static let models: [any PersistentModel.Type] = ExpenseSchemaV8.models
 	static let schema = Schema(models)
 }

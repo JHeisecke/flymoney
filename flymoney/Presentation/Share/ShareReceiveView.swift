@@ -31,7 +31,7 @@ struct ShareReceiveView: View {
 				VStack(spacing: Theme.Spacing.lg) {
 					ShareSheetHeader(
 						title: "Receive",
-						onCancel: { onDismiss() },
+						onCancel: { viewModel.cancel(); onDismiss() },
 						onDark: true)
 					Spacer()
 					ContentUnavailableView {
@@ -66,14 +66,14 @@ struct ShareReceiveView: View {
 								.foregroundStyle(Color.white)
 								.multilineTextAlignment(.center)
 							Button(String(localized: "Try again")) {
+								viewModel.cancel()
 								hasScanned = false
-								Task { await viewModel.start() }
 							}
 							.buttonStyle(.borderedProminent)
 							.tint(Theme.Colors.accent)
 						}
 					} else if case .receiving = viewModel.phase {
-						ReceiveProgressCard(phase: viewModel.phase, monthName: "June")
+						ReceiveProgressCard(phase: viewModel.phase)
 							.padding(.horizontal, Theme.Spacing.xxl)
 					} else {
 						VStack(spacing: Theme.Spacing.md) {
@@ -108,10 +108,10 @@ struct ShareReceiveView: View {
 
 					QRScannerView(
 						onCode: { code in
+							guard !hasScanned else { return }
 							viewModel.provideScannedQR(code)
 							hasScanned = true
 							AccessibilityNotification.Announcement(String(localized: "Code found")).post()
-							Task { await viewModel.start() }
 						},
 						onError: { _ in })
 						.frame(width: 248, height: 248)
@@ -136,6 +136,9 @@ struct ShareReceiveView: View {
 			if granted {
 				AccessibilityNotification.Announcement(String(localized: "Scanning for share code")).post()
 			}
+		}
+		.task(id: hasScanned) {
+			if hasScanned { await viewModel.start() }
 		}
 		.onChange(of: viewModel.phase) { _, phase in
 			switch phase {

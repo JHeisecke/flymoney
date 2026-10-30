@@ -30,6 +30,36 @@ final class SharingViewModel {
 	private(set) var localTitles: [ExpenseTitle] = []
 	private var localLimits: [UUID: Money] = [:]
 
+	var includesExpenses = true
+	private(set) var exportPreview: SharePayload?
+	private(set) var previewError: String?
+	private var previewID: UUID?
+	var shareMonth: CalendarMonth? {
+		if case .send(let month) = role { return month }
+		return nil
+	}
+	func prepareExportPreview() async {
+		guard let month = shareMonth else { return }
+		let id = UUID()
+		previewID = id
+		exportPreview = nil
+		previewError = nil
+		do {
+			let payload: SharePayload
+			if let budgetUseCases {
+				payload = try await budgetUseCases.preview(
+					month: month, includesExpenses: includesExpenses)
+			} else {
+				payload = try await exportMonth.execute(month)
+			}
+			guard !Task.isCancelled, previewID == id else { return }
+			exportPreview = payload
+		} catch { if !Task.isCancelled, previewID == id { previewError = error.localizedDescription } }
+	}
+	private(set) var budgetReviewModel: BudgetReviewViewModel?
+	private let budgetUseCases: (any BudgetUseCases)?
+	private var runID: UUID?
+
 	private let role: SharingRole
 	private let exportMonth: any ExportMonthUseCase
 	private let importShared: any ImportSharedMonthUseCase
@@ -40,19 +70,20 @@ final class SharingViewModel {
 	private let setTitleLimit: any SetTitleLimitUseCase
 	private let fetchLimits: any FetchEffectiveLimitsUseCase
 	private let sharingTransport: any SharingTransport
-	let bleTransport: BLEQRSharingTransport?
 
-	init(role: SharingRole,
-		 exportMonth: any ExportMonthUseCase,
-		 importShared: any ImportSharedMonthUseCase,
-		 mergeTitles: any MergeTitlesUseCase,
-		 fetchTitles: any FetchExpenseTitlesUseCase,
-		 addExpense: any AddExpenseUseCase,
-		 upsertTitle: any UpsertExpenseTitleUseCase,
-		 setTitleLimit: any SetTitleLimitUseCase,
-		 fetchLimits: any FetchEffectiveLimitsUseCase,
-		 transport: any SharingTransport,
-		 bleTransport: BLEQRSharingTransport? = nil) {
+	init(
+		role: SharingRole,
+		exportMonth: any ExportMonthUseCase,
+		importShared: any ImportSharedMonthUseCase,
+		mergeTitles: any MergeTitlesUseCase,
+		fetchTitles: any FetchExpenseTitlesUseCase,
+		addExpense: any AddExpenseUseCase,
+		upsertTitle: any UpsertExpenseTitleUseCase,
+		setTitleLimit: any SetTitleLimitUseCase,
+		fetchLimits: any FetchEffectiveLimitsUseCase,
+		transport: any SharingTransport, budgetUseCases: (any BudgetUseCases)? = nil
+	) {
+		self.budgetUseCases = budgetUseCases
 		self.role = role
 		self.exportMonth = exportMonth
 		self.importShared = importShared
@@ -63,25 +94,31 @@ final class SharingViewModel {
 		self.setTitleLimit = setTitleLimit
 		self.fetchLimits = fetchLimits
 		self.sharingTransport = transport
-		self.bleTransport = bleTransport
 	}
 
 	func start() async {
+		guard runID == nil, !Task.isCancelled else { return }
+		let id = UUID()
+		runID = id
+		phase = .handshaking
+		defer { if runID == id { runID = nil } }
 		switch role {
 		case .send(let month):
-			await startSend(month: month)
+			await startSend(month: month, id: id)
 		case .receive:
-			await startReceive()
+			await startReceive(id: id)
 		}
 	}
 
 	func cancel() {
-		bleTransport?.cancel()
+		runID = nil
+		qrText = nil
+		sharingTransport.cancel()
 		phase = .idle
 	}
 
 	func provideScannedQR(_ text: String) {
-		bleTransport?.provideScannedQR(text)
+		sharingTransport.provideScannedQR(text)
 	}
 
 	func setResolution(_ id: UUID, _ r: MergeResolution) async {
@@ -90,58 +127,59 @@ final class SharingViewModel {
 	}
 
 	func saveToMyExpenses() async {
-		guard case .awaitingMerge(let imported) = phase else { return }
-		phase = .saving
-		for title in imported.titles {
-			let res = resolutions[title.id] ?? .keepSeparate
-			switch res {
-			case .mergeInto(let localID):
-				guard let local = localTitles.first(where: { $0.id == localID }) else { continue }
-				for expense in imported.expenses where expense.titleID == title.id {
-					_ = try? await addExpense.execute(amount: expense.amount, titleName: local.name, date: expense.date, detail: nil)
-				}
-			case .keepSeparate:
-				if let saved = try? await upsertTitle.execute(id: title.id, name: title.name) {
-					let limit = imported.limitsByTitleID[title.id]
-					try? await setTitleLimit.execute(titleID: saved.id, limit: limit, effectiveMonth: imported.month)
-				}
-				for expense in imported.expenses where expense.titleID == title.id {
-					_ = try? await addExpense.execute(amount: expense.amount, titleName: title.name, date: expense.date, detail: nil)
-				}
-			}
+		guard let budgetReviewModel else {
+			phase = .failed(String(localized: "This budget contains invalid or unsupported data."))
+			return
 		}
-		phase = .done
+		await budgetReviewModel.save()
+		if budgetReviewModel.isSaved { phase = .done }
 	}
 
-	private func startSend(month: CalendarMonth) async {
+	private func startSend(month: CalendarMonth, id: UUID) async {
 		do {
-			let payload = try await exportMonth.execute(month)
+			let payload: SharePayload
+			if let budgetUseCases {
+				payload = try await budgetUseCases.export(
+					month: month, includesExpenses: includesExpenses)
+			} else {
+				payload = try await exportMonth.execute(month)
+			}
+			guard runID == id, !Task.isCancelled else { return }
 			let stream = sharingTransport.send(payload)
 			for await event in stream {
+				guard runID == id, !Task.isCancelled else { return }
 				switch event {
 				case .handshaking:
 					phase = .handshaking
-					qrText = bleTransport?.qrText
+					qrText = sharingTransport.qrText
 				case .transferring(let p):
 					phase = .sending(p)
 				case .completed:
+					qrText = nil
 					phase = .done
 					return
 				case .received:
 					break
 				case .failed(let reason):
+					qrText = nil
 					phase = .failed(reason)
 					return
 				}
 			}
+			if runID == id {
+				phase = .failed(
+					String(localized: "Reception could not be confirmed. Reconnect and try again."))
+			}
 		} catch {
+			guard runID == id else { return }
 			phase = .failed(error.localizedDescription)
 		}
 	}
 
-	private func startReceive() async {
+	private func startReceive(id: UUID) async {
 		let stream = sharingTransport.receive()
 		for await event in stream {
+			guard runID == id, !Task.isCancelled else { return }
 			switch event {
 			case .handshaking:
 				phase = .handshaking
@@ -150,10 +188,22 @@ final class SharingViewModel {
 			case .completed:
 				break
 			case .received(let payload):
+				if let budgetUseCases {
+					do {
+						let review = try await budgetUseCases.prepareReceived(payload)
+						guard runID == id, !Task.isCancelled else { return }
+						budgetReviewModel = BudgetReviewViewModel(
+							review: review, useCases: budgetUseCases)
+						phase = .awaitingMerge(try importShared.execute(payload))
+					} catch { phase = .failed(error.localizedDescription) }
+					return
+				}
 				if let imported = try? importShared.execute(payload) {
 					await loadLocalTitles()
 					await loadLocalLimits(for: imported.month)
-					fuzzyMatches = MergeMatcher.findMatches(imported: imported.titles, local: localTitles)
+					guard runID == id, !Task.isCancelled else { return }
+					fuzzyMatches = MergeMatcher.findMatches(
+						imported: imported.titles, local: localTitles)
 					for (id, matches) in fuzzyMatches {
 						if let strong = matches.first(where: { $0.isStrong }) {
 							resolutions[id] = .mergeInto(localTitleID: strong.titleID)
@@ -166,9 +216,13 @@ final class SharingViewModel {
 				}
 				return
 			case .failed(let reason):
+				qrText = nil
 				phase = .failed(reason)
 				return
 			}
+		}
+		if runID == id {
+			phase = .failed(String(localized: "Reception could not be confirmed. Reconnect and try again."))
 		}
 	}
 
@@ -186,6 +240,7 @@ final class SharingViewModel {
 	}
 
 	private func remerge(_ imported: ImportedMonth) throws {
-		combinedSummary = try mergeTitles.execute(local: localTitles, localLimits: localLimits, imported: imported, resolutions: resolutions)
+		combinedSummary = try mergeTitles.execute(
+			local: localTitles, localLimits: localLimits, imported: imported, resolutions: resolutions)
 	}
 }

@@ -14,12 +14,13 @@ struct SharePayloadCodecTests {
 
 	@Test("JSON round-trip")
 	func roundTrip() throws {
+        let titleID = UUID()
 		let payload = SharePayload(
 			version: 1,
 			currencyCode: "USD",
 			month: CalendarMonth(year: 2025, month: 6),
-			titles: [SharePayload.TitleDTO(id: UUID(), name: "Coffee", limitMinorUnits: 500)],
-			expenses: [SharePayload.ExpenseDTO(id: UUID(), titleID: UUID(), amountMinorUnits: 100, date: Date(timeIntervalSince1970: 1748736000))]
+			titles: [SharePayload.TitleDTO(id: titleID, name: "Coffee", limitMinorUnits: 500)],
+			expenses: [SharePayload.ExpenseDTO(id: UUID(), titleID: titleID, amountMinorUnits: 100, date: Date(timeIntervalSince1970: 1748736000))]
 		)
 		let data = try SharePayloadCodec.encode(payload)
 		let decoded = try SharePayloadCodec.decode(data)
@@ -28,7 +29,7 @@ struct SharePayloadCodecTests {
 
 	@Test("version mismatch throws", .tags(.persistence))
 	func versionMismatch() throws {
-		var payload = SharePayload(
+		let payload = SharePayload(
 			version: 99,
 			currencyCode: "USD",
 			month: CalendarMonth(year: 2025, month: 6),

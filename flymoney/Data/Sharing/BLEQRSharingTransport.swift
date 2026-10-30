@@ -2,269 +2,155 @@
 //  BLEQRSharingTransport.swift
 //  flymoney
 //
-//  Created by Javier Heisecke on 2026-06-27.
+//  Created by Javier Heisecke on 2026-10-30.
 //
 
-import CryptoKit
 import Foundation
 
 @MainActor
-final class BLEQRSharingTransport {
+final class BLEQRSharingTransport: SharingTransport {
 	private(set) var qrText: String?
-	private var qrPayload: QRPayload?
-	private var senderKey: Curve25519.KeyAgreement.PrivateKey?
-	private var receiverKey: Curve25519.KeyAgreement.PrivateKey?
-	private var secret: SharedSecret?
-	private var peripheral: BLEPeripheralService?
-	private var central: BLECentralService?
-	private var scanResult: String?
-	private var scanContinuation: CheckedContinuation<String, Never>?
-	private var isCancelled = false
-}
+	private let makePeripheral: @MainActor () -> any BLERadio
+	private let makeCentral: @MainActor () -> any BLERadio
+	private var generation: UUID?
+	private var task: Task<Void, Never>?
+	private var timer: Task<Void, Never>?
+	private var radio: (any BLERadio)?
+	private var session: BLETransferSession?
+	private var output: AsyncStream<TransferEvent>.Continuation?
+	private var scanContinuation: CheckedContinuation<String?, Never>?
+	private var pendingScan: String?
+	private var waitingForScan = false
 
-extension BLEQRSharingTransport: SharingTransport {
-	nonisolated func send(_ payload: SharePayload) -> AsyncStream<TransferEvent> {
-		AsyncStream { cont in
-			Task { @MainActor in
-				await sendImpl(payload, continuation: cont)
-			}
+	init(
+		makePeripheral: @escaping @MainActor () -> any BLERadio = { BLEPeripheralService() },
+		makeCentral: @escaping @MainActor () -> any BLERadio = { BLECentralService() }
+	) {
+		self.makePeripheral = makePeripheral
+		self.makeCentral = makeCentral
+	}
+	func send(_ payload: SharePayload) -> AsyncStream<TransferEvent> { stream(payload) }
+	func receive() -> AsyncStream<TransferEvent> { stream(nil) }
+	private func stream(_ payload: SharePayload?) -> AsyncStream<TransferEvent> {
+		let pair = AsyncStream<TransferEvent>.makeStream()
+		let id = UUID()
+		pair.continuation.onTermination = { [weak self] _ in
+			Task { @MainActor in self?.end(id: id) }
 		}
-	}
-
-	nonisolated func receive() -> AsyncStream<TransferEvent> {
-		AsyncStream { cont in
-			Task { @MainActor in
-				await receiveImpl(continuation: cont)
-			}
+		if Task.isCancelled {
+			pair.continuation.finish()
+		} else {
+			begin(payload, id: id, output: pair.continuation)
 		}
+		return pair.stream
 	}
-
-	func provideScannedQR(_ text: String) {
-		scanResult = text
-		scanContinuation?.resume(returning: text)
-		scanContinuation = nil
-	}
-
-	func cancel() {
-		isCancelled = true
-		peripheral?.stop()
-		central?.stop()
-		senderKey = nil
-		receiverKey = nil
-		secret = nil
-		scanContinuation?.resume(returning: "")
-		scanContinuation = nil
-	}
-
-	private func sendImpl(_ payload: SharePayload, continuation: AsyncStream<TransferEvent>.Continuation) async {
-		do {
-			let key = Curve25519.KeyAgreement.PrivateKey()
-			senderKey = key
-			let sid = Data((0..<16).map { _ in UInt8.random(in: 0...255) })
-			let svc = UUID().uuidString
-			let qr = QRPayload(
-				v: 1,
-				sid: sid.base64URLEncodedString(),
-				svc: svc,
-				pk: key.publicKey.rawRepresentation.base64URLEncodedString())
-			qrPayload = qr
-			qrText = try QRHandshake.encode(qr)
-			continuation.yield(.handshaking)
-
-			let p = BLEPeripheralService()
-			self.peripheral = p
-			let events = p.events()
-			p.start(serviceUUID: svc)
-
-			var sealedFrames: [Data] = []
-			var totalChunks: UInt16 = 0
-			var retryBudget = RetryBudget()
-			let watchdog = TransferWatchdog()
-			var watchdogTask: Task<Void, Never>?
-			defer { watchdogTask?.cancel() }
-			watchdogTask = Task {
-				await watchdog.run {
-					p.stop()
-					self.isCancelled = true
-					continuation.yield(.failed(reason: "Handshake timed out"))
-				}
-			}
-
-			for await event in events {
-				if isCancelled { continuation.yield(.failed(reason: "Cancelled")); return }
-				watchdog.touch()
-				switch event {
-				case .ready:
-					break
-				case .subscribed:
-					continuation.yield(.transferring(progress: 0))
-					watchdog.setPhase(.transfer)
-				case .controlWrite(let data):
-					guard let key = senderKey else { continue }
-					if let tag = ControlTag(rawValue: data.first ?? 0xFF), tag == .retry, !sealedFrames.isEmpty {
-						retryBudget.recordAttempt()
-						if retryBudget.isExhausted {
-							continuation.yield(.failed(reason: "Transfer stalled"))
-							return
-						}
-						let payload = data.dropFirst()
-						for i in stride(from: 0, to: payload.count, by: 2) where i + 1 < payload.count {
-							let seq = Int(UInt16(payload[i]) << 8 | UInt16(payload[i + 1]))
-							if seq < sealedFrames.count {
-								p.notifyData(sealedFrames[seq])
-							}
-						}
+	private func begin(_ payload: SharePayload?, id: UUID, output: AsyncStream<TransferEvent>.Continuation) {
+		guard generation == nil else {
+			output.yield(.failed(reason: BLETransferError.busy.localizedDescription))
+			output.finish()
+			return
+		}
+		generation = id
+		self.output = output
+		qrText = nil
+		task = Task { [weak self] in
+			guard let self, generation == id, !Task.isCancelled else { return }
+			do {
+				var qr: QRPayload?
+				if payload == nil {
+					waitingForScan = true
+					let text: String?
+					if let pendingScan {
+						text = pendingScan
+						self.pendingScan = nil
 					} else {
-						let pubkeyBytes = data.dropFirst()
-						guard let pubkey = try? Curve25519.KeyAgreement.PublicKey(rawRepresentation: pubkeyBytes) else { continue }
-						let s = try SharedSecret.sender(privateKey: key, receiverPublicKey: pubkey, sessionID: sid)
-						secret = s
-						let json = try SharePayloadCodec.encode(payload)
-						let frames = ChunkedTransfer.chunks(of: json, mtu: 185)
-						totalChunks = UInt16(frames.count)
-						sealedFrames = try frames.enumerated().map { try s.seal($1, seq: UInt16($0)) }
-						for (i, frame) in sealedFrames.enumerated() {
-							if isCancelled { continuation.yield(.failed(reason: "Cancelled")); return }
-							p.notifyData(frame)
-							continuation.yield(.transferring(progress: Double(i + 1) / Double(totalChunks)))
-						}
-						p.notifyStatus(Data([StatusCode.complete]))
+						text = await withCheckedContinuation { scanContinuation = $0 }
 					}
-				case .unsubscribed:
-					continuation.yield(.failed(reason: "Receiver disconnected"))
-					return
-				case .error(let msg):
-					continuation.yield(.failed(reason: msg))
-					return
+					guard generation == id, let text, !Task.isCancelled else { return }
+					waitingForScan = false
+					do { qr = try QRHandshake.decode(text) } catch QRError.unsupportedVersion {
+						throw BLETransferError.incompatibleVersion
+					} catch { throw BLETransferError.invalidMessage }
 				}
-			}
-		} catch {
-			continuation.yield(.failed(reason: error.localizedDescription))
-		}
-	}
-
-	private func receiveImpl(continuation: AsyncStream<TransferEvent>.Continuation) async {
-		let qrText = await waitForScan()
-		guard !qrText.isEmpty else {
-			continuation.yield(.failed(reason: "Cancelled")); return
-		}
-		do {
-			let qr = try QRHandshake.decode(qrText)
-			let sid = Data(base64URLEncoded: qr.sid) ?? Data()
-			guard let rawPk = Data(base64URLEncoded: qr.pk),
-				  let senderPubkey = try? Curve25519.KeyAgreement.PublicKey(rawRepresentation: rawPk) else {
-				continuation.yield(.failed(reason: "Invalid QR")); return
-			}
-			let key = Curve25519.KeyAgreement.PrivateKey()
-			receiverKey = key
-			let s = try SharedSecret.receiver(privateKey: key, senderPublicKey: senderPubkey, sessionID: sid)
-			secret = s
-			continuation.yield(.handshaking)
-
-			let c = BLECentralService()
-			self.central = c
-			let events = c.events()
-			c.start(serviceUUID: qr.svc)
-
-			let reassembler = ChunkedTransfer.Reassembler()
-			var retryBudget = RetryBudget()
-			var previousReceivedCount = 0
-			let watchdog = TransferWatchdog()
-			var watchdogTask: Task<Void, Never>?
-			defer { watchdogTask?.cancel() }
-			watchdogTask = Task {
-				await watchdog.run {
-					c.stop()
-					self.isCancelled = true
-					continuation.yield(.failed(reason: "Transfer timed out"))
-				}
-			}
-
-			for await event in events {
-				if isCancelled { continuation.yield(.failed(reason: "Cancelled")); return }
-				watchdog.touch()
-				switch event {
-				case .connected:
-					continuation.yield(.handshaking)
-				case .characteristicsReady(controlReady: _, dataReady: _, statusReady: _, mtu: _):
-					var msg = Data([0])
-					msg.append(key.publicKey.rawRepresentation)
-					c.writeControl(msg)
-				case .data(let frame):
-					watchdog.setPhase(.transfer)
-					guard frame.count >= 5 else {
-						continuation.yield(.failed(reason: "Bad frame")); return
-					}
-					let bytes = [UInt8](frame)
-					let seq = (UInt16(bytes[0]) << 8) | UInt16(bytes[1])
-					do {
-						let decrypted = try s.open(frame, seq: seq)
-						switch try reassembler.ingest(decryptedFrame: decrypted) {
-						case .partial(let p):
-							continuation.yield(.transferring(progress: p))
-							let currentCount = reassembler.receivedCount
-							if currentCount > previousReceivedCount {
-								retryBudget.reset()
-								previousReceivedCount = currentCount
-							}
-						case .complete(let data):
-							let payload = try SharePayloadCodec.decode(data)
-							continuation.yield(.received(payload))
-							continuation.yield(.completed)
-							c.stop()
-							return
-						}
-					} catch {
-						let missing = reassembler.missingSeqs()
-						if !missing.isEmpty {
-							retryBudget.recordAttempt()
-							if retryBudget.isExhausted {
-								continuation.yield(.failed(reason: "Transfer stalled"))
-								return
-							}
-							var retry = Data([1])
-							for seq in missing {
-								retry.append(UInt8(seq >> 8))
-								retry.append(UInt8(seq & 0xFF))
-							}
-							c.writeControl(retry)
-						} else {
-							continuation.yield(.failed(reason: error.localizedDescription))
+				guard generation == id, !Task.isCancelled else { return }
+				let radio = payload == nil ? makeCentral() : makePeripheral()
+				self.radio = radio
+				let events = radio.events()
+				let session = try BLETransferSession(
+					payload: payload, qr: qr,
+					send: { data, channel in
+						try radio.send(data, on: channel)
+					},
+					emit: { [weak self] event in
+						guard self?.generation == id else { return }
+						self?.output?.yield(event)
+					})
+				self.session = session
+				if payload != nil { qrText = try QRHandshake.encode(session.qr) }
+				output.yield(.handshaking)
+				radio.start(serviceUUID: session.qr.svc)
+				timer = Task { [weak self, weak session] in
+					while !Task.isCancelled {
+						do { try await Task.sleep(for: .milliseconds(250)) } catch { return }
+						guard let self, generation == id, let session else { return }
+						do { try session.tick() } catch {
+							fail(error, id: id)
 							return
 						}
 					}
-				case .status(let data):
-					if data.first == StatusCode.complete {
-						continuation.yield(.completed)
-						c.stop()
+				}
+				for await event in events {
+					guard generation == id, !Task.isCancelled else { return }
+					try session.handle(event)
+					if session.finished {
+						end(id: id)
 						return
 					}
-				case .disconnected(let reason):
-					continuation.yield(.failed(reason: reason ?? "Disconnected"))
-					return
-				case .error(let msg):
-					continuation.yield(.failed(reason: msg))
-					return
 				}
-			}
-		} catch {
-			continuation.yield(.failed(reason: error.localizedDescription))
+				if generation == id { fail(BLETransferError.disconnected, id: id) }
+			} catch { fail(error, id: id) }
 		}
 	}
-
-	private func waitForScan() async -> String {
-		if let s = scanResult { return s }
-		return await withCheckedContinuation { cont in
-			self.scanContinuation = cont
+	func provideScannedQR(_ text: String) {
+		guard generation == nil || waitingForScan else { return }
+		if let continuation = scanContinuation {
+			scanContinuation = nil
+			continuation.resume(returning: text)
+		} else {
+			pendingScan = text
 		}
 	}
-}
-
-private enum ControlTag: UInt8 {
-	case pubkey = 0
-	case retry = 1
-}
-
-private enum StatusCode {
-	static let complete: UInt8 = 1
+	func cancel() {
+		pendingScan = nil
+		guard let id = generation else { return }
+		output?.yield(.failed(reason: BLETransferError.cancelled.localizedDescription))
+		end(id: id)
+	}
+	private func fail(_ error: any Error, id: UUID) {
+		guard generation == id else { return }
+		let message =
+			(error as? BLETransferError)?.localizedDescription
+			?? BLETransferError.invalidMessage.localizedDescription
+		output?.yield(.failed(reason: message))
+		end(id: id)
+	}
+	private func end(id: UUID) {
+		guard generation == id else { return }
+		generation = nil
+		task?.cancel()
+		task = nil
+		timer?.cancel()
+		timer = nil
+		radio?.stop()
+		radio = nil
+		session = nil
+		let scan = scanContinuation
+		scanContinuation = nil
+		scan?.resume(returning: nil)
+		pendingScan = nil
+		waitingForScan = false
+		qrText = nil
+		output?.finish()
+		output = nil
+	}
 }

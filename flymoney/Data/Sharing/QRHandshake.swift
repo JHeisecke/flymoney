@@ -23,7 +23,10 @@ enum QRHandshake {
 	static func decode(_ scanned: String) throws -> QRPayload {
 		guard let data = Data(base64URLEncoded: scanned) else { throw QRError.invalidEncoding }
 		let payload = try JSONDecoder().decode(QRPayload.self, from: data)
-		guard payload.v == 1 else { throw QRError.unsupportedVersion(payload.v) }
+		guard payload.v == 2 else { throw QRError.unsupportedVersion(payload.v) }
+		guard UUID(uuidString: payload.svc) != nil,
+			  Data(base64URLEncoded: payload.sid)?.count == 16,
+			  Data(base64URLEncoded: payload.pk)?.count == 32 else { throw QRError.invalidEncoding }
 		return payload
 	}
 }

@@ -9,13 +9,12 @@ import SwiftUI
 
 struct ReceiveProgressCard: View {
 	let phase: SharingViewModel.Phase
-	let monthName: String
 
 	var body: some View {
 		VStack(spacing: Theme.Spacing.md) {
 			HStack {
 				PulsingDot(color: Theme.Colors.success, withRing: false)
-				Text("Receiving \(monthName)")
+				Text(String(localized: "Receiving…"))
 					.font(Theme.Typography.title17)
 					.foregroundStyle(Color.white)
 				Spacer()
@@ -30,7 +29,7 @@ struct ReceiveProgressCard: View {
 					.font(Theme.Typography.caption12)
 					.foregroundStyle(Theme.Colors.inkQuaternary)
 				Spacer()
-				Text(chunksText)
+				Text(progress >= 1 ? String(localized: "Confirming reception…") : "")
 					.font(Theme.Typography.caption12)
 					.foregroundStyle(Theme.Colors.inkQuaternary)
 					.monospacedDigit()
@@ -67,9 +66,4 @@ struct ReceiveProgressCard: View {
 		"\(Int(progress * 100))%"
 	}
 
-	private var chunksText: String {
-		let total = max(1, Int(1.0 / max(0.01, progress)))
-		let current = max(1, Int(progress * Double(total)))
-		return "\(current) / \(total) chunks"
-	}
 }

@@ -14,7 +14,7 @@ struct QRHandshakeTests {
 
 	@Test("encode decode round-trip")
 	func roundTrip() throws {
-		let payload = QRPayload(v: 1, sid: "abc123", svc: "uuid-here", pk: "pubkey-data")
+		let payload = QRPayload(v: 2, sid: Data(repeating: 1, count: 16).base64URLEncodedString(), svc: UUID().uuidString, pk: Data(repeating: 2, count: 32).base64URLEncodedString())
 		let encoded = try QRHandshake.encode(payload)
 		let decoded = try QRHandshake.decode(encoded)
 		#expect(decoded == payload)

@@ -13,7 +13,7 @@ struct BLEStatusPill: View {
 	var body: some View {
 		HStack(spacing: 9) {
 			PulsingDot(color: Theme.Colors.accent, withRing: true)
-			Text(String(localized: "Bluetooth · advertising"))
+			Text("Bluetooth")
 				.font(Theme.Typography.body13)
 				.foregroundStyle(Color(white: 0.9))
 			Rectangle()
@@ -24,7 +24,7 @@ struct BLEStatusPill: View {
 				.foregroundStyle(Theme.Colors.inkQuaternary)
 		}
 		.padding(.horizontal, Theme.Spacing.s18)
-		.frame(height: 38)
+		.padding(.vertical, Theme.Spacing.sm)
 		.background(Theme.Colors.card)
 		.clipShape(.rect(cornerRadius: Theme.Radius.pillMd))
 		.overlay {
@@ -36,8 +36,8 @@ struct BLEStatusPill: View {
 	private var statusText: String {
 		switch phase {
 		case .idle, .handshaking: String(localized: "Waiting for receiver")
-		case .sending(let p): String(localized: "Sending… \(Int(p * 100))%")
-		case .done: String(localized: "Sent ✓")
+		case .sending(let p): p >= 1 ? String(localized: "Confirming reception…") : String(localized: "Sending… \(Int(p * 100))%")
+		case .done: String(localized: "Reception confirmed")
 		case .failed(let r): r
 		default: String(localized: "Waiting for receiver")
 		}
