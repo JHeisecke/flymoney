@@ -43,6 +43,23 @@ struct AddExpenseViewModelTests {
 		CalendarMonth.containing(Date(), using: Self.utc).key
 	}
 
+	@Test("Recurring expenses keep their selected date and reset recurrence after saving")
+	func saveRecurringExpense() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let vm = makeVM(expenses: expenses)
+		let selectedDate = Date(timeIntervalSince1970: 1_748_750_000)
+		vm.form.amountDecimal = 25
+		vm.form.titleName = "Subscription"
+		vm.form.date = selectedDate
+		vm.form.isRecurring = true
+		await vm.save()
+		let stored = try await expenses.expenses(in: DateInterval(start: .distantPast, end: .distantFuture), titleID: nil)
+		let expense = try #require(stored.first)
+		#expect(expense.isRecurring)
+		#expect(expense.date == selectedDate)
+		#expect(!vm.form.isRecurring)
+	}
+
 	private func awaitSearch() async {
 		for _ in 0..<10 { await Task.yield() }
 		try? await Task.sleep(for: .milliseconds(200))

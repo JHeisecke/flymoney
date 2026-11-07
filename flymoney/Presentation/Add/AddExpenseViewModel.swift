@@ -107,7 +107,7 @@ final class AddExpenseViewModel {
 		saveError = nil
 		do {
 			_ = try await addExpense.execute(
-				amount: clean.amount, titleName: clean.titleName, date: clean.date, detail: clean.detail)
+				amount: clean.amount, titleName: clean.titleName, date: clean.date, detail: clean.detail, isRecurring: form.isRecurring)
 			form.reset()
 			suggestions = []
 			selectedTitleID = nil

@@ -16,6 +16,7 @@ final class ExpenseEditModel: Identifiable {
 	var titleName: String
 	var date: Date
 	var detail: String
+	var isRecurring: Bool
 	let currencyCode: String
 
 	var amountError: String?
@@ -42,6 +43,7 @@ final class ExpenseEditModel: Identifiable {
 		self.titleName = row.titleName
 		self.date = row.date
 		self.detail = row.detail ?? ""
+		self.isRecurring = row.isRecurring
 		self.currencyCode = row.amount.currencyCode
 		self.searchTitles = searchTitles
 		self.fetchLimits = fetchLimits

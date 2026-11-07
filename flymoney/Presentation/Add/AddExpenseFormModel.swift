@@ -15,6 +15,7 @@ final class AddExpenseFormModel {
 	var titleName: String = ""
 	var date: Date = Date()
 	var detail: String = ""
+	var isRecurring = false
 
 	var amountError: String?
 	var titleError: String?
@@ -53,6 +54,7 @@ final class AddExpenseFormModel {
 		titleName = ""
 		date = Date()
 		detail = ""
+		isRecurring = false
 		amountError = nil
 		titleError = nil
 	}

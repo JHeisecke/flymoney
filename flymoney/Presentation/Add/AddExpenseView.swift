@@ -63,7 +63,7 @@ struct AddExpenseView: View {
 			ExpenseNoteField(text: $viewModel.form.detail)
 				.padding(.top, Theme.Spacing.s14)
 
-			DateChipView(date: $viewModel.form.date)
+			DateChipView(date: $viewModel.form.date, isRecurring: $viewModel.form.isRecurring)
 				.padding(.top, Theme.Spacing.s18)
 
 			Spacer()

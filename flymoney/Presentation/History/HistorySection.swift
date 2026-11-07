@@ -20,4 +20,5 @@ struct HistoryRow: Identifiable, Equatable, Sendable {
 	let amount: Money
 	let date: Date
 	let detail: String?
+	var isRecurring: Bool = false
 }

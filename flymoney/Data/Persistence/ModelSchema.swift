@@ -242,14 +242,37 @@ enum ExpenseSchemaV5: VersionedSchema {
 	}
 }
 
-/// Live schema: adds `TitleAliasModel` and `ExpenseModel.importFingerprint`
+/// Frozen schema: adds `TitleAliasModel` and `ExpenseModel.importFingerprint`
 /// (nil for hand-entered expenses). Both additive — lightweight from V5.
 /// `ExpenseTitleModel` and `TitleLimitModel` are unchanged, so they keep
 /// typealiasing to the live models, same as V5.
 enum ExpenseSchemaV6: VersionedSchema {
 	static let versionIdentifier = Schema.Version(6, 0, 0)
 	static var models: [any PersistentModel.Type] {
-		[ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self]
+		[ExpenseSchemaV6.ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self]
+	}
+
+	@Model
+	final class ExpenseModel {
+		@Attribute(.unique) var id: UUID
+		var amountMinorUnits: Int
+		var currencyCode: String
+		var titleID: UUID
+		var date: Date
+		var detail: String?
+		/// Set only for statement-imported expenses; `nil` for hand-entered ones.
+		/// Not a uniqueness constraint — see `StatementImportMapper`.
+		var importFingerprint: String?
+
+		init(id: UUID, amountMinorUnits: Int, currencyCode: String, titleID: UUID, date: Date, detail: String? = nil, importFingerprint: String? = nil) {
+			self.id = id
+			self.amountMinorUnits = amountMinorUnits
+			self.currencyCode = currencyCode
+			self.titleID = titleID
+			self.date = date
+			self.detail = detail
+			self.importFingerprint = importFingerprint
+		}
 	}
 }
 
@@ -257,7 +280,7 @@ enum ExpenseSchemaV7: VersionedSchema {
 	static let versionIdentifier = Schema.Version(7, 0, 0)
 	static var models: [any PersistentModel.Type] {
 		[
-			ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self,
+			ExpenseSchemaV6.ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self,
 			BudgetPlanModel.self, BudgetCategoryLinkModel.self, BudgetSharingSelectionModel.self,
 		]
 	}
@@ -265,6 +288,18 @@ enum ExpenseSchemaV7: VersionedSchema {
 
 enum ExpenseSchemaV8: VersionedSchema {
 	static let versionIdentifier = Schema.Version(8, 0, 0)
+	static var models: [any PersistentModel.Type] {
+		[
+			ExpenseSchemaV6.ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self,
+			BudgetPlanModel.self, BudgetCategoryLinkModel.self, BudgetSharingSelectionModel.self,
+			BudgetImportReceiptModel.self,
+		]
+	}
+}
+
+/// Adds the recurrence marker. Existing expenses default to non-recurring.
+enum ExpenseSchemaV9: VersionedSchema {
+	static let versionIdentifier = Schema.Version(9, 0, 0)
 	static var models: [any PersistentModel.Type] {
 		[
 			ExpenseModel.self, ExpenseTitleModel.self, TitleLimitModel.self, TitleAliasModel.self,
@@ -275,6 +310,6 @@ enum ExpenseSchemaV8: VersionedSchema {
 }
 
 enum ModelSchema {
-	static let models: [any PersistentModel.Type] = ExpenseSchemaV8.models
+	static let models: [any PersistentModel.Type] = ExpenseSchemaV9.models
 	static let schema = Schema(models)
 }

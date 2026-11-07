@@ -409,6 +409,16 @@
         }
       }
     },
+    "Back" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver"
+          }
+        }
+      }
+    },
     "Bank account statement" : {
       "localizations" : {
         "es" : {
@@ -527,16 +537,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancelar"
-          }
-        }
-      }
-    },
-    "Back" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Volver"
           }
         }
       }
@@ -1095,6 +1095,16 @@
         }
       }
     },
+    "Got it" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entendido"
+          }
+        }
+      }
+    },
     "History" : {
       "localizations" : {
         "es" : {
@@ -1534,12 +1544,32 @@
         }
       }
     },
+    "Off" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivado"
+          }
+        }
+      }
+    },
     "OK" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "On" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado"
           }
         }
       }
@@ -1758,6 +1788,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No se pudo confirmar la recepción. Vuelve a conectar e inténtalo de nuevo."
+          }
+        }
+      }
+    },
+    "Recurring expense" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gasto recurrente"
           }
         }
       }
@@ -2121,6 +2161,7 @@
       }
     },
     "Tap to change date" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -2406,6 +2447,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lo ingresaste a mano en %@ — mismo día, mismo monto."
+          }
+        }
+      }
+    },
+    "You’re about to mark this expense as recurring on %@. You can turn this option off by tapping the button again." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estás a punto de marcar este gasto como recurrente en la fecha %@. Puedes desactivar esta opción tocando nuevamente el botón."
           }
         }
       }

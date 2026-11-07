@@ -13,6 +13,23 @@ import Testing
 @Suite("SwiftData expense repository", .tags(.persistence))
 struct SwiftDataExpenseRepositoryTests {
 
+	@Test("Recurrence persists across repository instances and can be switched off")
+	func recurringExpensePersistence() async throws {
+		let container = try TestSupport.makeContainer()
+		let repository = SwiftDataExpenseRepository(modelContainer: container)
+		var expense = Expense(amount: Money(minorUnits: 2500, currencyCode: "USD"), titleID: UUID(), date: .now, isRecurring: true)
+		try await repository.add(expense)
+		let reader = SwiftDataExpenseRepository(modelContainer: container)
+		let interval = DateInterval(start: .distantPast, end: .distantFuture)
+		let stored = try await reader.expenses(in: interval, titleID: nil)
+		#expect(stored.first == expense)
+		expense.isRecurring = false
+		try await repository.update(expense)
+		let freshReader = SwiftDataExpenseRepository(modelContainer: container)
+		let updated = try await freshReader.expenses(in: interval, titleID: nil)
+		#expect(updated.first == expense)
+	}
+
 	@Test("add then fetch returns equal Expense")
 	func addThenFetch() async throws {
 		let container = try TestSupport.makeContainer()

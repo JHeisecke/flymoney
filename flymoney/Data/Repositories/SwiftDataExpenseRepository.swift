@@ -18,7 +18,8 @@ actor SwiftDataExpenseRepository: ExpenseRepository {
 			currencyCode: expense.amount.currencyCode,
 			titleID: expense.titleID,
 			date: expense.date,
-			detail: expense.detail
+			detail: expense.detail,
+			isRecurring: expense.isRecurring
 		)
 		modelContext.insert(model)
 		try modelContext.save()
@@ -35,6 +36,7 @@ actor SwiftDataExpenseRepository: ExpenseRepository {
 		model.titleID = expense.titleID
 		model.date = expense.date
 		model.detail = expense.detail
+		model.isRecurring = expense.isRecurring
 		try modelContext.save()
 	}
 
@@ -105,7 +107,8 @@ extension ExpenseModel {
 			amount: Money(minorUnits: amountMinorUnits, currencyCode: currencyCode),
 			titleID: titleID,
 			date: date,
-			detail: detail
+			detail: detail,
+			isRecurring: isRecurring
 		)
 	}
 }

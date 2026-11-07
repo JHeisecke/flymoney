@@ -58,7 +58,7 @@ final class TitleEditorViewModel: Identifiable {
 						titleName: titleName,
 						amount: expense.amount,
 						date: expense.date,
-						detail: expense.detail)
+						detail: expense.detail, isRecurring: expense.isRecurring)
 				}
 		} catch {
 			spent = nil

@@ -44,7 +44,7 @@ struct ExpenseEditView: View {
 						.foregroundStyle(Theme.Colors.danger)
 				}
 
-				DateChipView(date: $model.date)
+				DateChipView(date: $model.date, isRecurring: $model.isRecurring)
 
 				ExpenseNoteField(text: $model.detail)
 

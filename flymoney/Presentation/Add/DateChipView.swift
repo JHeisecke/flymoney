@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DateChipView: View {
 	@Binding var date: Date
+	var isRecurring: Binding<Bool>? = nil
 
 	@State private var isPickerPresented = false
 
@@ -35,6 +36,11 @@ struct DateChipView: View {
 				}
 			}
 			.buttonStyle(.hapticPlain)
+			.frame(minHeight: 44)
+
+			if let isRecurring {
+				RecurrenceChipButton(date: date, isRecurring: isRecurring)
+			}
 		}
 		.popover(isPresented: $isPickerPresented, attachmentAnchor: .point(.bottom)) {
             DatePicker(
@@ -55,5 +61,52 @@ struct DateChipView: View {
 		if cal.isDateInToday(date) { return String(localized: "Today") }
 		if cal.isDateInYesterday(date) { return String(localized: "Yesterday") }
 		return date.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())
+	}
+}
+
+private struct RecurrenceChipButton: View {
+	let date: Date
+	@Binding var isRecurring: Bool
+	@AppStorage("hasSeenRecurringExpenseExplanation") private var hasSeenExplanation = false
+	@AppStorage("recurringExpenseExplanationCount") private var explanationCount = 0
+	@AppStorage("recurringExpenseExplanationFirstShownAt") private var firstShownTimestamp = 0.0
+	@State private var isExplanationPresented = false
+
+	var body: some View {
+		Button {
+			isRecurring.toggle()
+			if isRecurring {
+				var explanation = RecurrenceExplanationState(
+					displayCount: explanationCount,
+					firstShownAt: firstShownTimestamp > 0 ? Date(timeIntervalSince1970: firstShownTimestamp) : nil)
+				isExplanationPresented = explanation.recordActivation(
+					at: .now, calendar: .current, hasSeenLegacyExplanation: hasSeenExplanation)
+				explanationCount = explanation.displayCount
+				firstShownTimestamp = explanation.firstShownAt?.timeIntervalSince1970 ?? 0
+				hasSeenExplanation = explanationCount > 0
+			}
+		} label: {
+			Label("Recurring expense", systemImage: "arrow.clockwise")
+				.labelStyle(.iconOnly)
+				.font(.title2)
+				.foregroundStyle(isRecurring ? Theme.Colors.accent : Theme.Colors.textSubtle)
+				.frame(width: 44, height: 38)
+				.background(isRecurring ? Theme.Colors.accentTint : Theme.Colors.card)
+				.clipShape(.rect(cornerRadius: Theme.Radius.pillSm))
+				.overlay {
+					RoundedRectangle(cornerRadius: Theme.Radius.pillSm)
+						.stroke(isRecurring ? Theme.Colors.accent : Theme.Colors.borderSubtle, lineWidth: 1)
+				}
+				.frame(minHeight: 44)
+				.contentShape(.rect)
+		}
+		.buttonStyle(.hapticPlain)
+		.accessibilityValue(isRecurring ? String(localized: "On") : String(localized: "Off"))
+		.accessibilityAddTraits(isRecurring ? .isSelected : [])
+		.alert("Recurring expense", isPresented: $isExplanationPresented) {
+			Button("Got it", role: .cancel) { }
+		} message: {
+			Text("You’re about to mark this expense as recurring on \(date.formatted(date: .long, time: .omitted)). You can turn this option off by tapping the button again.")
+		}
 	}
 }

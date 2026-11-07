@@ -13,12 +13,14 @@ struct Expense: Identifiable, Equatable, Sendable {
 	var titleID: UUID
 	var date: Date
 	var detail: String?
+	var isRecurring: Bool
 
-	init(id: UUID = UUID(), amount: Money, titleID: UUID, date: Date, detail: String? = nil) {
+	init(id: UUID = UUID(), amount: Money, titleID: UUID, date: Date, detail: String? = nil, isRecurring: Bool = false) {
 		self.id = id
 		self.amount = amount
 		self.titleID = titleID
 		self.date = date
 		self.detail = detail
+		self.isRecurring = isRecurring
 	}
 }

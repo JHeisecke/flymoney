@@ -125,7 +125,7 @@ final class HistoryViewModel {
 		do {
 			let updated = try await updateExpense.execute(
 				id: model.id, amount: clean.amount, titleName: clean.titleName,
-				date: clean.date, detail: clean.detail)
+				date: clean.date, detail: clean.detail, isRecurring: model.isRecurring)
 			editor = nil
 			if titlesByID[updated.titleID] == nil {
 				let titles = try await fetchTitles.execute()
@@ -149,7 +149,7 @@ final class HistoryViewModel {
 			titleName: titlesByID[expense.titleID]?.name ?? String(localized: Lexicon.untitled),
 			amount: expense.amount,
 			date: expense.date,
-			detail: expense.detail)
+			detail: expense.detail, isRecurring: expense.isRecurring)
 		var rows = sections[sectionIndex].rows
 		rows[rowIndex] = newRow
 		rows.sort { $0.date > $1.date }
@@ -177,7 +177,7 @@ final class HistoryViewModel {
 						?? String(localized: Lexicon.untitled),
 					amount: e.amount,
 					date: e.date,
-					detail: e.detail)
+					detail: e.detail, isRecurring: e.isRecurring)
 			}
 			return HistorySection(id: day, day: dayExpenses.first?.date ?? day, rows: rows)
 		}
