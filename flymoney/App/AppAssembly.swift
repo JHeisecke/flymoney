@@ -151,6 +151,12 @@ final class AppAssembly {
 			currencyCode: currencyProvider.defaultCurrencyCode)
 	}
 
+	func makeRecurringExpensesViewModel() -> RecurringExpensesViewModel {
+		RecurringExpensesViewModel(
+			fetchExpenses: FetchRecurringExpensesUseCaseImpl(expenses: expenseRepo),
+			fetchTitles: makeFetchExpenseTitlesUseCase())
+	}
+
 	func makeParseStatementUseCase() -> any ParseStatementUseCase {
 		ParseStatementUseCaseImpl(
 			extractor: statementExtractor,

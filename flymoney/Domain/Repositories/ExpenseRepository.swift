@@ -15,6 +15,8 @@ protocol ExpenseRepository: Sendable {
 	func deleteAll(forTitleID titleID: UUID) async throws
 
 	func expenses(in interval: DateInterval, titleID: UUID?) async throws -> [Expense]
+	/// Recurring expenses from all months, newest first.
+	func recurringExpenses() async throws -> [Expense]
 
 	func count(forTitleID titleID: UUID) async throws -> Int
 

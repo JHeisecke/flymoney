@@ -10,6 +10,7 @@ import SwiftUI
 struct HistoryView: View {
 	@State private var viewModel: HistoryViewModel
 	@State private var sharingRole: SharingRole?
+	@State private var showsRecurringExpenses = false
 	@Environment(\.haptics) private var haptics
 	let assembly: AppAssembly
 
@@ -55,6 +56,9 @@ struct HistoryView: View {
 			SharingSheetHost(assembly: assembly, role: role)
 				.presentationDetents([.large])
 		}
+		.sheet(isPresented: $showsRecurringExpenses) {
+			RecurringExpensesView(viewModel: assembly.makeRecurringExpensesViewModel())
+		}
 		.sheet(item: $viewModel.editor) { model in
 			ExpenseEditView(
 				model: model,
@@ -73,6 +77,16 @@ struct HistoryView: View {
 				.tracking(-0.5)
 				.foregroundStyle(Theme.Colors.ink)
 			Spacer()
+			Button {
+				showsRecurringExpenses = true
+			} label: {
+				Label("View recurring expenses", systemImage: "arrow.clockwise")
+					.labelStyle(.iconOnly)
+					.foregroundStyle(Theme.Colors.ink)
+					.frame(minWidth: 44, minHeight: 44)
+					.contentShape(.rect)
+			}
+			.buttonStyle(.hapticPlain)
 			Menu {
 				Button("Share this month", systemImage: "qrcode") {
 					sharingRole = .send(month: viewModel.month)

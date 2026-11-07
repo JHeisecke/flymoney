@@ -746,6 +746,16 @@
         }
       }
     },
+    "Couldn’t load recurring expenses" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudieron cargar los pagos recurrentes"
+          }
+        }
+      }
+    },
     "Couldn’t load expenses." : {
       "localizations" : {
         "es" : {
@@ -1478,6 +1488,16 @@
         }
       }
     },
+    "No recurring expenses yet" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todavía no hay pagos recurrentes"
+          }
+        }
+      }
+    },
     "No categories yet" : {
       "localizations" : {
         "en" : {
@@ -1788,6 +1808,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No se pudo confirmar la recepción. Vuelve a conectar e inténtalo de nuevo."
+          }
+        }
+      }
+    },
+    "Recurring expenses" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pagos recurrentes"
           }
         }
       }
@@ -2397,6 +2427,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar el límite recibido"
+          }
+        }
+      }
+    },
+    "View recurring expenses" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver pagos recurrentes"
           }
         }
       }

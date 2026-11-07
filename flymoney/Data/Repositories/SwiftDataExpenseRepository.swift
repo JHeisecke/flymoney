@@ -77,6 +77,14 @@ actor SwiftDataExpenseRepository: ExpenseRepository {
 		try modelContext.save()
 	}
 
+	func recurringExpenses() async throws -> [Expense] {
+		let descriptor = FetchDescriptor<ExpenseModel>(
+			predicate: #Predicate { $0.isRecurring == true },
+			sortBy: [SortDescriptor(\.date, order: .reverse)]
+		)
+		return try modelContext.fetch(descriptor).map { $0.toEntity() }
+	}
+
 	func count(forTitleID titleID: UUID) async throws -> Int {
 		let descriptor = FetchDescriptor<ExpenseModel>(predicate: #Predicate { $0.titleID == titleID })
 		return try modelContext.fetchCount(descriptor)

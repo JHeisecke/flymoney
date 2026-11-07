@@ -35,6 +35,10 @@ actor InMemoryExpenseRepository: ExpenseRepository {
 		}
 	}
 
+	func recurringExpenses() async throws -> [Expense] {
+		storage.filter(\.isRecurring).sorted { $0.date > $1.date }
+	}
+
 	func deleteAll(forTitleID titleID: UUID) async throws {
 		storage.removeAll { $0.titleID == titleID }
 	}

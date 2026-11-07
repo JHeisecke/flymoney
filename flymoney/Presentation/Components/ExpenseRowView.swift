@@ -10,10 +10,12 @@ import SwiftUI
 struct ExpenseRowView: View {
 	let row: HistoryRow
     let prioritizeTitle: Bool
+	private let showsRecordedDate: Bool
 
-    init(row: HistoryRow, prioritizeTitle: Bool = true) {
+    init(row: HistoryRow, prioritizeTitle: Bool = true, showsRecordedDate: Bool = false) {
         self.row = row
         self.prioritizeTitle = prioritizeTitle
+		self.showsRecordedDate = showsRecordedDate
     }
 
 	var body: some View {
@@ -22,7 +24,9 @@ struct ExpenseRowView: View {
                 Text(prioritizeTitle ? row.titleName : row.detail ?? row.titleName)
 					.font(Theme.Typography.body16)
 					.foregroundStyle(Theme.Colors.ink)
-				Text(row.date.formatted(date: .omitted, time: .shortened))
+				Text(showsRecordedDate
+					? row.date.formatted(.dateTime.day().month(.abbreviated))
+					: row.date.formatted(date: .omitted, time: .shortened))
 					.font(Theme.Typography.caption12)
 					.foregroundStyle(Theme.Colors.inkTertiary)
 				if let detail = row.detail, !detail.isEmpty, prioritizeTitle {

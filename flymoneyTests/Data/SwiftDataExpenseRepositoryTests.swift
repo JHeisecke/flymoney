@@ -30,6 +30,28 @@ struct SwiftDataExpenseRepositoryTests {
 		#expect(updated.first == expense)
 	}
 
+	@Test("The recurring list spans months and reflects unmarking and deletion")
+	func recurringExpensesAcrossMonths() async throws {
+		let container = try TestSupport.makeContainer()
+		let repository = SwiftDataExpenseRepository(modelContainer: container)
+		let titleID = UUID()
+		let amount = Money(minorUnits: 2_500, currencyCode: "USD")
+		let earlier = Expense(amount: amount, titleID: titleID, date: Date(timeIntervalSince1970: 1_748_736_000), isRecurring: true)
+		var later = Expense(amount: amount, titleID: titleID, date: Date(timeIntervalSince1970: 1_751_328_000), isRecurring: true)
+		let ordinary = Expense(amount: amount, titleID: titleID, date: later.date)
+		try await repository.add(earlier)
+		try await repository.add(later)
+		try await repository.add(ordinary)
+
+		let reader = SwiftDataExpenseRepository(modelContainer: container)
+		#expect(try await reader.recurringExpenses() == [later, earlier])
+		later.isRecurring = false
+		try await repository.update(later)
+		#expect(try await repository.recurringExpenses() == [earlier])
+		try await repository.delete(id: earlier.id)
+		#expect(try await repository.recurringExpenses().isEmpty)
+	}
+
 	@Test("add then fetch returns equal Expense")
 	func addThenFetch() async throws {
 		let container = try TestSupport.makeContainer()
