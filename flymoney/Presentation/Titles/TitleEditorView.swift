@@ -12,8 +12,10 @@ struct TitleEditorView: View {
 	@Environment(\.haptics) private var haptics
 	let onSave: @MainActor () async -> Void
 	let onCancel: @MainActor () -> Void
+	let onExpenseDeleted: @MainActor () async -> Void
 
 	@State private var limitText: String = ""
+	@State private var pendingExpenseDeletion: HistoryRow?
 	private let locale: Locale = .current
 
 	private var model: TitleEditorModel { viewModel.form }
@@ -81,17 +83,37 @@ struct TitleEditorView: View {
 						}
 
 						if !viewModel.rows.isEmpty {
-                            VStack(spacing: 0) {
-                                ForEach(viewModel.rows) { row in
-                                    ExpenseRowView(row: row, prioritizeTitle: false)
-                                }
-                            }
-                            .background(Theme.Colors.card)
-                            .clipShape(.rect(cornerRadius: Theme.Radius.md))
+							VStack(spacing: 0) {
+								ForEach(viewModel.rows) { row in
+									HStack(spacing: 0) {
+										ExpenseRowView(row: row, prioritizeTitle: false, showsRecordedDate: true)
+										Button {
+											pendingExpenseDeletion = row
+										} label: {
+											Label("Delete expense", systemImage: "trash")
+												.labelStyle(.iconOnly)
+												.foregroundStyle(Theme.Colors.danger)
+												.frame(minWidth: 44, minHeight: 44)
+												.contentShape(.rect)
+										}
+										.buttonStyle(.hapticPlain)
+										.disabled(viewModel.isDeletingExpense)
+										.padding(.trailing, Theme.Spacing.sm)
+									}
+								}
+							}
+							.background(Theme.Colors.card)
+							.clipShape(.rect(cornerRadius: Theme.Radius.md))
 						} else {
 							Text(String(localized: "No expenses this month"))
 								.font(Theme.Typography.body14)
 								.foregroundStyle(Theme.Colors.textSubtle)
+						}
+
+						if let error = viewModel.expenseDeleteError {
+							Text(error)
+								.font(Theme.Typography.body14)
+								.foregroundStyle(Theme.Colors.danger)
 						}
 					}
 
@@ -127,12 +149,32 @@ struct TitleEditorView: View {
 				}
 			}
 			.tint(Theme.Colors.accent)
+			.alert("Delete this expense?", isPresented: expenseDeletionPresented, presenting: pendingExpenseDeletion) { row in
+				Button("Delete", role: .destructive) {
+					Task {
+						if await viewModel.delete(rowID: row.id) { await onExpenseDeleted() }
+					}
+				}
+				Button("Cancel", role: .cancel) {}
+			} message: { row in
+				Text(verbatim: "\(row.amount.formatted()) · \(row.date.formatted(date: .abbreviated, time: .shortened))")
+			}
 		}
 		.task { await viewModel.load() }
 		.onChange(of: model.saveError) { _, error in
 			if error != nil { haptics.error() }
 		}
+		.onChange(of: viewModel.expenseDeleteError) { _, error in
+			if error != nil { haptics.error() }
+		}
 		.onAppear { syncLimitFromDecimal() }
+	}
+
+	private var expenseDeletionPresented: Binding<Bool> {
+		Binding(
+			get: { pendingExpenseDeletion != nil },
+			set: { if !$0 { pendingExpenseDeletion = nil } }
+		)
 	}
 
 	private func syncLimitFromDecimal() {

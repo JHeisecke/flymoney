@@ -10,10 +10,16 @@ import SwiftUI
 struct AllTitlesManagementView: View {
 	@State private var viewModel: AllTitlesManagementViewModel
 	var onSelect: ((ExpenseTitle) -> Void)?
+	private let onExpenseDeleted: @MainActor () async -> Void
 
-	init(viewModel: AllTitlesManagementViewModel, onSelect: ((ExpenseTitle) -> Void)? = nil) {
+	init(
+		viewModel: AllTitlesManagementViewModel,
+		onSelect: ((ExpenseTitle) -> Void)? = nil,
+		onExpenseDeleted: @escaping @MainActor () async -> Void = {}
+	) {
 		_viewModel = State(initialValue: viewModel)
 		self.onSelect = onSelect
+		self.onExpenseDeleted = onExpenseDeleted
 	}
 
 	var body: some View {
@@ -71,7 +77,8 @@ struct AllTitlesManagementView: View {
 			TitleEditorView(
 				viewModel: editorVM,
 				onSave: { await viewModel.save(editorVM.form) },
-				onCancel: { viewModel.editor = nil })
+				onCancel: { viewModel.editor = nil },
+				onExpenseDeleted: onExpenseDeleted)
 				.presentationDragIndicator(.visible)
 		}
 		.alert(

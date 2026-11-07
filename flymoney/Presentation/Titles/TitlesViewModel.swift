@@ -28,6 +28,7 @@ final class TitlesViewModel {
 	private let fetchTitles: any FetchExpenseTitlesUseCase
 	private let upsertTitle: any UpsertExpenseTitleUseCase
 	private let deleteTitle: any DeleteExpenseTitleUseCase
+	private let deleteExpense: any DeleteExpenseUseCase
 	private let fetchExpenses: any FetchExpensesForMonthUseCase
 	private let fetchLimits: any FetchEffectiveLimitsUseCase
 	private let setTitleLimit: any SetTitleLimitUseCase
@@ -37,6 +38,7 @@ final class TitlesViewModel {
 	init(fetchTitles: any FetchExpenseTitlesUseCase,
 		 upsertTitle: any UpsertExpenseTitleUseCase,
 		 deleteTitle: any DeleteExpenseTitleUseCase,
+		 deleteExpense: any DeleteExpenseUseCase,
 		 fetchExpenses: any FetchExpensesForMonthUseCase,
 		 fetchLimits: any FetchEffectiveLimitsUseCase,
 		 setTitleLimit: any SetTitleLimitUseCase,
@@ -46,6 +48,7 @@ final class TitlesViewModel {
 		self.fetchTitles = fetchTitles
 		self.upsertTitle = upsertTitle
 		self.deleteTitle = deleteTitle
+		self.deleteExpense = deleteExpense
 		self.fetchExpenses = fetchExpenses
 		self.fetchLimits = fetchLimits
 		self.setTitleLimit = setTitleLimit
@@ -82,7 +85,8 @@ final class TitlesViewModel {
 	func beginCreate() {
 		let form = TitleEditorModel(currencyCode: currencyCode, effectiveMonth: month)
 		editor = TitleEditorViewModel(
-			form: form, month: month, titleID: nil, titleName: "", fetchExpenses: fetchExpenses)
+			form: form, month: month, titleID: nil, titleName: "",
+			fetchExpenses: fetchExpenses, deleteExpense: deleteExpense)
 	}
 
 	func beginEdit(_ t: ExpenseTitle) {
@@ -90,7 +94,8 @@ final class TitlesViewModel {
 			editing: t, currencyCode: currencyCode,
 			currentLimit: limitByTitle[t.id], effectiveMonth: month)
 		editor = TitleEditorViewModel(
-			form: form, month: month, titleID: t.id, titleName: t.name, fetchExpenses: fetchExpenses)
+			form: form, month: month, titleID: t.id, titleName: t.name,
+			fetchExpenses: fetchExpenses, deleteExpense: deleteExpense)
 	}
 
 	func save(_ model: TitleEditorModel) async {

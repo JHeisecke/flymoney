@@ -43,7 +43,9 @@ struct RootView: View {
                 HistoryView(viewModel: historyViewModel, assembly: assembly)
             }
             Tab(value: TabID.titles) {
-                TitlesView(viewModel: titlesViewModel, assembly: assembly)
+                TitlesView(
+                    viewModel: titlesViewModel, assembly: assembly,
+                    onExpenseDeleted: refreshAfterExpenseChange)
             } label: {
                 Label(title: { Text(Lexicon.Term.plural.text) }, icon: { Image(systemName: "tag") })
             }
@@ -71,7 +73,7 @@ struct RootView: View {
 			ImportStatementHost(
 				viewModel: importCoordinator.viewModel ?? assembly.makeImportStatementViewModel(),
 				fileURL: request.fileURL,
-				onCommitted: { await refreshAfterImport() },
+				onCommitted: refreshAfterExpenseChange,
 				onDismiss: { importCoordinator.request = nil },
 				onViewHistory: {
 					importCoordinator.request = nil
@@ -110,8 +112,7 @@ struct RootView: View {
 		}
 	}
 
-	/// Refreshes History, Titles, and Add's budget after a statement import.
-	private func refreshAfterImport() async {
+	private func refreshAfterExpenseChange() async {
 		async let history: Void = historyViewModel.load()
 		async let titles: Void = titlesViewModel.load()
 		async let budget: Void = addExpenseViewModel.refreshAfterExternalChange()

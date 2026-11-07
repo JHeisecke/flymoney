@@ -30,6 +30,7 @@ struct TitlesViewModelTests {
 			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: titles),
 			upsertTitle: UpsertExpenseTitleUseCaseImpl(titles: titles),
 			deleteTitle: DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses, limits: limits, aliases: aliases),
+			deleteExpense: DeleteExpenseUseCaseImpl(expenses: expenses),
 			fetchExpenses: FetchExpensesForMonthUseCaseImpl(expenses: expenses, calendar: Self.utc),
 			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: limits),
 			setTitleLimit: SetTitleLimitUseCaseImpl(limits: limits),

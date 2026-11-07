@@ -19,8 +19,11 @@ final class TitleEditorViewModel: Identifiable {
 	let month: CalendarMonth
 	private(set) var spent: Money?
 	private(set) var rows: [HistoryRow] = []
+	private(set) var isDeletingExpense = false
+	private(set) var expenseDeleteError: String?
 
 	private let fetchExpenses: any FetchExpensesForMonthUseCase
+	private let deleteExpense: any DeleteExpenseUseCase
 	private let titleID: UUID?
 	private let titleName: String
 
@@ -29,13 +32,15 @@ final class TitleEditorViewModel: Identifiable {
 		month: CalendarMonth,
 		titleID: UUID?,
 		titleName: String,
-		fetchExpenses: any FetchExpensesForMonthUseCase
+		fetchExpenses: any FetchExpensesForMonthUseCase,
+		deleteExpense: any DeleteExpenseUseCase
 	) {
 		self.form = form
 		self.month = month
 		self.titleID = titleID
 		self.titleName = titleName
 		self.fetchExpenses = fetchExpenses
+		self.deleteExpense = deleteExpense
 	}
 
 	/// Resolved from the pending form value, so the summary tracks unsaved edits.
@@ -47,8 +52,6 @@ final class TitleEditorViewModel: Identifiable {
 		guard let titleID else { return }
 		do {
 			let expenses = try await fetchExpenses.execute(month).filter { $0.titleID == titleID }
-			let currencyCode = expenses.first?.amount.currencyCode ?? form.currencyCode
-			spent = try expenses.reduce(Money.zero(currencyCode)) { try $0.adding($1.amount) }
 			rows = expenses
 				.sorted { $0.date > $1.date }
 				.map { expense in
@@ -60,9 +63,31 @@ final class TitleEditorViewModel: Identifiable {
 						date: expense.date,
 						detail: expense.detail, isRecurring: expense.isRecurring)
 				}
+			recalculateSpent()
 		} catch {
 			spent = nil
 			rows = []
 		}
+	}
+
+	func delete(rowID: UUID) async -> Bool {
+		guard !isDeletingExpense, rows.contains(where: { $0.id == rowID }) else { return false }
+		isDeletingExpense = true
+		expenseDeleteError = nil
+		defer { isDeletingExpense = false }
+		do {
+			try await deleteExpense.execute(id: rowID)
+			rows.removeAll { $0.id == rowID }
+			recalculateSpent()
+			return true
+		} catch {
+			expenseDeleteError = String(localized: "Couldn\u{2019}t delete. Try again.")
+			return false
+		}
+	}
+
+	private func recalculateSpent() {
+		let currencyCode = rows.first?.amount.currencyCode ?? form.currencyCode
+		spent = try? rows.reduce(Money.zero(currencyCode)) { try $0.adding($1.amount) }
 	}
 }

@@ -14,10 +14,12 @@ struct TitlesView: View {
 	@State private var sharingRole: SharingRole?
 	@Environment(\.haptics) private var haptics
 	let assembly: AppAssembly
+	let onExpenseDeleted: @MainActor () async -> Void
 
-	init(viewModel: TitlesViewModel, assembly: AppAssembly) {
+	init(viewModel: TitlesViewModel, assembly: AppAssembly, onExpenseDeleted: @escaping @MainActor () async -> Void) {
 		self.viewModel = viewModel
 		self.assembly = assembly
+		self.onExpenseDeleted = onExpenseDeleted
 	}
 
 	var body: some View {
@@ -55,7 +57,8 @@ struct TitlesView: View {
 			TitleEditorView(
 				viewModel: editorVM,
 				onSave: { await viewModel.save(editorVM.form) },
-				onCancel: { viewModel.editor = nil }
+				onCancel: { viewModel.editor = nil },
+				onExpenseDeleted: onExpenseDeleted
 			)
 			.presentationDragIndicator(.visible)
 		}
@@ -77,7 +80,8 @@ struct TitlesView: View {
 			}
 		) {
 			AllTitlesManagementView(
-				viewModel: assembly.makeAllTitlesManagementViewModel(month: viewModel.month))
+				viewModel: assembly.makeAllTitlesManagementViewModel(month: viewModel.month),
+				onExpenseDeleted: onExpenseDeleted)
 		}
 	}
 

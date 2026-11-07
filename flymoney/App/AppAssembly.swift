@@ -111,6 +111,7 @@ final class AppAssembly {
 		AllTitlesManagementViewModel(
 			fetchTitles: makeFetchExpenseTitlesUseCase(),
 			deleteTitle: makeDeleteExpenseTitleUseCase(),
+			deleteExpense: makeDeleteExpenseUseCase(),
 			expenses: expenseRepo,
 			upsertTitle: makeUpsertExpenseTitleUseCase(),
 			setTitleLimit: makeSetTitleLimitUseCase(),
@@ -125,6 +126,7 @@ final class AppAssembly {
 			fetchTitles: makeFetchExpenseTitlesUseCase(),
 			upsertTitle: makeUpsertExpenseTitleUseCase(),
 			deleteTitle: makeDeleteExpenseTitleUseCase(),
+			deleteExpense: makeDeleteExpenseUseCase(),
 			fetchExpenses: makeFetchExpensesForMonthUseCase(),
 			fetchLimits: makeFetchEffectiveLimitsUseCase(),
 			setTitleLimit: makeSetTitleLimitUseCase(),

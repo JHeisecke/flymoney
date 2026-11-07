@@ -880,6 +880,26 @@
         }
       }
     },
+    "Delete expense" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar gasto"
+          }
+        }
+      }
+    },
+    "Delete this expense?" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Borrar este gasto?"
+          }
+        }
+      }
+    },
     "Delete row" : {
       "localizations" : {
         "es" : {

@@ -29,6 +29,7 @@ struct AllTitlesManagementViewModelTests {
 		AllTitlesManagementViewModel(
 			fetchTitles: FetchExpenseTitlesUseCaseImpl(titles: titles),
 			deleteTitle: DeleteExpenseTitleUseCaseImpl(titles: titles, expenses: expenses, limits: limits, aliases: aliases),
+			deleteExpense: DeleteExpenseUseCaseImpl(expenses: expenses),
 			expenses: expenses,
 			upsertTitle: UpsertExpenseTitleUseCaseImpl(titles: titles),
 			setTitleLimit: SetTitleLimitUseCaseImpl(limits: limits),

@@ -20,6 +20,7 @@ final class AllTitlesManagementViewModel {
 
 	private let fetchTitles: any FetchExpenseTitlesUseCase
 	private let deleteTitle: any DeleteExpenseTitleUseCase
+	private let deleteExpense: any DeleteExpenseUseCase
 	private let expenses: any ExpenseRepository
 	private let upsertTitle: any UpsertExpenseTitleUseCase
 	private let setTitleLimit: any SetTitleLimitUseCase
@@ -30,6 +31,7 @@ final class AllTitlesManagementViewModel {
 
 	init(fetchTitles: any FetchExpenseTitlesUseCase,
 		 deleteTitle: any DeleteExpenseTitleUseCase,
+		 deleteExpense: any DeleteExpenseUseCase,
 		 expenses: any ExpenseRepository,
 		 upsertTitle: any UpsertExpenseTitleUseCase,
 		 setTitleLimit: any SetTitleLimitUseCase,
@@ -39,6 +41,7 @@ final class AllTitlesManagementViewModel {
 		 month: CalendarMonth) {
 		self.fetchTitles = fetchTitles
 		self.deleteTitle = deleteTitle
+		self.deleteExpense = deleteExpense
 		self.expenses = expenses
 		self.upsertTitle = upsertTitle
 		self.setTitleLimit = setTitleLimit
@@ -66,7 +69,8 @@ final class AllTitlesManagementViewModel {
 			editing: t, currencyCode: currencyCode,
 			currentLimit: limitByTitle[t.id], effectiveMonth: month)
 		editor = TitleEditorViewModel(
-			form: form, month: month, titleID: t.id, titleName: t.name, fetchExpenses: fetchExpenses)
+			form: form, month: month, titleID: t.id, titleName: t.name,
+			fetchExpenses: fetchExpenses, deleteExpense: deleteExpense)
 	}
 
 	func save(_ model: TitleEditorModel) async {
