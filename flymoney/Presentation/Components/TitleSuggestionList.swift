@@ -22,6 +22,7 @@ struct TitleSuggestionList: View {
 	let createName: String?
 	let onSelect: (ExpenseTitle) -> Void
 	let onCreate: (() -> Void)?
+	private let keyboardDismissMode: ScrollDismissesKeyboardMode
 
 	private let rowHeight: CGFloat = 52
 	private let maxVisibleRows = 4
@@ -32,6 +33,7 @@ struct TitleSuggestionList: View {
 		selectedSummary: MonthSummary? = nil,
 		limitsByTitleID: [UUID: Money] = [:],
 		createName: String? = nil,
+		keyboardDismissMode: ScrollDismissesKeyboardMode = .immediately,
 		onSelect: @escaping (ExpenseTitle) -> Void,
 		onCreate: (() -> Void)? = nil
 	) {
@@ -40,6 +42,7 @@ struct TitleSuggestionList: View {
 		self.selectedSummary = selectedSummary
 		self.limitsByTitleID = limitsByTitleID
 		self.createName = createName
+		self.keyboardDismissMode = keyboardDismissMode
 		self.onSelect = onSelect
 		self.onCreate = onCreate
 	}
@@ -50,7 +53,7 @@ struct TitleSuggestionList: View {
 		let cappedHeight = min(contentHeight, CGFloat(maxVisibleRows) * rowHeight)
 
 		ScrollView {
-			VStack(spacing: 0) {
+			LazyVStack(spacing: 0) {
 				ForEach(suggestions) { title in
 					TitleSuggestionRow(
 						title: title,
@@ -71,7 +74,7 @@ struct TitleSuggestionList: View {
 		}
 		.frame(height: cappedHeight)
 		.scrollBounceBehavior(.basedOnSize)
-		.scrollDismissesKeyboard(.immediately)
+		.scrollDismissesKeyboard(keyboardDismissMode)
 		.background(Theme.Colors.card)
 		.clipShape(.rect(cornerRadius: Theme.Radius.md))
 		.overlay {

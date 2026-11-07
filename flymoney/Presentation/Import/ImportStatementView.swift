@@ -30,7 +30,7 @@ struct ImportStatementView: View {
 
 	@State private var editingRow: EditingRowTarget?
 	@State private var showBankPicker = false
-	@State private var namingQueries: [String: String] = [:]
+	@FocusState private var namingGroupID: String?
 
 	var body: some View {
 		NavigationStack {
@@ -45,8 +45,16 @@ struct ImportStatementView: View {
 				.listStyle(.plain)
 				.listRowSpacing(Theme.Spacing.xs)
 				.scrollContentBackground(.hidden)
-				.scrollDismissesKeyboard(.automatic)
+				.scrollDismissesKeyboard(.never)
 				.background(Theme.Colors.surface)
+				.onChange(of: namingGroupID) { _, _ in
+					scrollToNamingGroup(proxy)
+				}
+				.onGeometryChange(for: CGFloat.self) { geometry in
+					geometry.size.height
+				} action: { _ in
+					scrollToNamingGroup(proxy)
+				}
 			}
 			.navigationTitle(Text(String(localized: "Review import")))
 			.navigationBarTitleDisplayMode(.inline)
@@ -205,6 +213,11 @@ struct ImportStatementView: View {
 		withAnimation { proxy.scrollTo(target.id, anchor: .top) }
 	}
 
+	private func scrollToNamingGroup(_ proxy: ScrollViewProxy) {
+		guard let namingGroupID else { return }
+		proxy.scrollTo(namingGroupID, anchor: .top)
+	}
+
 	// MARK: - Groups
 
 	private func groupRows(_ proxy: ScrollViewProxy) -> some View {
@@ -212,21 +225,20 @@ struct ImportStatementView: View {
 			ImportGroupCard(
 				group: group,
 				needsAttention: viewModel.groupNeedsAttention(group),
-				suggestions: viewModel.suggestions(for: namingQueries[group.id] ?? group.titleName),
+				suggestions: namingGroupID == group.id ? viewModel.suggestions(for: group.titleName) : [],
 				limitsByTitleID: viewModel.limitsByTitleID,
 				isNewName: viewModel.isNewTitleName(group.titleName),
+				namingGroupID: $namingGroupID,
 				// `ImportGroupCard` takes these as `@Sendable` because SwiftUI's
 				// `Binding` setters are — but SwiftUI only ever calls them on the
 				// main actor, which is what `assumeIsolated` states here rather
 				// than hopping and losing the edit's ordering.
 				onRename: { newName in
 					MainActor.assumeIsolated {
-						namingQueries[group.id] = newName
 						viewModel.rename(groupID: group.id, to: newName)
 					}
 				},
 				onSelectExisting: {
-					namingQueries[group.id] = $0.name
 					viewModel.selectExistingTitle(groupID: group.id, title: $0)
 				},
 				onSetRememberAlias: { value in
@@ -239,9 +251,7 @@ struct ImportStatementView: View {
 				onTapRow: { row in editingRow = EditingRowTarget(id: row.id, groupID: group.id, row: row) },
 				onDeleteRow: { rowID in viewModel.deleteRow(groupID: group.id, rowID: rowID) },
 				onAddRow: { editingRow = EditingRowTarget(id: UUID(), groupID: group.id, row: nil) },
-				onBeginNaming: {
-					withAnimation { proxy.scrollTo(group.id, anchor: .top) }
-				}
+				onNamingLayoutChange: { scrollToNamingGroup(proxy) }
 			)
 			.id(group.id)
 			.listRowInsets(EdgeInsets(top: 0, leading: Theme.Spacing.xxl, bottom: 0, trailing: Theme.Spacing.xxl))

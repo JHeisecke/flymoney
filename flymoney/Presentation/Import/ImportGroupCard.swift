@@ -20,6 +20,7 @@ struct ImportGroupCard: View {
 	let suggestions: [ExpenseTitle]
 	let limitsByTitleID: [UUID: Money]
 	let isNewName: Bool
+	let namingGroupID: FocusState<String?>.Binding
 	let onRename: @Sendable (String) -> Void
 	let onSelectExisting: (ExpenseTitle) -> Void
 	let onSetRememberAlias: @Sendable (Bool) -> Void
@@ -28,14 +29,10 @@ struct ImportGroupCard: View {
 	let onTapRow: (EditableRow) -> Void
 	let onDeleteRow: (UUID) -> Void
 	let onAddRow: () -> Void
-	/// Lets the screen scroll this card to the top: the dropdown opens below the
-	/// field, and a group sitting low in the list would open it behind the
-	/// commit bar and the keyboard.
-	let onBeginNaming: () -> Void
+	let onNamingLayoutChange: () -> Void
 
 	@State private var isExpanded: Bool?
 	@State private var isNaming = false
-	@FocusState private var isNameFocused: Bool
 
 	/// Nil until the user touches it, so a group that starts open because it
 	/// needs attention still closes on tap — and one they opened by hand does
@@ -53,6 +50,11 @@ struct ImportGroupCard: View {
 		VStack(alignment: .leading, spacing: 0) {
 			if isNaming {
 				namingHeader
+					.onGeometryChange(for: CGFloat.self) { geometry in
+						geometry.size.height
+					} action: { _ in
+						onNamingLayoutChange()
+					}
 			} else {
 				header
 			}
@@ -65,8 +67,8 @@ struct ImportGroupCard: View {
 		.background(Theme.Colors.card)
 		.clipShape(.rect(cornerRadius: Theme.Radius.md))
 		.opacity(group.isExcluded ? 0.45 : 1)
-		.onChange(of: isNameFocused) { _, focused in
-			if !focused { isNaming = false }
+		.onChange(of: namingGroupID.wrappedValue) { _, focusedGroupID in
+			if focusedGroupID != group.id { isNaming = false }
 		}
 		.swipeActions(edge: .trailing, allowsFullSwipe: false) {
 			Button(role: group.isExcluded ? .cancel : .destructive) {
@@ -85,8 +87,7 @@ struct ImportGroupCard: View {
 		HStack(spacing: Theme.Spacing.md) {
 			Button {
 				isNaming = true
-				isNameFocused = true
-				onBeginNaming()
+				namingGroupID.wrappedValue = group.id
 			} label: {
 				VStack(alignment: .leading, spacing: 3) {
 					Text(group.titleName.isEmpty ? String(localized: Lexicon.untitled) : group.titleName)
@@ -185,9 +186,9 @@ struct ImportGroupCard: View {
 					.foregroundStyle(Theme.Colors.ink)
 					.textFieldStyle(.plain)
 					.tint(Theme.Colors.accent)
-					.focused($isNameFocused)
+					.focused(namingGroupID, equals: group.id)
 					.submitLabel(.done)
-					.onSubmit { isNameFocused = false }
+					.onSubmit { namingGroupID.wrappedValue = nil }
 
 				// The field arrives pre-filled with the parsed merchant, and
 				// renaming means replacing all of it — without this the user
@@ -219,11 +220,12 @@ struct ImportGroupCard: View {
 					selectedID: group.existingTitleID,
 					limitsByTitleID: limitsByTitleID,
 					createName: isNewName ? group.titleName : nil,
+					keyboardDismissMode: .never,
 					onSelect: { title in
 						onSelectExisting(title)
-						isNameFocused = false
+						namingGroupID.wrappedValue = nil
 					},
-					onCreate: { isNameFocused = false }
+					onCreate: { namingGroupID.wrappedValue = nil }
 				)
 			}
 

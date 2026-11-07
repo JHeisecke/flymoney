@@ -224,7 +224,7 @@ final class ImportStatementViewModel {
 	/// so a strong match never falls below a merely alphabetical one.
 	func suggestions(for query: String) -> [ExpenseTitle] {
 		let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-		guard !trimmed.isEmpty else { return Array(allTitles.prefix(suggestionLimit)) }
+		guard !trimmed.isEmpty else { return allTitles }
 
 		let probe = ExpenseTitle(name: trimmed)
 		let fuzzy = (MergeMatcher.findMatches(imported: [probe], local: allTitles)[probe.id] ?? [])
@@ -232,10 +232,7 @@ final class ImportStatementViewModel {
 		let substring = allTitles.filter { $0.name.localizedStandardContains(trimmed) }
 
 		var seen = Set<UUID>()
-		return (fuzzy + substring)
-			.filter { seen.insert($0.id).inserted }
-			.prefix(suggestionLimit)
-			.map { $0 }
+		return (fuzzy + substring).filter { seen.insert($0.id).inserted }
 	}
 
 	/// True when `name` matches no existing title, so the field can offer to
@@ -245,8 +242,6 @@ final class ImportStatementViewModel {
 		guard !trimmed.isEmpty else { return false }
 		return !allTitles.contains { $0.name.localizedCaseInsensitiveCompare(trimmed) == .orderedSame }
 	}
-
-	private let suggestionLimit = 6
 
 	// MARK: - What still needs a decision
 

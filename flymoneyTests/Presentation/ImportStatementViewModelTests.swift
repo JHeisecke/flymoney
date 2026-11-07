@@ -242,13 +242,16 @@ struct ImportStatementViewModelTests {
 	}
 	// MARK: - Naming a group (the autocomplete surface)
 
-	@Test("an empty query offers existing titles rather than nothing")
+	@Test("the category picker can browse the entire catalog and all matching titles")
 	func suggestionsForEmptyQuery() async throws {
 		let d = draft(groups: [StatementImportGroup(id: "COPETROL", rawDetail: "COPETROL", suggestedTitleID: nil, rows: [row(date: .now)])])
-		let vm = await makeVM(draft: d, titles: [ExpenseTitle(name: "Combustible"), ExpenseTitle(name: "Supermercado")])
+		let matching = (1...12).map { ExpenseTitle(name: "Supermercado \($0)") }
+		let other = ExpenseTitle(name: "Combustible")
+		let vm = await makeVM(draft: d, titles: matching + [other])
 		await vm.pickedFile(try sourceFile())
 
-		#expect(vm.suggestions(for: "").count == 2)
+		#expect(Set(vm.suggestions(for: "").map(\.id)) == Set((matching + [other]).map(\.id)))
+		#expect(Set(vm.suggestions(for: "mercado").map(\.id)) == Set(matching.map(\.id)))
 	}
 
 	@Test("a substring match is offered even when it is not a fuzzy match")
