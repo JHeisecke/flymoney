@@ -10,13 +10,24 @@ import Observation
 
 @MainActor @Observable
 final class BudgetTemplateViewModel {
-	var profile: BudgetProfile = .javier
+	var profile: BudgetProfile {
+		didSet { onProfileChange(profile) }
+	}
 	var month = CalendarMonth(year: 2026, month: 11)
 	private(set) var reviewModel: BudgetReviewViewModel?
 	private(set) var isLoading = false
 	private(set) var error: String?
 	private let useCases: any BudgetUseCases
-	init(useCases: any BudgetUseCases) { self.useCases = useCases }
+	private let onProfileChange: (BudgetProfile) -> Void
+	init(
+		useCases: any BudgetUseCases,
+		profile: BudgetProfile = .javier,
+		onProfileChange: @escaping (BudgetProfile) -> Void = { _ in }
+	) {
+		self.useCases = useCases
+		self.profile = profile
+		self.onProfileChange = onProfileChange
+	}
 	func prepare() async {
 		guard !isLoading else { return }
 		isLoading = true

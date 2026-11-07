@@ -198,7 +198,12 @@ final class AppAssembly {
 	}
 
 	func makeBudgetTemplateViewModel() -> BudgetTemplateViewModel {
-		BudgetTemplateViewModel(useCases: budgetUseCases)
+		let defaults = UserDefaults.standard
+		let profileKey = "selectedBudgetTemplateProfile"
+		let profile = defaults.string(forKey: profileKey).flatMap(BudgetProfile.init(rawValue:)) ?? .javier
+		return BudgetTemplateViewModel(
+			useCases: budgetUseCases, profile: profile,
+			onProfileChange: { defaults.set($0.rawValue, forKey: profileKey) })
 	}
 
 	func makeSharingViewModel(role: SharingRole) -> SharingViewModel {
