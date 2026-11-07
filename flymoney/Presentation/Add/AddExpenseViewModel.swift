@@ -15,6 +15,8 @@ final class AddExpenseViewModel {
 	private(set) var isSaving = false
 	var saveError: String?
 	private(set) var didJustSave = false
+	private(set) var showFirstExpenseHelp = false
+	private(set) var didSaveGuidedExpense = false
 
 	private(set) var suggestions: [ExpenseTitle] = []
 	private(set) var selectedTitleID: UUID?
@@ -22,6 +24,10 @@ final class AddExpenseViewModel {
 	private(set) var limitsByTitleID: [UUID: Money] = [:]
 
 	private let addExpense: any AddExpenseUseCase
+	private let hasExpenses: any HasExpensesUseCase
+	private let defaults: UserDefaults
+	private let onboardingKey: String
+	private var eligibilityGeneration = 0
 	private let searchTitles: any SearchExpenseTitlesUseCase
 	private let remainingBudget: any RemainingBudgetUseCase
 	private let fetchLimits: any FetchEffectiveLimitsUseCase
@@ -30,19 +36,51 @@ final class AddExpenseViewModel {
 	private var searchTask: Task<Void, Never>?
 
 	init(addExpense: any AddExpenseUseCase,
+		 hasExpenses: any HasExpensesUseCase,
 		 searchTitles: any SearchExpenseTitlesUseCase,
 		 remainingBudget: any RemainingBudgetUseCase,
 		 fetchLimits: any FetchEffectiveLimitsUseCase,
 		 currencyCode: String,
 		 calendar: Calendar = .current,
+		 defaults: UserDefaults = .standard,
+		 onboardingKey: String = "firstExpenseHelpCompleted",
 		 searchDebounce: Duration = .milliseconds(200)) {
 		self.addExpense = addExpense
+		self.hasExpenses = hasExpenses
+		self.defaults = defaults
+		self.onboardingKey = onboardingKey
 		self.searchTitles = searchTitles
 		self.remainingBudget = remainingBudget
 		self.fetchLimits = fetchLimits
 		self.calendar = calendar
 		self.searchDebounce = searchDebounce
 		self.form = AddExpenseFormModel(currencyCode: currencyCode)
+	}
+
+	func refreshFirstExpenseHelp() async {
+		eligibilityGeneration += 1
+		let generation = eligibilityGeneration
+		guard !defaults.bool(forKey: onboardingKey) else {
+			showFirstExpenseHelp = false
+			return
+		}
+		do {
+			let exists = try await hasExpenses.execute()
+			guard generation == eligibilityGeneration, !defaults.bool(forKey: onboardingKey) else { return }
+			if exists {
+				finishFirstExpenseHelp()
+			} else {
+				showFirstExpenseHelp = true
+			}
+		} catch {
+			// Keep the form available; a later refresh can retry.
+		}
+	}
+
+	func finishFirstExpenseHelp() {
+		eligibilityGeneration += 1
+		defaults.set(true, forKey: onboardingKey)
+		showFirstExpenseHelp = false
 	}
 
 	func search(_ query: String) {
@@ -108,6 +146,8 @@ final class AddExpenseViewModel {
 		do {
 			_ = try await addExpense.execute(
 				amount: clean.amount, titleName: clean.titleName, date: clean.date, detail: clean.detail, isRecurring: form.isRecurring)
+			didSaveGuidedExpense = showFirstExpenseHelp
+			finishFirstExpenseHelp()
 			form.reset()
 			suggestions = []
 			selectedTitleID = nil
@@ -127,6 +167,7 @@ final class AddExpenseViewModel {
 	/// in-progress form — for when something outside this screen (a statement
 	/// import) may have changed a title's spend.
 	func refreshAfterExternalChange() async {
+		await refreshFirstExpenseHelp()
 		if let selectedTitleID {
 			await loadBudget(for: selectedTitleID)
 		}

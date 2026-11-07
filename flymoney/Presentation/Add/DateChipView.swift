@@ -39,7 +39,7 @@ struct DateChipView: View {
 			.frame(minHeight: 44)
 
 			if let isRecurring {
-				RecurrenceChipButton(date: date, isRecurring: isRecurring)
+				RecurrenceChipButton(isRecurring: isRecurring)
 			}
 		}
 		.popover(isPresented: $isPickerPresented, attachmentAnchor: .point(.bottom)) {
@@ -65,26 +65,13 @@ struct DateChipView: View {
 }
 
 private struct RecurrenceChipButton: View {
-	let date: Date
 	@Binding var isRecurring: Bool
-	@AppStorage("hasSeenRecurringExpenseExplanation") private var hasSeenExplanation = false
-	@AppStorage("recurringExpenseExplanationCount") private var explanationCount = 0
-	@AppStorage("recurringExpenseExplanationFirstShownAt") private var firstShownTimestamp = 0.0
-	@State private var isExplanationPresented = false
+	@State private var guides = GuideCoordinator()
 
 	var body: some View {
 		Button {
-			isRecurring.toggle()
-			if isRecurring {
-				var explanation = RecurrenceExplanationState(
-					displayCount: explanationCount,
-					firstShownAt: firstShownTimestamp > 0 ? Date(timeIntervalSince1970: firstShownTimestamp) : nil)
-				isExplanationPresented = explanation.recordActivation(
-					at: .now, calendar: .current, hasSeenLegacyExplanation: hasSeenExplanation)
-				explanationCount = explanation.displayCount
-				firstShownTimestamp = explanation.firstShownAt?.timeIntervalSince1970 ?? 0
-				hasSeenExplanation = explanationCount > 0
-			}
+			if isRecurring { isRecurring = false }
+			else { guides.request(.recurringExpense) { isRecurring = true } }
 		} label: {
 			Label("Recurring expense", systemImage: "arrow.clockwise")
 				.labelStyle(.iconOnly)
@@ -103,10 +90,6 @@ private struct RecurrenceChipButton: View {
 		.buttonStyle(.hapticPlain)
 		.accessibilityValue(isRecurring ? String(localized: "On") : String(localized: "Off"))
 		.accessibilityAddTraits(isRecurring ? .isSelected : [])
-		.alert("Recurring expense", isPresented: $isExplanationPresented) {
-			Button("Got it", role: .cancel) { }
-		} message: {
-			Text("You’re about to mark this expense as recurring on \(date.formatted(date: .long, time: .omitted)). You can turn this option off by tapping the button again.")
-		}
+		.modifier(GuidePresentation(coordinator: guides))
 	}
 }

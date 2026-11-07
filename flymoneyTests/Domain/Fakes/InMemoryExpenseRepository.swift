@@ -43,6 +43,8 @@ actor InMemoryExpenseRepository: ExpenseRepository {
 		storage.removeAll { $0.titleID == titleID }
 	}
 
+	func hasExpenses() async throws -> Bool { !storage.isEmpty }
+
 	func count(forTitleID titleID: UUID) async throws -> Int {
 		storage.filter { $0.titleID == titleID }.count
 	}

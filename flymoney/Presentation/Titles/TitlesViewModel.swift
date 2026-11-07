@@ -82,7 +82,8 @@ final class TitlesViewModel {
 		}
 	}
 
-	func beginCreate() {
+	func beginCreate(month: CalendarMonth? = nil) {
+		let month = month ?? self.month
 		let form = TitleEditorModel(currencyCode: currencyCode, effectiveMonth: month)
 		editor = TitleEditorViewModel(
 			form: form, month: month, titleID: nil, titleName: "",

@@ -13,6 +13,16 @@ import Testing
 @Suite("SwiftData expense repository", .tags(.persistence))
 struct SwiftDataExpenseRepositoryTests {
 
+	@Test("Existence includes expenses from earlier months")
+	func expenseExistence() async throws {
+		let container = try TestSupport.makeContainer()
+		let repository = SwiftDataExpenseRepository(modelContainer: container)
+		#expect(try await !repository.hasExpenses())
+		let expense = Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: UUID(), date: Date(timeIntervalSince1970: 1))
+		try await repository.add(expense)
+		#expect(try await repository.hasExpenses())
+	}
+
 	@Test("Recurrence persists across repository instances and can be switched off")
 	func recurringExpensePersistence() async throws {
 		let container = try TestSupport.makeContainer()

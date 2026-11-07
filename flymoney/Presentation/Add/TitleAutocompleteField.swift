@@ -53,6 +53,7 @@ struct TitleAutocompleteField: View {
 	private var field: some View {
 		ZStack(alignment: .trailing) {
 			TextField("", text: $titleName)
+				.accessibilityLabel(Text(Lexicon.Term.singular.text))
 				.font(Theme.Typography.body17)
 				.tint(Theme.Colors.accent)
 				.focused($isFocused)

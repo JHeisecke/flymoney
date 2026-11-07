@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HistoryView: View {
 	@State private var viewModel: HistoryViewModel
+	@State private var guides = GuideCoordinator()
 	@State private var sharingRole: SharingRole?
 	@State private var showsRecurringExpenses = false
 	@Environment(\.haptics) private var haptics
@@ -39,6 +40,7 @@ struct HistoryView: View {
 				.padding(.top, Theme.Spacing.s18)
 		}
 		.background(Theme.Colors.surface)
+		.modifier(GuidePresentation(coordinator: guides))
 		.task { await viewModel.load() }
 		.onChange(of: viewModel.month) { _, _ in
 			Task { await viewModel.load() }
@@ -78,7 +80,7 @@ struct HistoryView: View {
 				.foregroundStyle(Theme.Colors.ink)
 			Spacer()
 			Button {
-				showsRecurringExpenses = true
+				guides.request(.recurringList) { showsRecurringExpenses = true }
 			} label: {
 				Label("View recurring expenses", systemImage: "arrow.clockwise")
 					.labelStyle(.iconOnly)
@@ -89,9 +91,10 @@ struct HistoryView: View {
 			.buttonStyle(.hapticPlain)
 			Menu {
 				Button("Share this month", systemImage: "qrcode") {
-					sharingRole = .send(month: viewModel.month)
+					let month = viewModel.month
+					guides.request(.shareBudget) { sharingRole = .send(month: month) }
 				}
-				Button("Receive budget", systemImage: "qrcode.viewfinder") { sharingRole = .receive }
+				Button("Receive budget", systemImage: "qrcode.viewfinder") { guides.request(.receiveBudget) { sharingRole = .receive } }
 			} label: {
 				Label("Share month", systemImage: "square.and.arrow.up")
 			}

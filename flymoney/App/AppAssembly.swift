@@ -136,6 +136,7 @@ final class AppAssembly {
 	func makeAddExpenseViewModel() -> AddExpenseViewModel {
 		AddExpenseViewModel(
 			addExpense: makeAddExpenseUseCase(),
+			hasExpenses: HasExpensesUseCaseImpl(expenses: expenseRepo),
 			searchTitles: makeSearchExpenseTitlesUseCase(),
 			remainingBudget: makeRemainingBudgetUseCase(),
 			fetchLimits: makeFetchEffectiveLimitsUseCase(),

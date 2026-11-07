@@ -23,20 +23,108 @@ struct AddExpenseViewModelTests {
 		expenses: InMemoryExpenseRepository = InMemoryExpenseRepository(),
 		titles: InMemoryExpenseTitleRepository = InMemoryExpenseTitleRepository(),
 		limits: InMemoryTitleLimitRepository = InMemoryTitleLimitRepository(),
-		searchDebounce: Duration = .milliseconds(1)
+		searchDebounce: Duration = .milliseconds(1),
+		hasExpenses: (any HasExpensesUseCase)? = nil,
+		addExpense: (any AddExpenseUseCase)? = nil,
+		defaults: UserDefaults = UserDefaults(suiteName: UUID().uuidString) ?? UserDefaults(),
+		onboardingKey: String = UUID().uuidString
 	) -> AddExpenseViewModel {
 		let useCase = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
 		let search = SearchExpenseTitlesUseCaseImpl(titles: titles)
 		let budget = RemainingBudgetUseCaseImpl(expenses: expenses, limits: limits, calendar: Self.utc)
 		let vm = AddExpenseViewModel(
-			addExpense: useCase,
+			addExpense: addExpense ?? useCase,
+			hasExpenses: hasExpenses ?? HasExpensesUseCaseImpl(expenses: expenses),
 			searchTitles: search,
 			remainingBudget: budget,
 			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: limits),
 			currencyCode: "USD",
 			calendar: Self.utc,
+			defaults: defaults,
+			onboardingKey: onboardingKey,
 			searchDebounce: searchDebounce)
 		return vm
+	}
+
+	@Test("Empty history shows help; skipping preserves the draft and survives a new view model")
+	func skipFirstExpenseHelp() async throws {
+		let defaults = try #require(UserDefaults(suiteName: UUID().uuidString))
+		let key = UUID().uuidString
+		let vm = makeVM(defaults: defaults, onboardingKey: key)
+		await vm.refreshFirstExpenseHelp()
+		#expect(vm.showFirstExpenseHelp)
+		vm.form.amountDecimal = 12
+		vm.form.titleName = "Coffee"
+		vm.finishFirstExpenseHelp()
+		#expect(vm.form.amountDecimal == 12)
+		#expect(vm.form.titleName == "Coffee")
+		let reopened = makeVM(defaults: defaults, onboardingKey: key)
+		await reopened.refreshFirstExpenseHelp()
+		#expect(!reopened.showFirstExpenseHelp)
+	}
+
+	@Test("First guided save completes help and subsequent saves use the ordinary confirmation")
+	func guidedSave() async throws {
+		let defaults = try #require(UserDefaults(suiteName: UUID().uuidString))
+		let key = UUID().uuidString
+		let vm = makeVM(defaults: defaults, onboardingKey: key)
+		await vm.refreshFirstExpenseHelp()
+		vm.form.amountDecimal = 12
+		vm.form.titleName = "Coffee"
+		await vm.save()
+		#expect(vm.didSaveGuidedExpense)
+		#expect(!vm.showFirstExpenseHelp)
+		let reopened = makeVM(defaults: defaults, onboardingKey: key)
+		await reopened.refreshFirstExpenseHelp()
+		#expect(!reopened.showFirstExpenseHelp)
+		vm.form.amountDecimal = 2
+		vm.form.titleName = "Coffee"
+		await vm.save()
+		#expect(!vm.didSaveGuidedExpense)
+	}
+
+	@Test("A failed save retains the help and draft")
+	func failedGuidedSave() async {
+		let vm = makeVM(addExpense: FailingAddExpense())
+		await vm.refreshFirstExpenseHelp()
+		vm.form.amountDecimal = 12
+		vm.form.titleName = "Coffee"
+		await vm.save()
+		#expect(vm.showFirstExpenseHelp)
+		#expect(vm.form.amountDecimal == 12)
+		#expect(vm.form.titleName == "Coffee")
+		#expect(vm.saveError != nil)
+	}
+
+	@Test("Import refresh disables help when an older imported expense appears")
+	func importedExpenseDisablesHelp() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let vm = makeVM(expenses: expenses)
+		await vm.refreshFirstExpenseHelp()
+		let expense = Expense(amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: UUID(), date: .distantPast)
+		await expenses.seed(expense, importFingerprint: "import")
+		await vm.refreshAfterExternalChange()
+		#expect(!vm.showFirstExpenseHelp)
+	}
+
+	@Test("A delayed eligibility check cannot undo a skip or save")
+	func delayedEligibility() async {
+		for shouldSave in [false, true] {
+			let check = DelayedHasExpenses()
+			let vm = makeVM(hasExpenses: check)
+			let task = Task { await vm.refreshFirstExpenseHelp() }
+			await check.waitUntilStarted()
+			if shouldSave {
+				vm.form.amountDecimal = 12
+				vm.form.titleName = "Coffee"
+				await vm.save()
+			} else {
+				vm.finishFirstExpenseHelp()
+			}
+			await check.complete()
+			await task.value
+			#expect(!vm.showFirstExpenseHelp)
+		}
 	}
 
 	private var currentMonthKey: Int {
@@ -438,11 +526,14 @@ struct AddExpenseViewModelTests {
 		let budget = RemainingBudgetUseCaseImpl(expenses: expenses, limits: limits, calendar: Self.utc)
 		return AddExpenseViewModel(
 			addExpense: useCase,
+			hasExpenses: HasExpensesUseCaseImpl(expenses: expenses),
 			searchTitles: titles,
 			remainingBudget: budget,
 			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: limits),
 			currencyCode: "USD",
 			calendar: Self.utc,
+			defaults: UserDefaults(suiteName: UUID().uuidString) ?? UserDefaults(),
+			onboardingKey: UUID().uuidString,
 			searchDebounce: searchDebounce)
 	}
 }
@@ -460,5 +551,31 @@ actor CountingSearchUseCase: SearchExpenseTitlesUseCase {
 		callCount += 1
 		lastQuery = query
 		return try await titles.search(matching: query)
+	}
+}
+
+private struct FailingAddExpense: AddExpenseUseCase {
+	func execute(amount: Money, titleName: String, date: Date, detail: String?, isRecurring: Bool) async throws -> Expense {
+		throw ExpenseRepositoryError.notFound
+	}
+}
+
+private actor DelayedHasExpenses: HasExpensesUseCase {
+	private var continuation: CheckedContinuation<Bool, Never>?
+	private var started: CheckedContinuation<Void, Never>?
+	func execute() async throws -> Bool {
+		await withCheckedContinuation { continuation in
+			self.continuation = continuation
+			started?.resume()
+			started = nil
+		}
+	}
+	func waitUntilStarted() async {
+		if continuation != nil { return }
+		await withCheckedContinuation { started = $0 }
+	}
+	func complete() {
+		continuation?.resume(returning: false)
+		continuation = nil
 	}
 }

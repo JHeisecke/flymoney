@@ -52,6 +52,7 @@ struct HeroAmountView: View {
 				.font(Theme.Typography.display32)
 				.foregroundStyle(Theme.Colors.inkQuaternary)
 			TextField("0", text: $amountText)
+				.accessibilityLabel(Text("Amount"))
 				.font(Theme.Typography.display66)
 				.foregroundStyle(form.amountDecimal > 0 ? Theme.Colors.ink : Theme.Colors.inkQuaternary)
 				.tint(Theme.Colors.accent)

@@ -2540,6 +2540,306 @@
           }
         }
       }
+    },
+    "Skip" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir"
+          }
+        }
+      }
+    },
+    "Expense saved. You can see it in History." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gasto guardado. Puedes verlo en Historial."
+          }
+        }
+      }
+    },
+    "Enter an amount. Choose a category or type a new name to create it when you save." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingresa un importe. Elige una categoría o escribe un nombre nuevo para crearla al guardar."
+          }
+        }
+      }
+    },
+    "First expense and category" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primer gasto y categoría"
+          }
+        }
+      }
+    },
+    "Share a budget" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir presupuesto"
+          }
+        }
+      }
+    },
+    "New category" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nueva categoría"
+          }
+        }
+      }
+    },
+    "Getting started" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeros pasos"
+          }
+        }
+      }
+    },
+    "Recurring payments" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pagos recurrentes"
+          }
+        }
+      }
+    },
+    "Budgets and categories" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presupuestos y categorías"
+          }
+        }
+      }
+    },
+    "Importing statements" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importar extractos"
+          }
+        }
+      }
+    },
+    "Guides" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guías"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        }
+      }
+    },
+    "Enter an amount and choose a category or type a new name. Save the expense, then find it in History." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingresa un importe y elige una categoría o escribe un nombre nuevo. Guarda el gasto y búscalo en Historial."
+          }
+        }
+      }
+    },
+    "Mark this expense to find it in Recurring expenses. Each payment is recorded manually." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marca este gasto para encontrarlo en Pagos recurrentes. Cada pago se registra manualmente."
+          }
+        }
+      }
+    },
+    "See expenses marked as recurring, grouped by month." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consulta los gastos marcados como recurrentes, agrupados por mes."
+          }
+        }
+      }
+    },
+    "Share the month's limits using QR and Bluetooth. You can also include recorded expenses." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte los límites del mes por QR y Bluetooth. También puedes incluir los gastos registrados."
+          }
+        }
+      }
+    },
+    "Scan the other iPhone's QR code. You can review categories and choose which limits to save." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanea el QR del otro iPhone. Podrás revisar las categorías y elegir qué límites guardar."
+          }
+        }
+      }
+    },
+    "Choose a profile and starting month. The template suggests categories and limits in guaraníes." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un perfil y el mes de inicio. La plantilla propone categorías y límites en guaraníes."
+          }
+        }
+      }
+    },
+    "Create a category and set a limit from the selected month. An existing name reuses that category." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea una categoría y fija un límite desde el mes seleccionado. Si el nombre ya existe, se usa esa categoría."
+          }
+        }
+      }
+    },
+    "Choose a compatible bank PDF. You can review, correct, and select transactions before saving." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un PDF bancario compatible. Podrás revisar, corregir y seleccionar movimientos antes de guardar."
+          }
+        }
+      }
+    },
+    "In Add, enter an amount and choose an existing category or type a new name. Saving creates the category when needed. Find the expense in History. Open Categories to review or edit your categories." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En Agregar, ingresa un importe y elige una categoría existente o escribe un nombre nuevo. Al guardar se crea la categoría si hace falta. Encuentra el gasto en Historial. Abre Categorías para consultar o editar tus categorías."
+          }
+        }
+      }
+    },
+    "Mark an expense as recurring when adding or editing it. Each payment is entered manually. Tap the recurring button again to remove the mark." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marca un gasto como recurrente al agregarlo o editarlo. Cada pago se registra manualmente. Toca de nuevo el botón de recurrente para quitar la marca."
+          }
+        }
+      }
+    },
+    "In History, open recurring expenses to see marked expenses grouped by month. Each payment is entered manually." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En Historial, abre pagos recurrentes para ver los gastos marcados, agrupados por mes. Cada pago se registra manualmente."
+          }
+        }
+      }
+    },
+    "Share limits for the selected month using a QR code and Bluetooth. You can include that month's expenses, or share limits alone. Allow the requested Bluetooth access to transfer the budget." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte los límites del mes seleccionado mediante QR y Bluetooth. Puedes incluir los gastos de ese mes o compartir solo los límites. Permite el acceso a Bluetooth cuando se solicite para transferir el presupuesto."
+          }
+        }
+      }
+    },
+    "Choose a profile and starting month. The template suggests categories and limits in guaraníes for you to review and apply." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un perfil y el mes de inicio. La plantilla propone categorías y límites en guaraníes para revisarlos y aplicarlos."
+          }
+        }
+      }
+    },
+    "Scan the sender's QR code and allow camera and Bluetooth access when requested. Match each received category to an existing one or create a new category.\n\nChoose whether to keep your current limit or use the received limit, then tap Save budget. The received limit takes effect from the selected month until the next change." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanea el QR de quien envía y permite el acceso a la cámara y a Bluetooth cuando se solicite. Asocia cada categoría recibida a una existente o crea una nueva.\n\nElige si conservas tu límite actual o usas el recibido y toca Guardar presupuesto. El límite recibido rige desde el mes seleccionado hasta el próximo cambio."
+          }
+        }
+      }
+    },
+    "Tap Categories at the top of the Categories tab to manage all categories. An existing name reuses that category. A limit applies from the chosen month until the next change. Leave it blank or enter zero to remove the limit from that month.\n\nWhen you delete an expense from the category editor, it disappears from History. To delete a category, first remove all of its expenses." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca Categorías en la parte superior de esa pestaña para administrar todas las categorías. Si el nombre ya existe, se usa esa categoría. Un límite rige desde el mes elegido hasta el próximo cambio. Déjalo vacío o ingresa cero para quitarlo desde ese mes.\n\nSi borras un gasto desde Editar categoría, también se elimina de Historial. Para borrar una categoría, elimina primero todos sus gastos."
+          }
+        }
+      }
+    },
+    "Choose a PDF with selectable text. GNB supports card statements, card activity, and account statements. Itaú supports card statements. Continental supports card and account statements. These formats are imported in guaraníes. FlyMoney uses the currency of your device region, which needs to match.\n\nReview and correct transactions and choose which ones to save. Refunds reduce the total. Already imported transactions start excluded. Possible duplicates start included and can be excluded during review.\n\nChoose a category for the whole group. Turn on Remember to use the same category in future imports." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un PDF con texto seleccionable. Para GNB se admiten extractos y movimientos de tarjeta, y estados de cuenta. Para Itaú se admiten extractos de tarjeta. Para Continental se admiten extractos de tarjeta y movimientos de cuenta. Estos formatos se importan en guaraníes. FlyMoney toma la moneda de la región del dispositivo y debe coincidir.\n\nRevisa y corrige los movimientos y elige cuáles guardar. Los reintegros reducen el total. Los movimientos ya importados aparecen excluidos. Los posibles duplicados quedan incluidos y puedes excluirlos durante la revisión.\n\nElige una categoría para todo el grupo. Activa Recordar para usar esa categoría en futuras importaciones."
+          }
+        }
+      }
+    },
+    "Receive a budget" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recibir presupuesto"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

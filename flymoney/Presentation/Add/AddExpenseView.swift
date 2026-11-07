@@ -10,6 +10,7 @@ import SwiftUI
 struct AddExpenseView: View {
 	@State private var viewModel: AddExpenseViewModel
 	@State private var showSuggestions = false
+	@State private var guides = GuideCoordinator()
 	@Environment(\.haptics) private var haptics
 	let assembly: AppAssembly
 	/// `RootView` owns the single import-sheet presentation site (shared with
@@ -26,6 +27,36 @@ struct AddExpenseView: View {
 	}
 
 	var body: some View {
+		GeometryReader { geometry in
+			ScrollView {
+				formContent
+					.frame(minHeight: geometry.size.height, alignment: .top)
+			}
+			.clipped()
+		}
+		.background(Theme.Colors.surface)
+		.modifier(GuidePresentation(coordinator: guides))
+		.dismissKeyboardOnTap()
+		.simultaneousGesture(TapGesture().onEnded { showSuggestions = false })
+		.task { await viewModel.refreshFirstExpenseHelp() }
+		.onChange(of: viewModel.didJustSave) { _, isTrue in
+			if isTrue {
+				haptics.success()
+				AccessibilityNotification.Announcement(viewModel.didSaveGuidedExpense
+					? String(localized: "Expense saved. You can see it in History.")
+					: String(localized: "Saved")).post()
+				Task {
+					try? await Task.sleep(for: .seconds(2))
+					viewModel.clearSavedFlag()
+				}
+			}
+		}
+		.onChange(of: viewModel.saveError) { _, error in
+			if error != nil { haptics.error() }
+		}
+	}
+
+	private var formContent: some View {
 		VStack(spacing: 0) {
 			EyebrowLabel(text: "New expense", tracking: 2.16)
 				.frame(maxWidth: .infinity)
@@ -60,6 +91,24 @@ struct AddExpenseView: View {
 					.padding(.top, Theme.Spacing.xs)
 			}
 
+			if viewModel.showFirstExpenseHelp {
+				VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+					Text("Enter an amount. Choose a category or type a new name to create it when you save.")
+						.font(Theme.Typography.body14)
+						.fixedSize(horizontal: false, vertical: true)
+					Button {
+						viewModel.finishFirstExpenseHelp()
+					} label: {
+						Text("Skip")
+							.font(Theme.Typography.body14)
+							.frame(minWidth: 44, minHeight: 44, alignment: .leading)
+							.contentShape(.rect)
+					}
+				}
+				.frame(maxWidth: .infinity, alignment: .leading)
+				.padding(.top, Theme.Spacing.s14)
+			}
+
 			ExpenseNoteField(text: $viewModel.form.detail)
 				.padding(.top, Theme.Spacing.s14)
 
@@ -81,22 +130,6 @@ struct AddExpenseView: View {
 			if let saveError = viewModel.saveError { errorToast(saveError) }
 		}
 		.padding(.horizontal, Theme.Spacing.xxl)
-		.background(Theme.Colors.surface)
-		.dismissKeyboardOnTap()
-		.simultaneousGesture(TapGesture().onEnded { showSuggestions = false })
-		.onChange(of: viewModel.didJustSave) { _, isTrue in
-			if isTrue {
-				haptics.success()
-				AccessibilityNotification.Announcement(String(localized: "Saved")).post()
-				Task {
-					try? await Task.sleep(for: .seconds(2))
-					viewModel.clearSavedFlag()
-				}
-			}
-		}
-		.onChange(of: viewModel.saveError) { _, error in
-			if error != nil { haptics.error() }
-		}
 	}
 
 	/// Overlaid on the eyebrow row, whose intrinsic height is shorter than a
@@ -104,7 +137,7 @@ struct AddExpenseView: View {
 	/// area extend beyond its visible glyph rather than shrinking the target.
 	private var importButton: some View {
 		Button(String(localized: "Import statement"), systemImage: "doc.badge.plus") {
-			onImportRequested?()
+			guides.request(.statement) { onImportRequested?() }
 		}
 		.labelStyle(.iconOnly)
 		.font(Theme.Typography.title17)
@@ -115,7 +148,9 @@ struct AddExpenseView: View {
 	}
 
 	private var savedToast: some View {
-		Label(String(localized: "Saved"), systemImage: "checkmark.circle.fill")
+		Label(viewModel.didSaveGuidedExpense
+			? String(localized: "Expense saved. You can see it in History.")
+			: String(localized: "Saved"), systemImage: "checkmark.circle.fill")
 			.font(Theme.Typography.body14)
 			.foregroundStyle(Theme.Colors.success)
 	}

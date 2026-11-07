@@ -18,6 +18,8 @@ protocol ExpenseRepository: Sendable {
 	/// Recurring expenses from all months, newest first.
 	func recurringExpenses() async throws -> [Expense]
 
+	func hasExpenses() async throws -> Bool
+
 	func count(forTitleID titleID: UUID) async throws -> Int
 
 	/// Exact statement-import dedupe: which of these fingerprints are already stored.

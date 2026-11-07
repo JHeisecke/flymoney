@@ -9,6 +9,8 @@ import SwiftUI
 
 struct TitlesView: View {
 	@State private var viewModel: TitlesViewModel
+	@State private var guides = GuideCoordinator()
+	@State private var showGuides = false
 	@State private var showAllTitles = false
 	@State private var showTemplate = false
 	@State private var sharingRole: SharingRole?
@@ -36,6 +38,8 @@ struct TitlesView: View {
 			content
 		}
 		.background(Theme.Colors.surface)
+		.modifier(GuidePresentation(coordinator: guides))
+		.sheet(isPresented: $showGuides) { GuidesView() }
 		.sheet(isPresented: $showTemplate, onDismiss: { Task { await viewModel.load() } }) {
 			BudgetTemplateView(
 				model: assembly.makeBudgetTemplateViewModel(), onApplied: { viewModel.month = $0 })
@@ -98,17 +102,22 @@ struct TitlesView: View {
 			.buttonStyle(.hapticPlain)
 			Spacer()
 			Menu {
-				Button("Load template", systemImage: "list.bullet.rectangle") { showTemplate = true }
+				Button("Load template", systemImage: "list.bullet.rectangle") { guides.request(.template) { showTemplate = true } }
 				Button("Share limits", systemImage: "qrcode") {
-					sharingRole = .send(month: viewModel.month)
+					let month = viewModel.month
+					guides.request(.shareBudget) { sharingRole = .send(month: month) }
 				}
-				Button("Receive budget", systemImage: "qrcode.viewfinder") { sharingRole = .receive }
+				Button("Receive budget", systemImage: "qrcode.viewfinder") { guides.request(.receiveBudget) { sharingRole = .receive } }
+				Button("Guides", systemImage: "book") { showGuides = true }
 			} label: {
-				Label("Budget actions", systemImage: "ellipsis.circle")
+				Label("More options", systemImage: "ellipsis.circle")
+					.frame(minWidth: 44, minHeight: 44)
+					.contentShape(.rect)
 			}
 			.labelStyle(.iconOnly)
 			PillButton(title: "New", systemImage: "plus") {
-				viewModel.beginCreate()
+				let month = viewModel.month
+				guides.request(.category) { viewModel.beginCreate(month: month) }
 			}
 		}
 		.padding(.horizontal, Theme.Spacing.xxl)

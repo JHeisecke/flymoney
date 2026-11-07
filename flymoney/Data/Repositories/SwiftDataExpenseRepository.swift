@@ -85,6 +85,12 @@ actor SwiftDataExpenseRepository: ExpenseRepository {
 		return try modelContext.fetch(descriptor).map { $0.toEntity() }
 	}
 
+	func hasExpenses() async throws -> Bool {
+		var descriptor = FetchDescriptor<ExpenseModel>()
+		descriptor.fetchLimit = 1
+		return try !modelContext.fetch(descriptor).isEmpty
+	}
+
 	func count(forTitleID titleID: UUID) async throws -> Int {
 		let descriptor = FetchDescriptor<ExpenseModel>(predicate: #Predicate { $0.titleID == titleID })
 		return try modelContext.fetchCount(descriptor)
