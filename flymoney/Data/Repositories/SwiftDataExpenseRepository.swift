@@ -45,7 +45,12 @@ actor SwiftDataExpenseRepository: ExpenseRepository {
 		for model in try modelContext.fetch(descriptor) {
 			modelContext.delete(model)
 		}
-		try modelContext.save()
+		do {
+			try modelContext.save()
+		} catch {
+			modelContext.rollback()
+			throw error
+		}
 	}
 
 	func expenses(in interval: DateInterval, titleID: UUID?) async throws -> [Expense] {

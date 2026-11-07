@@ -24,6 +24,8 @@ final class HistoryViewModel {
 	}
 
 	private var titlesByID: [UUID: ExpenseTitle] = [:]
+	private var pendingDeletionIDs: Set<UUID> = []
+	private var loadSequence = 0
 
 	private let fetchExpenses: any FetchExpensesForMonthUseCase
 	private let fetchTitles: any FetchExpenseTitlesUseCase
@@ -54,15 +56,22 @@ final class HistoryViewModel {
 	}
 
 	func load() async {
+		loadSequence += 1
+		let sequence = loadSequence
+		let requestedMonth = month
 		isLoading = true
-		defer { isLoading = false }
+		loadError = nil
+		defer {
+			if sequence == loadSequence { isLoading = false }
+		}
 		do {
 			let titles = try await fetchTitles.execute()
+			let expenses = try await fetchExpenses.execute(requestedMonth)
+			guard sequence == loadSequence, month == requestedMonth else { return }
 			titlesByID = Dictionary(uniqueKeysWithValues: titles.map { ($0.id, $0) })
-			let expenses = try await fetchExpenses.execute(month)
-			sections = buildSections(from: expenses)
-			loadError = nil
+			sections = buildSections(from: expenses.filter { !pendingDeletionIDs.contains($0.id) })
 		} catch {
+			guard sequence == loadSequence, month == requestedMonth else { return }
 			loadError = String(localized: "Couldn\u{2019}t load expenses.")
 		}
 	}
@@ -76,36 +85,39 @@ final class HistoryViewModel {
 	}
 
 	func delete(rowID: UUID) async {
-		guard let (sectionIndex, rowIndex) = locate(rowID: rowID) else { return }
-		let restored = sections[sectionIndex].rows[rowIndex]
-		var newSections = sections
-		var section = newSections[sectionIndex]
+		guard !pendingDeletionIDs.contains(rowID),
+			  let (sectionIndex, rowIndex) = locate(rowID: rowID) else { return }
+		let section = sections[sectionIndex]
 		var rows = section.rows
-		rows.remove(at: rowIndex)
+		let removed = rows.remove(at: rowIndex)
+		pendingDeletionIDs.insert(rowID)
+		defer { pendingDeletionIDs.remove(rowID) }
 		if rows.isEmpty {
-			newSections.remove(at: sectionIndex)
+			sections.remove(at: sectionIndex)
 		} else {
-			section = HistorySection(id: section.id, day: section.day, rows: rows)
-			newSections[sectionIndex] = section
+			sections[sectionIndex] = HistorySection(id: section.id, day: section.day, rows: rows)
 		}
-		sections = newSections
 
 		do {
 			try await deleteExpense.execute(id: rowID)
+			if isLoading { await load() }
 		} catch {
-			var restoredRows = sections[safe: sectionIndex]?.rows ?? []
-			restoredRows.insert(restored, at: min(rowIndex, restoredRows.count))
-			if sections[safe: sectionIndex] != nil {
-				sections[sectionIndex] = HistorySection(
-					id: sections[sectionIndex].id, day: sections[sectionIndex].day,
-					rows: restoredRows)
-			} else {
-				let revived = HistorySection(id: restored.date.startOfDay(in: _calendar),
-											 day: restored.date,
-											 rows: [restored])
-				sections.insert(revived, at: sectionIndex)
-			}
+			restoreDeletedRow(removed, dayID: section.id)
 			loadError = String(localized: "Couldn\u{2019}t delete. Try again.")
+		}
+	}
+
+	private func restoreDeletedRow(_ row: HistoryRow, dayID: Date) {
+		guard CalendarMonth.containing(row.date, using: _calendar) == month,
+			  locate(rowID: row.id) == nil else { return }
+		if let index = sections.firstIndex(where: { $0.id == dayID }) {
+			var rows = sections[index].rows
+			rows.append(row)
+			rows.sort { $0.date > $1.date }
+			sections[index] = HistorySection(id: dayID, day: rows.first?.date ?? dayID, rows: rows)
+		} else {
+			let index = sections.firstIndex(where: { $0.id < dayID }) ?? sections.endIndex
+			sections.insert(HistorySection(id: dayID, day: row.date, rows: [row]), at: index)
 		}
 	}
 

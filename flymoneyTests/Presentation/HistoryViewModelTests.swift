@@ -174,11 +174,17 @@ struct HistoryViewModelTests {
 		#expect(vm.sections.count == 1)
 	}
 
-	@Test("delete error restores row", .tags(.viewModel))
-	func deleteErrorRestores() async throws {
+	@Test("delete error restores the only row under its original day", .tags(.viewModel))
+	func deleteErrorRestoresOriginalDay() async throws {
 		let expenses = InMemoryExpenseRepository()
-		let id = UUID()
-		try await expenses.add(Expense(id: id, amount: Money(minorUnits: 100, currencyCode: "USD"), titleID: UUID(), date: Date(timeIntervalSince1970: 1748736000)))
+		let amount = Money(minorUnits: 100, currencyCode: "USD")
+		let firstDay = Date(timeIntervalSince1970: 1_748_736_000)
+		let secondDay = Date(timeIntervalSince1970: 1_748_822_400)
+		let titleID = UUID()
+		let earlier = Expense(amount: amount, titleID: titleID, date: firstDay.addingTimeInterval(3_600), isRecurring: true)
+		let later = Expense(amount: amount, titleID: titleID, date: secondDay.addingTimeInterval(7_200), isRecurring: true)
+		try await expenses.add(earlier)
+		try await expenses.add(later)
 
 		let titles = InMemoryExpenseTitleRepository()
 		let vm = HistoryViewModel(
@@ -193,10 +199,11 @@ struct HistoryViewModelTests {
 			now: Date(timeIntervalSince1970: 1748736000))
 
 		await vm.load()
-		#expect(vm.sections.first?.rows.count == 1)
+		let originalSections = vm.sections
+		#expect(originalSections.map(\.id) == [secondDay, firstDay])
 
-		await vm.delete(rowID: id)
-		#expect(vm.sections.first?.rows.count == 1)
+		await vm.delete(rowID: later.id)
+		#expect(vm.sections == originalSections)
 		#expect(vm.loadError != nil)
 	}
 
