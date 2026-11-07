@@ -32,23 +32,26 @@ struct GuidesView: View {
 			.navigationTitle("Guides")
 			.navigationDestination(for: Guide.self) { guide in
 				ScrollView {
-					Text(guide.detail)
-						.frame(maxWidth: .infinity, alignment: .leading)
-						.padding()
+					GuideInstructions(symbolName: guide.symbolName, points: guide.detail)
 				}
 				.navigationTitle(Text(guide.title))
 				.navigationBarTitleDisplayMode(.inline)
 			}
 			.toolbar {
-				ToolbarItem(placement: .cancellationAction) {
-					Button("Close") { dismiss() }
+				ToolbarItem(placement: .topBarTrailing) {
+					SheetCloseButton { dismiss() }
 				}
 			}
 		}
 	}
 	private func link(_ guide: Guide) -> some View {
 		NavigationLink(value: guide) {
-			Text(guide.title)
+			Label {
+				Text(guide.title)
+			} icon: {
+				Image(systemName: guide.symbolName)
+					.accessibilityHidden(true)
+			}
 		}
 	}
 }

@@ -43,8 +43,7 @@ struct ShareReceiveView: View {
 					Button(String(localized: "Open Settings")) {
 						Permissions.openSettings()
 					}
-					.buttonStyle(.borderedProminent)
-					.tint(Theme.Colors.accent)
+					.buttonStyle(.accentFilled)
 					Spacer()
 				}
 			} else if hasScanned {
@@ -69,8 +68,7 @@ struct ShareReceiveView: View {
 								viewModel.cancel()
 								hasScanned = false
 							}
-							.buttonStyle(.borderedProminent)
-							.tint(Theme.Colors.accent)
+							.buttonStyle(.accentFilled)
 						}
 					} else if case .receiving = viewModel.phase {
 						ReceiveProgressCard(phase: viewModel.phase)

@@ -14,15 +14,13 @@ struct GuidePresentation: ViewModifier {
 		content.sheet(item: $coordinator.presented, onDismiss: { coordinator.didDismiss() }) { guide in
 			NavigationStack {
 				ScrollView {
-					Text(guide.summary)
-						.frame(maxWidth: .infinity, alignment: .leading)
-						.padding()
+					GuideInstructions(symbolName: guide.symbolName, points: guide.summary)
 				}
 				.navigationTitle(Text(guide.title))
 				.navigationBarTitleDisplayMode(.inline)
 				.toolbar {
-					ToolbarItem(placement: .cancellationAction) {
-						Button("Close") { coordinator.dismiss() }
+					ToolbarItem(placement: .topBarTrailing) {
+						SheetCloseButton(action: coordinator.dismiss)
 					}
 				}
 				.safeAreaInset(edge: .bottom) {
@@ -30,10 +28,9 @@ struct GuidePresentation: ViewModifier {
 						coordinator.proceed()
 					} label: {
 						Text("Continue")
-							.frame(maxWidth: .infinity, minHeight: 44)
-							.contentShape(.rect)
+							.frame(maxWidth: .infinity)
 					}
-					.buttonStyle(.borderedProminent)
+					.buttonStyle(.accentFilled)
 					.padding()
 					.background(.regularMaterial)
 				}

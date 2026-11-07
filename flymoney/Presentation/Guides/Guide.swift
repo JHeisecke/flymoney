@@ -22,28 +22,125 @@ enum Guide: String, CaseIterable, Identifiable {
 		case .statement: "Import statement"
 		}
 	}
-	var summary: LocalizedStringResource {
+
+	var symbolName: String {
 		switch self {
-		case .firstExpense: "Enter an amount and choose a category or type a new name. Save the expense, then find it in History."
-		case .recurringExpense: "Mark this expense to find it in Recurring expenses. Each payment is recorded manually."
-		case .recurringList: "See expenses marked as recurring, grouped by month."
-		case .shareBudget: "Share the month's limits using QR and Bluetooth. You can also include recorded expenses."
-		case .receiveBudget: "Scan the other iPhone's QR code. You can review categories and choose which limits to save."
-		case .template: "Choose a profile and starting month. The template suggests categories and limits in guaraníes."
-		case .category: "Create a category and set a limit from the selected month. An existing name reuses that category."
-		case .statement: "Choose a compatible bank PDF. You can review, correct, and select transactions before saving."
+		case .firstExpense: "plus.circle"
+		case .recurringExpense: "arrow.clockwise"
+		case .recurringList: "arrow.clockwise"
+		case .shareBudget: "qrcode"
+		case .receiveBudget: "qrcode.viewfinder"
+		case .template: "list.bullet.rectangle"
+		case .category: "plus"
+		case .statement: "doc.badge.plus"
 		}
 	}
-	var detail: LocalizedStringResource {
+
+	var summary: [LocalizedStringResource] {
 		switch self {
-		case .firstExpense: "In Add, enter an amount and choose an existing category or type a new name. Saving creates the category when needed. Find the expense in History. Open Categories to review or edit your categories."
-		case .recurringExpense: "Mark an expense as recurring when adding or editing it. Each payment is entered manually. Tap the recurring button again to remove the mark."
-		case .recurringList: "In History, open recurring expenses to see marked expenses grouped by month. Each payment is entered manually."
-		case .shareBudget: "Share limits for the selected month using a QR code and Bluetooth. You can include that month's expenses, or share limits alone. Allow the requested Bluetooth access to transfer the budget."
-		case .receiveBudget: "Scan the sender's QR code and allow camera and Bluetooth access when requested. Match each received category to an existing one or create a new category.\n\nChoose whether to keep your current limit or use the received limit, then tap Save budget. The received limit takes effect from the selected month until the next change."
-		case .template: "Choose a profile and starting month. The template suggests categories and limits in guaraníes for you to review and apply."
-		case .category: "Tap Categories at the top of the Categories tab to manage all categories. An existing name reuses that category. A limit applies from the chosen month until the next change. Leave it blank or enter zero to remove the limit from that month.\n\nWhen you delete an expense from the category editor, it disappears from History. To delete a category, first remove all of its expenses."
-		case .statement: "Choose a PDF with selectable text. GNB supports card statements, card activity, and account statements. Itaú supports card statements. Continental supports card and account statements. These formats are imported in guaraníes. FlyMoney uses the currency of your device region, which needs to match.\n\nReview and correct transactions and choose which ones to save. Refunds reduce the total. Already imported transactions start excluded. Possible duplicates start included and can be excluded during review.\n\nChoose a category for the whole group. Turn on Remember to use the same category in future imports."
+		case .firstExpense:
+			[
+				"Enter an amount and choose a category.",
+				"Save the expense and find it in History.",
+			]
+		case .recurringExpense:
+			[
+				"Mark an expense to find it in Recurring expenses.",
+				"Record each payment manually.",
+			]
+		case .recurringList:
+			[
+				"Find marked expenses grouped by month.",
+			]
+		case .shareBudget:
+			[
+				"Share the selected month’s limits by QR and Bluetooth.",
+				"Choose whether to include recorded expenses.",
+			]
+		case .receiveBudget:
+			[
+				"Scan the other iPhone’s QR code.",
+				"Review categories and choose which limits to save.",
+			]
+		case .template:
+			[
+				"Choose a profile and starting month.",
+				"Review the suggested categories and limits in guaraníes.",
+			]
+		case .category:
+			[
+				"Create a category and set a limit from the selected month.",
+				"An existing name reuses that category.",
+			]
+		case .statement:
+			[
+				"Choose a PDF from GNB, Itaú, or Continental.",
+				"Review the transactions and choose which ones to save.",
+			]
+		}
+	}
+
+	var detail: [LocalizedStringResource] {
+		switch self {
+		case .firstExpense:
+			[
+				"Open Add and enter the amount.",
+				"Choose a category or type a new name to create one when you save.",
+				"Save the expense and find it in History.",
+				"Open Categories to review or edit your categories.",
+			]
+		case .recurringExpense:
+			[
+				"Tap the circular arrow when adding or editing an expense.",
+				"Find marked expenses in History under Recurring expenses.",
+				"Record each payment manually.",
+				"Tap the arrow again to remove the mark.",
+			]
+		case .recurringList:
+			[
+				"Tap the circular arrow in History.",
+				"Find marked expenses grouped by month.",
+				"Record each payment manually.",
+			]
+		case .shareBudget:
+			[
+				"Select the month in Categories or History.",
+				"Choose whether to include recorded expenses.",
+				"Show your QR code to the other iPhone and allow Bluetooth access when prompted.",
+			]
+		case .receiveBudget:
+			[
+				"Scan the other iPhone’s QR code.",
+				"Allow camera and Bluetooth access when prompted.",
+				"Match each received category to one of yours or create a new one.",
+				"Keep your current limit or use the received one, then tap Save budget.",
+				"The received limit applies from the selected month until the next change.",
+			]
+		case .template:
+			[
+				"Choose a profile and starting month.",
+				"Review the suggested categories and limits in guaraníes.",
+				"Save the budget to apply the selected limits.",
+			]
+		case .category:
+			[
+				"Tap Categories at the top of the tab to manage all categories.",
+				"An existing name reuses that category.",
+				"A limit applies from the selected month until you change it.",
+				"Leave the limit blank or enter zero to remove it from that month.",
+				"Deleting an expense in the category editor also removes it from History.",
+				"Remove all expenses in a category before deleting it.",
+			]
+		case .statement:
+			[
+				"Use a PDF with selectable text and make sure the app’s currency is guaraníes (PYG).",
+				"GNB supports card statements, card activity, and account statements.",
+				"Itaú supports card statements.",
+				"Continental supports card statements and account activity.",
+				"Correct transactions and choose which ones to save. Refunds reduce the total.",
+				"Previously imported transactions start excluded. Possible duplicates stay included for review.",
+				"Choose a category for the group. Turn on Remember to use it in future imports.",
+			]
 		}
 	}
 }

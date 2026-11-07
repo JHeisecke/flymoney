@@ -70,9 +70,7 @@ struct ShareExportView: View {
 							started = true
 							retryAttempt += 1
 						}
-						.buttonStyle(.borderedProminent)
-						.tint(Theme.Colors.accent)
-						.foregroundStyle(Theme.Colors.textOnAccent)
+						.buttonStyle(.accentFilled)
 						.disabled(viewModel.exportPreview == nil)
 					} else {
 						QRCardView(text: viewModel.qrText)
@@ -87,8 +85,7 @@ struct ShareExportView: View {
 							viewModel.cancel()
 							retryAttempt += 1
 						}
-						.buttonStyle(.borderedProminent)
-						.foregroundStyle(Theme.Colors.textOnAccent)
+						.buttonStyle(.accentFilled)
 						.padding(.top, Theme.Spacing.lg)
 					}
 				}

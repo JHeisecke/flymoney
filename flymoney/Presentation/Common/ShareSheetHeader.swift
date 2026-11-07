@@ -13,28 +13,23 @@ struct ShareSheetHeader: View {
 	var onDark: Bool = false
 
 	var body: some View {
-		ZStack {
-			VStack(spacing: 0) {
-				RoundedRectangle(cornerRadius: Theme.Radius.xxs)
-					.fill(onDark ? Color(white: 0.23) : Theme.Colors.borderStrong)
-					.frame(width: 38, height: 5)
-					.padding(.top, Theme.Spacing.xs)
+		VStack(spacing: 0) {
+			RoundedRectangle(cornerRadius: Theme.Radius.xxs)
+				.fill(onDark ? Color(white: 0.23) : Theme.Colors.borderStrong)
+				.frame(width: 38, height: 5)
+				.padding(.top, Theme.Spacing.xs)
+				.accessibilityHidden(true)
+			HStack(spacing: 0) {
 				Text(title)
 					.font(Theme.Typography.title17)
-					.foregroundStyle(onDark ? Color.white : Theme.Colors.ink)
-					.padding(.top, Theme.Spacing.md)
+					.foregroundStyle(onDark ? Theme.Colors.accentOnDark : Theme.Colors.ink)
+					.multilineTextAlignment(.center)
+					.fixedSize(horizontal: false, vertical: true)
+					.frame(maxWidth: .infinity)
+					.padding(.leading, 44)
+				SheetCloseButton(action: onCancel)
 			}
-			HStack {
-				Spacer()
-				Button(action: onCancel) {
-					Text(String(localized: "Cancel"))
-						.font(Theme.Typography.body15)
-						.foregroundStyle(onDark ? Theme.Colors.inkQuaternary : Theme.Colors.inkQuaternary)
-				}
-				.buttonStyle(.hapticPlain)
-				.padding(.trailing, Theme.Spacing.xxl)
-				.padding(.top, Theme.Spacing.sm)
-			}
+			.padding(.horizontal, Theme.Spacing.md)
 		}
 	}
 }
