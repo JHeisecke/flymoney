@@ -38,13 +38,13 @@ struct BudgetStatusTests {
 		#expect(status == .near)
 	}
 
-	@Test("one hundred percent is near")
+	@Test("exactly reaching the limit exhausts the budget")
 	func oneHundredPercent() {
 		let status = BudgetStatus(
 			spent: Money(minorUnits: 10000, currencyCode: "USD"),
 			limit: Money(minorUnits: 10000, currencyCode: "USD")
 		)
-		#expect(status == .near)
+		#expect(status == .exhausted)
 	}
 
 	@Test("over limit is over")

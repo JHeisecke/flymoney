@@ -114,12 +114,11 @@ struct TitleSuggestionRow: View {
 	}
 
 	@ViewBuilder private var trailingCaption: some View {
-		if isSelected, let summary, let remaining = summary.remaining {
-			Text(summary.isOver
-				 ? String(localized: "Over \(Money(minorUnits: abs(remaining.minorUnits), currencyCode: remaining.currencyCode).formatted())")
-				 : String(localized: "Left \(remaining.formatted())"))
+		if isSelected, let summary, let limit = summary.limit, let remaining = summary.remaining {
+			let status = BudgetStatus(spent: summary.spent, limit: limit)
+			Text(status.caption(for: remaining))
 				.font(Theme.Typography.caption13Strong)
-				.foregroundStyle(summary.isOver ? Theme.Colors.danger : Theme.Colors.success)
+				.foregroundStyle(status.color)
 				.monospacedDigit()
 		} else if let limit {
 			Text("\(limit.formatted()) / \(String(localized: "mo"))")

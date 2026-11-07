@@ -2057,6 +2057,16 @@
         }
       }
     },
+    "No funds left · %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin saldo · %@"
+          }
+        }
+      }
+    },
     "no limit" : {
       "localizations" : {
         "es" : {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// Progress meter + "$X spent" / "Left|Over $Y" footer for a title's month.
+/// Progress meter and spending summary for a title's month.
 /// Shared by `TitleCardView` and the title editor so both render identically.
 struct BudgetSummaryView: View {
 	let spent: Money
@@ -23,9 +23,9 @@ struct BudgetSummaryView: View {
 					.foregroundStyle(Theme.Colors.inkQuaternary)
 					.monospacedDigit()
 				Spacer()
-				Text(captionText)
+				Text(status.caption(for: remaining))
 					.font(Theme.Typography.caption13Strong)
-					.foregroundStyle(captionColor)
+					.foregroundStyle(status.color)
 					.monospacedDigit()
 			}
 		}
@@ -33,16 +33,8 @@ struct BudgetSummaryView: View {
 
 	private var status: BudgetStatus { BudgetStatus(spent: spent, limit: limit) }
 
-	private var captionColor: Color { status.color }
-
-	private var captionText: String {
-		let remainingUnits = limit.minorUnits - spent.minorUnits
-		let remaining = Money(
-			minorUnits: abs(remainingUnits),
-			currencyCode: limit.currencyCode)
-		return status == .over
-			? String(localized: "Over \(remaining.formatted())")
-			: String(localized: "Left \(remaining.formatted())")
+	private var remaining: Money {
+		Money(minorUnits: limit.minorUnits - spent.minorUnits, currencyCode: limit.currencyCode)
 	}
 }
 
@@ -53,6 +45,9 @@ struct BudgetSummaryView: View {
 			limit: Money(majorUnits: Decimal(500), currencyCode: "USD"))
 		BudgetSummaryView(
 			spent: Money(majorUnits: Decimal(95), currencyCode: "USD"),
+			limit: Money(majorUnits: Decimal(100), currencyCode: "USD"))
+		BudgetSummaryView(
+			spent: Money(majorUnits: Decimal(100), currencyCode: "USD"),
 			limit: Money(majorUnits: Decimal(100), currencyCode: "USD"))
 		BudgetSummaryView(
 			spent: Money(majorUnits: Decimal(350), currencyCode: "USD"),
