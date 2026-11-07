@@ -66,13 +66,12 @@ struct ImportGroupCard: View {
 		}
 		.background(Theme.Colors.card)
 		.clipShape(.rect(cornerRadius: Theme.Radius.md))
-		.opacity(group.isExcluded ? 0.45 : 1)
 		.onChange(of: namingGroupID.wrappedValue) { _, focusedGroupID in
 			if focusedGroupID != group.id { isNaming = false }
 		}
 		.swipeActions(edge: .trailing, allowsFullSwipe: false) {
 			Button(role: group.isExcluded ? .cancel : .destructive) {
-				onSetExcluded(!group.isExcluded)
+				toggleExclusion()
 			} label: {
 				Label(
 					group.isExcluded ? String(localized: "Include group") : String(localized: "Exclude group"),
@@ -85,25 +84,36 @@ struct ImportGroupCard: View {
 
 	private var header: some View {
 		HStack(spacing: Theme.Spacing.md) {
-			Button {
-				isNaming = true
-				namingGroupID.wrappedValue = group.id
-			} label: {
-				VStack(alignment: .leading, spacing: 3) {
-					Text(group.titleName.isEmpty ? String(localized: Lexicon.untitled) : group.titleName)
-						.font(Theme.Typography.title16)
-						.foregroundStyle(Theme.Colors.ink)
-						.strikethrough(group.isExcluded)
-						.lineLimit(2)
-						.multilineTextAlignment(.leading)
-					subtitle
+			VStack(alignment: .leading) {
+				Button {
+					isNaming = true
+					namingGroupID.wrappedValue = group.id
+				} label: {
+					VStack(alignment: .leading, spacing: 3) {
+						Text(group.titleName.isEmpty ? String(localized: Lexicon.untitled) : group.titleName)
+							.font(Theme.Typography.title16)
+							.foregroundStyle(group.isExcluded ? Theme.Colors.inkTertiary : Theme.Colors.ink)
+							.strikethrough(group.isExcluded)
+							.lineLimit(2)
+							.multilineTextAlignment(.leading)
+						subtitle
+					}
+					.frame(maxWidth: .infinity, alignment: .leading)
+					.contentShape(.rect)
 				}
-				.frame(maxWidth: .infinity, alignment: .leading)
-				.contentShape(.rect)
+				.buttonStyle(.hapticPlain)
+				.accessibilityLabel(Text(headerAccessibilityLabel))
+				.accessibilityHint(Text(String(localized: "Renames this group")))
+
+				Button(action: toggleExclusion) {
+					Text(group.isExcluded ? String(localized: "Include group") : String(localized: "Exclude group"))
+						.font(Theme.Typography.caption13Strong)
+						.foregroundStyle(group.isExcluded ? Theme.Colors.accent : Theme.Colors.danger)
+						.frame(minHeight: 44)
+						.contentShape(.rect)
+				}
+				.buttonStyle(.hapticPlain)
 			}
-			.buttonStyle(.hapticPlain)
-			.accessibilityLabel(Text(headerAccessibilityLabel))
-			.accessibilityHint(Text(String(localized: "Renames this group")))
 
 			Button {
 				isExpanded = !expanded
@@ -137,7 +147,7 @@ struct ImportGroupCard: View {
 	/// rows will be saved under — otherwise it is the same string twice.
 	@ViewBuilder private var subtitle: some View {
 		if group.isExcluded {
-			Text(String(localized: "Excluded — swipe to include"))
+			Text(String(localized: "Excluded from import"))
 				.font(Theme.Typography.caption12)
 				.foregroundStyle(Theme.Colors.inkTertiary)
 		} else if group.rawDetail.localizedCaseInsensitiveCompare(group.titleName) != .orderedSame {
@@ -164,9 +174,14 @@ struct ImportGroupCard: View {
 	}
 
 	private var headerAccessibilityLabel: String {
-		[group.titleName, group.rawDetail, groupTotal.formatted(), countCaption]
+		[group.titleName, group.rawDetail, group.isExcluded ? String(localized: "Excluded from import") : "", groupTotal.formatted(), countCaption]
 			.filter { !$0.isEmpty }
 			.joined(separator: ". ")
+	}
+
+	private func toggleExclusion() {
+		isExpanded = expanded
+		onSetExcluded(!group.isExcluded)
 	}
 
 	// MARK: - Naming
@@ -278,25 +293,14 @@ struct ImportGroupCard: View {
 	private var footer: some View {
 		VStack(alignment: .leading, spacing: 0) {
 			Divider().background(Theme.Colors.borderDivider).padding(.leading, Theme.Spacing.lg)
-			HStack(spacing: Theme.Spacing.lg) {
-				Button(String(localized: "Add row"), systemImage: "plus") {
-					onAddRow()
-				}
+			Button(String(localized: "Add row"), systemImage: "plus") {
+				onAddRow()
+			}
 				.font(Theme.Typography.caption13Strong)
 				.foregroundStyle(Theme.Colors.accent)
 				.buttonStyle(.hapticPlain)
-
-				Spacer()
-
-				Button(group.isExcluded ? String(localized: "Include group") : String(localized: "Exclude group")) {
-					onSetExcluded(!group.isExcluded)
-				}
-				.font(Theme.Typography.caption12)
-				.foregroundStyle(Theme.Colors.danger)
-				.buttonStyle(.hapticPlain)
-			}
-			.padding(.horizontal, Theme.Spacing.lg)
-			.padding(.vertical, Theme.Spacing.md)
+				.padding(.horizontal, Theme.Spacing.lg)
+				.padding(.vertical, Theme.Spacing.md)
 		}
 	}
 }
