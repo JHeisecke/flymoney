@@ -110,15 +110,9 @@ struct RootView: View {
 		}
 	}
 
-	/// A statement import commits on the Add tab, but its results live in
-	/// History and Titles — and Add's own budget indicator can go stale too if
-	/// a currently-selected title's spend just changed. `HistoryViewModel`
-	/// only re-fetches titles when its cache is empty, so a plain `.load()`
-	/// after an import that created new titles would miss them — `reloadTitles()`
-	/// resets that cache first. `TitlesViewModel.load()` has no such cache, so
-	/// a plain reload is enough there.
+	/// Refreshes History, Titles, and Add's budget after a statement import.
 	private func refreshAfterImport() async {
-		async let history: Void = historyViewModel.reloadTitles()
+		async let history: Void = historyViewModel.load()
 		async let titles: Void = titlesViewModel.load()
 		async let budget: Void = addExpenseViewModel.refreshAfterExternalChange()
 		_ = await (history, titles, budget)

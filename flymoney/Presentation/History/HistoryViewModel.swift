@@ -57,21 +57,14 @@ final class HistoryViewModel {
 		isLoading = true
 		defer { isLoading = false }
 		do {
-			if titlesByID.isEmpty {
-				let titles = try await fetchTitles.execute()
-				titlesByID = Dictionary(uniqueKeysWithValues: titles.map { ($0.id, $0) })
-			}
+			let titles = try await fetchTitles.execute()
+			titlesByID = Dictionary(uniqueKeysWithValues: titles.map { ($0.id, $0) })
 			let expenses = try await fetchExpenses.execute(month)
 			sections = buildSections(from: expenses)
 			loadError = nil
 		} catch {
 			loadError = String(localized: "Couldn\u{2019}t load expenses.")
 		}
-	}
-
-	func reloadTitles() async {
-		titlesByID = [:]
-		await load()
 	}
 
 	func previousMonth() {

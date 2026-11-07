@@ -71,6 +71,25 @@ struct HistoryViewModelTests {
 		#expect(vm.sections.first?.rows.first?.titleName == "Coffee")
 	}
 
+	@Test("load resolves a title created by saving an expense after History was opened", .tags(.viewModel))
+	func loadResolvesNewlySavedTitle() async throws {
+		let expenses = InMemoryExpenseRepository()
+		let titles = InMemoryExpenseTitleRepository()
+		let date = Date(timeIntervalSince1970: 1_748_736_000)
+		let amount = Money(minorUnits: 100, currencyCode: "USD")
+		let addExpense = AddExpenseUseCaseImpl(expenses: expenses, titles: titles)
+		_ = try await addExpense.execute(amount: amount, titleName: "Coffee", date: date, detail: nil)
+
+		let vm = makeVM(expenses: expenses, titles: titles, now: date)
+		await vm.load()
+
+		let saved = try await addExpense.execute(amount: amount, titleName: "Groceries", date: date, detail: nil)
+		await vm.load()
+
+		let row = try #require(vm.sections.first?.rows.first { $0.id == saved.id })
+		#expect(row.titleName == "Groceries")
+	}
+
 	@Test("load handles orphan titleID", .tags(.viewModel))
 	func loadOrphanTitle() async throws {
 		let expenses = InMemoryExpenseRepository()
