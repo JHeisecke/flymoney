@@ -42,7 +42,7 @@ enum BudgetStatus: Equatable {
 		case .under, .near:
 			return String(localized: "Left \(remaining.formatted())")
 		case .exhausted:
-			return String(localized: "No funds left · \(remaining.formatted())")
+			return "0"
 		case .over:
 			let excess = Money(minorUnits: abs(remaining.minorUnits), currencyCode: remaining.currencyCode)
 			return String(localized: "Over by \(excess.formatted())")

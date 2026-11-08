@@ -45,6 +45,7 @@ struct BudgetStatusTests {
 			limit: Money(minorUnits: 10000, currencyCode: "USD")
 		)
 		#expect(status == .exhausted)
+		#expect(status.caption(for: Money(minorUnits: 0, currencyCode: "USD")) == "0")
 	}
 
 	@Test("over limit is over")
