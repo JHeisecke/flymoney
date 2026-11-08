@@ -22,7 +22,9 @@ struct GuidesView: View {
 				Section("Budgets and categories") {
 					link(.shareBudget)
 					link(.receiveBudget)
+#if DEBUG
 					link(.template)
+#endif
 					link(.category)
 				}
 				Section("Importing statements") {

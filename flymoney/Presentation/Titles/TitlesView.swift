@@ -12,7 +12,9 @@ struct TitlesView: View {
 	@State private var guides = GuideCoordinator()
 	@State private var showGuides = false
 	@State private var showAllTitles = false
+#if DEBUG
 	@State private var showTemplate = false
+#endif
 	@State private var sharingRole: SharingRole?
 	@Environment(\.haptics) private var haptics
 	let assembly: AppAssembly
@@ -40,10 +42,12 @@ struct TitlesView: View {
 		.background(Theme.Colors.surface)
 		.modifier(GuidePresentation(coordinator: guides))
 		.sheet(isPresented: $showGuides) { GuidesView() }
+#if DEBUG
 		.sheet(isPresented: $showTemplate, onDismiss: { Task { await viewModel.load() } }) {
 			BudgetTemplateView(
 				model: assembly.makeBudgetTemplateViewModel(), onApplied: { viewModel.month = $0 })
 		}
+#endif
 		.sheet(item: $sharingRole, onDismiss: { Task { await viewModel.load() } }) { role in
 			SharingSheetHost(assembly: assembly, role: role, includeExpensesInitially: false)
 		}
@@ -102,7 +106,9 @@ struct TitlesView: View {
 			.buttonStyle(.hapticPlain)
 			Spacer()
 			Menu {
+#if DEBUG
 				Button("Load template", systemImage: "list.bullet.rectangle") { guides.request(.template) { showTemplate = true } }
+#endif
 				Button("Share limits", systemImage: "qrcode") {
 					let month = viewModel.month
 					guides.request(.shareBudget) { sharingRole = .send(month: month) }
