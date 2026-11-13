@@ -10,6 +10,14 @@ import SwiftUI
 enum Guide: String, CaseIterable, Identifiable {
 	case firstExpense, recurringExpense, recurringList, shareBudget, receiveBudget, template, category, statement
 	var id: String { rawValue }
+	var actionTitle: LocalizedStringResource {
+		switch self {
+		case .firstExpense: "Add expense"
+		case .recurringExpense: "Mark as recurring"
+		default: title
+		}
+	}
+
 	var title: LocalizedStringResource {
 		switch self {
 		case .firstExpense: "First expense and category"

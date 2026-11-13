@@ -27,7 +27,7 @@ struct GuidePresentation: ViewModifier {
 					Button {
 						coordinator.proceed()
 					} label: {
-						Text("Continue")
+						Text(guide.actionTitle)
 							.frame(maxWidth: .infinity)
 					}
 					.buttonStyle(.accentFilled)

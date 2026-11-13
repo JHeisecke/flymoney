@@ -92,20 +92,7 @@ struct AddExpenseView: View {
 			}
 
 			if viewModel.showFirstExpenseHelp {
-				VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-					Text("Enter an amount. Choose a category or type a new name to create it when you save.")
-						.font(Theme.Typography.body14)
-						.fixedSize(horizontal: false, vertical: true)
-					Button {
-						viewModel.finishFirstExpenseHelp()
-					} label: {
-						Text("Skip")
-							.font(Theme.Typography.body14)
-							.frame(minWidth: 44, minHeight: 44, alignment: .leading)
-							.contentShape(.rect)
-					}
-				}
-				.frame(maxWidth: .infinity, alignment: .leading)
+				FirstExpenseHelpCard(onDismiss: viewModel.finishFirstExpenseHelp)
 				.padding(.top, Theme.Spacing.s14)
 			}
 
