@@ -26,7 +26,6 @@ struct ExpenseNoteField: View {
 						.textFieldStyle(.plain)
 						.lineLimit(1...4)
 						.focused($isFocused)
-						.onAppear { isFocused = true }
 				}
 				.padding(Theme.Spacing.lg)
 			} else {
@@ -58,5 +57,11 @@ struct ExpenseNoteField: View {
 		.onAppear {
 			if !text.isEmpty { isExpanded = true }
 		}
+		.onChange(of: isExpanded) { _, expanded in
+			// Only the user's expand action requests focus, never tab reappearance
+			// or displaying an existing note in the expense editor.
+			if expanded, text.isEmpty { isFocused = true }
+		}
+		.onDisappear { isFocused = false }
 	}
 }
