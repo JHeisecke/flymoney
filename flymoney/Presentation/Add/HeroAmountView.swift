@@ -24,20 +24,28 @@ struct HeroAmountView: View {
 
 	var body: some View {
 		VStack(spacing: Theme.Spacing.xl) {
-			amountGroup
+			// The overlay keeps the editor's intrinsic width out of the form's
+			// layout. This hidden digit reserves a Dynamic Type-aware height.
+			Text("0")
+				.font(Theme.Typography.display66)
+				.hidden()
+				.accessibilityHidden(true)
 				.frame(maxWidth: .infinity)
-				.scaleEffect(scale, anchor: .center)
+				.onGeometryChange(for: CGFloat.self) { proxy in
+					proxy.size.width
+				} action: { width in
+					containerWidth = width
+				}
+				.overlay {
+					amountGroup
+						.scaleEffect(scale, anchor: .center)
+				}
 			Rectangle()
 				.fill(Theme.Colors.accent)
 				.frame(width: 52, height: 3)
 				.clipShape(.rect(cornerRadius: Theme.Radius.xxs))
 		}
 		.frame(maxWidth: .infinity)
-		.onGeometryChange(for: CGFloat.self) { proxy in
-			proxy.size.width
-		} action: { width in
-			containerWidth = width - 125
-		}
 		.contentShape(.rect)
 		.onTapGesture { isFocused = true }
 		.onAppear { syncFromDecimal() }
