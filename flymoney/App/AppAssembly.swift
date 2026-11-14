@@ -19,6 +19,7 @@ final class AppAssembly {
 	private let titleLimitRepo: TitleLimitRepository
 	private let titleAliasRepo: TitleAliasRepository
 	private let budgetUseCases: any BudgetUseCases
+	private let savedBudgetUseCases: any SavedBudgetUseCases
 	private let statementImportWriter: StatementImportWriter
 
 	private let statementExtractor: StatementTextExtracting
@@ -47,7 +48,12 @@ final class AppAssembly {
 				modelContainer: container, currencyCode: provider.defaultCurrencyCode),
 			templates: BundledBudgetTemplateRepository())
 
-		statementExtractor = PDFKitStatementTextExtractor()
+		savedBudgetUseCases = SavedBudgetUseCasesImpl(
+            repository: SwiftDataSavedBudgetRepository(modelContainer: container),
+            titles: titleRepo, limits: titleLimitRepo, currencyProvider: provider,
+            budgets: budgetUseCases, templates: BundledBudgetTemplateRepository())
+
+        statementExtractor = PDFKitStatementTextExtractor()
 		statementKindDetector = DefaultStatementKindDetector()
 		statementProfileMatcher = DefaultStatementProfileMatcher()
 		statementProfileRepository = BundledStatementProfileRepository()
@@ -221,8 +227,26 @@ final class AppAssembly {
 			upsertTitle: makeUpsertExpenseTitleUseCase(),
 			setTitleLimit: makeSetTitleLimitUseCase(),
 			fetchLimits: makeFetchEffectiveLimitsUseCase(),
-			transport: transport, budgetUseCases: budgetUseCases)
+			transport: transport, budgetUseCases: budgetUseCases, savedBudgetUseCases: savedBudgetUseCases)
 	}
+
+    func makePrivateBudgetView(onApplied: @escaping () -> Void) -> some View {
+        PrivateBudgetView(model: PrivateBudgetViewModel(useCases: savedBudgetUseCases),
+            assembly: self, onApplied: onApplied)
+    }
+
+    func makeSavedBudgetLibraryView(month: CalendarMonth,
+        onApplied: @escaping (CalendarMonth) -> Void) -> some View {
+        SavedBudgetLibraryView(model: SavedBudgetLibraryViewModel(
+            useCases: savedBudgetUseCases, currencyCode: currencyProvider.defaultCurrencyCode,
+            month: month), assembly: self, onApplied: onApplied)
+    }
+
+    func makeSavedBudgetLoadView(budget: SavedBudget, month: CalendarMonth,
+        onApplied: @escaping (CalendarMonth) -> Void) -> some View {
+        SavedBudgetLoadView(model: SavedBudgetLoadViewModel(budget: budget, month: month,
+            useCases: savedBudgetUseCases, budgets: budgetUseCases), onApplied: onApplied)
+    }
 
 	func makeRootView() -> some View {
 		RootView(assembly: self)

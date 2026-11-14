@@ -140,7 +140,7 @@ struct ShareReceiveView: View {
 		}
 		.onChange(of: viewModel.phase) { _, phase in
 			switch phase {
-			case .awaitingMerge, .done: haptics.success()
+			case .awaitingMerge, .awaitingSavedBudget, .done: haptics.success()
 			case .failed: haptics.error()
 			default: break
 			}

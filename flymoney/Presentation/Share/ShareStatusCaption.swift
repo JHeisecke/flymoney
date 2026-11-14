@@ -43,6 +43,7 @@ struct ShareStatusCaption: View {
 		case .done: String(localized: "Sent ✓")
 		case .failed(let r): r
 		case .awaitingMerge: "Ready to merge"
+        case .awaitingSavedBudget: String(localized: "Ready to save budget")
 		case .saving: "Saving…"
 		}
 	}

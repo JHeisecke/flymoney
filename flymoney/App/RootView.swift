@@ -51,7 +51,9 @@ struct RootView: View {
             }
 		}
 		.onChange(of: selection) { _, newValue in
-			if newValue == .history {
+			if newValue == .add {
+                Task { await addExpenseViewModel.refreshAfterExternalChange() }
+            } else if newValue == .history {
 				Task { await historyViewModel.load() }
 			} else if newValue == .titles {
 				Task { await titlesViewModel.load() }

@@ -8,10 +8,11 @@
 import SwiftUI
 
 /// Progress meter and spending summary for a title's month.
-/// Shared by `TitleCardView` and the title editor so both render identically.
+/// Shared by `TitleCardView` and the title editor.
 struct BudgetSummaryView: View {
 	let spent: Money
 	let limit: Money
+	var showsExhaustedCaption = true
 
 	var body: some View {
 		VStack(spacing: 0) {
@@ -23,10 +24,12 @@ struct BudgetSummaryView: View {
 					.foregroundStyle(Theme.Colors.inkQuaternary)
 					.monospacedDigit()
 				Spacer()
-				Text(status.caption(for: remaining))
-					.font(Theme.Typography.caption13Strong)
-					.foregroundStyle(status.color)
-					.monospacedDigit()
+				if showsExhaustedCaption || status != .exhausted {
+					Text(status.caption(for: remaining))
+						.font(Theme.Typography.caption13Strong)
+						.foregroundStyle(status.color)
+						.monospacedDigit()
+				}
 			}
 		}
 	}

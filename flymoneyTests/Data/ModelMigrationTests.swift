@@ -81,11 +81,11 @@ struct ModelMigrationTests {
 		#expect(fetched.first?.detail == nil)
 	}
 
-	@Test("Historical schemas remain registered through V9")
+	@Test("Historical schemas remain registered through V10")
 	func v5SchemaRegistered() {
-		#expect(ModelMigrationPlan.schemas.count == 9)
+		#expect(ModelMigrationPlan.schemas.count == 10)
 		#expect(ExpenseSchemaV5.versionIdentifier == Schema.Version(5, 0, 0))
-		#expect(ModelMigrationPlan.stages.count == 8)
+		#expect(ModelMigrationPlan.stages.count == 9)
 	}
 
 	@Test("V6 keeps its original version identifier")

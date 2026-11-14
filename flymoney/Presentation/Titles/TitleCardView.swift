@@ -26,7 +26,7 @@ struct TitleCardView: View {
 						.foregroundStyle(Theme.Colors.textSubtle)
 						.monospacedDigit()
 				}
-				BudgetSummaryView(spent: spent, limit: limit)
+				BudgetSummaryView(spent: spent, limit: limit, showsExhaustedCaption: false)
 					.padding(.top, Theme.Spacing.s14)
 			}
 			.padding(Theme.Spacing.lg)

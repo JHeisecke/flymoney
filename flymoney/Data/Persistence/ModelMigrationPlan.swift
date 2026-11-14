@@ -13,14 +13,14 @@ enum ModelMigrationPlan: SchemaMigrationPlan {
 		[
 			ExpenseSchemaV1.self, ExpenseSchemaV2.self, ExpenseSchemaV3.self,
 			ExpenseSchemaV4.self, ExpenseSchemaV5.self, ExpenseSchemaV6.self, ExpenseSchemaV7.self,
-			ExpenseSchemaV8.self, ExpenseSchemaV9.self,
+			ExpenseSchemaV8.self, ExpenseSchemaV9.self, ExpenseSchemaV10.self,
 		]
 	}
 
 	static var stages: [MigrationStage] {
 		[
 			migrateV1toV2, migrateV2toV3, migrateV3toV4, migrateV4toV5, migrateV5toV6, migrateV6toV7,
-			migrateV7toV8, migrateV8toV9,
+			migrateV7toV8, migrateV8toV9, migrateV9toV10,
 		]
 	}
 
@@ -87,4 +87,6 @@ enum ModelMigrationPlan: SchemaMigrationPlan {
 		fromVersion: ExpenseSchemaV7.self, toVersion: ExpenseSchemaV8.self)
 	static let migrateV8toV9 = MigrationStage.lightweight(
 		fromVersion: ExpenseSchemaV8.self, toVersion: ExpenseSchemaV9.self)
+    static let migrateV9toV10 = MigrationStage.lightweight(
+        fromVersion: ExpenseSchemaV9.self, toVersion: ExpenseSchemaV10.self)
 }

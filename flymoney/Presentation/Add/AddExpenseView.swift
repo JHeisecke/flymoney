@@ -36,6 +36,11 @@ struct AddExpenseView: View {
 		}
 		.background(Theme.Colors.surface)
 		.modifier(GuidePresentation(coordinator: guides))
+        .sheet(isPresented: $viewModel.showPrivateBudgets) {
+            assembly.makePrivateBudgetView {
+                Task { await viewModel.refreshAfterExternalChange() }
+            }
+        }
 		.dismissKeyboardOnTap()
 		.simultaneousGesture(TapGesture().onEnded { showSuggestions = false })
 		.task { await viewModel.refreshFirstExpenseHelp() }

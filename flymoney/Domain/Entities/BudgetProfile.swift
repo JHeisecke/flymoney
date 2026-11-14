@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum BudgetProfile: String, CaseIterable, Identifiable, Sendable {
+enum BudgetProfile: String, CaseIterable, Identifiable, Codable, Sendable {
 	case javier = "Javier"
 	case iara = "Iara"
 	var id: String { rawValue }

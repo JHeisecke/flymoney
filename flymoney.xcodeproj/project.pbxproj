@@ -477,7 +477,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UK87X7N6A9;
 				ENABLE_PREVIEWS = YES;
-				EXCLUDED_SOURCE_FILE_NAMES = "$(inherited) matrimonial-november-2026.json";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Config/flymoney-Info.plist";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Money: Equatable, Hashable, Sendable {
+struct Money: Equatable, Hashable, Codable, Sendable {
 	let minorUnits: Int
 	let currencyCode: String
 

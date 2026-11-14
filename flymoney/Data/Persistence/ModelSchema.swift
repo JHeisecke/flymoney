@@ -309,7 +309,14 @@ enum ExpenseSchemaV9: VersionedSchema {
 	}
 }
 
+enum ExpenseSchemaV10: VersionedSchema {
+    static let versionIdentifier = Schema.Version(10, 0, 0)
+    static var models: [any PersistentModel.Type] {
+        ExpenseSchemaV9.models + [SavedBudgetModel.self]
+    }
+}
+
 enum ModelSchema {
-	static let models: [any PersistentModel.Type] = ExpenseSchemaV9.models
+	static let models: [any PersistentModel.Type] = ExpenseSchemaV10.models
 	static let schema = Schema(models)
 }

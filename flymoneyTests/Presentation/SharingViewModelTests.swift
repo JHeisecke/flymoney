@@ -54,7 +54,8 @@ struct SharingViewModelTests {
 		expenses: InMemoryExpenseRepository = InMemoryExpenseRepository(),
 		titles: InMemoryExpenseTitleRepository = InMemoryExpenseTitleRepository(),
 		limits: InMemoryTitleLimitRepository = InMemoryTitleLimitRepository(),
-        budgets: (any BudgetUseCases)? = nil
+        budgets: (any BudgetUseCases)? = nil,
+        savedBudgets: (any SavedBudgetUseCases)? = nil
 	) -> SharingViewModel {
 		SharingViewModel(
 			role: role,
@@ -66,7 +67,7 @@ struct SharingViewModelTests {
 			upsertTitle: UpsertExpenseTitleUseCaseImpl(titles: titles),
 			setTitleLimit: SetTitleLimitUseCaseImpl(limits: limits),
 			fetchLimits: FetchEffectiveLimitsUseCaseImpl(limits: limits),
-			transport: transport, budgetUseCases: budgets)
+			transport: transport, budgetUseCases: budgets, savedBudgetUseCases: savedBudgets)
 	}
 
 	@Test("Unexpected stream completion fails instead of leaving a spinner", arguments: [true, false])
@@ -184,4 +185,37 @@ struct SharingViewModelTests {
 		// June resolves to the April change; the July change must not leak in.
 		#expect(dto.limitMinorUnits == 50000)
 	}
+    @Test("Library sharing sends the selected definition and receives it without applying limits")
+    func savedBudgetTransfer() async throws {
+        let container = try TestSupport.makeContainer()
+        let cases = SavedBudgetUseCasesImpl(
+            repository: SwiftDataSavedBudgetRepository(modelContainer: container),
+            titles: InMemoryExpenseTitleRepository(), limits: InMemoryTitleLimitRepository(),
+            currencyProvider: FixedCurrencyProvider(),
+            budgets: BudgetUseCasesImpl(repository: SwiftDataBudgetRepository(
+                modelContainer: container, currencyCode: "USD"), templates: BundledBudgetTemplateRepository()),
+            templates: BundledBudgetTemplateRepository())
+        let budget = SavedBudget(name: "Trip", currencyCode: "USD", entries: [
+            .init(id: UUID(), name: "Hotel", limit: Money(minorUnits: 999, currencyCode: "USD"))])
+        try await cases.save(budget, expectedRevision: nil)
+        let transport = FakeSharingTransport()
+        transport.nextEvents = [.completed]
+        let sender = makeVM(role: .sendBudget(budget), transport: transport, savedBudgets: cases)
+        await sender.prepareExportPreview()
+        #expect(sender.exportPreview?.budgetName == "Trip")
+        await sender.start()
+        let payload = try #require(transport.sentPayload)
+        #expect(payload.version == 3 && payload.titles.first?.limitMinorUnits == 999)
+        #expect(payload.expenses.isEmpty && sender.phase == .done)
+        transport.nextEvents = [.received(payload)]
+        let receiver = makeVM(role: .receive, transport: transport, savedBudgets: cases)
+        await receiver.start()
+        if case .awaitingSavedBudget(let review) = receiver.phase {
+            #expect(review.isAlreadySaved)
+        } else { Issue.record("Expected a library review") }
+        await receiver.saveReceivedBudget()
+        #expect(receiver.importedSavedBudget?.hasSameDefinition(as: budget) == true)
+        #expect(receiver.phase == .done)
+        #expect(try ModelContext(container).fetch(FetchDescriptor<TitleLimitModel>()).isEmpty)
+    }
 }

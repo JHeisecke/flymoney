@@ -22,7 +22,7 @@ struct ShareExportView: View {
 	var body: some View {
 		VStack(spacing: 0) {
 			ShareSheetHeader(
-				title: "Share month",
+				title: viewModel.isSharingSavedBudget ? "Share budget" : "Share month",
 				onCancel: {
 					viewModel.cancel()
 					onDismiss()
@@ -41,6 +41,9 @@ struct ShareExportView: View {
 							)
 							.font(.headline).padding(.top)
 						}
+                        if viewModel.isSharingSavedBudget {
+                            Text("Share a reusable budget without expenses.").padding()
+                        } else {
 						Toggle(
 							"Include expenses for this month",
 							isOn: $viewModel.includesExpenses
@@ -50,8 +53,12 @@ struct ShareExportView: View {
 							"Limits are always included, even for categories without expenses."
 						)
 						.font(.caption).padding(.horizontal)
+                        }
 						if let preview = viewModel.exportPreview {
 							VStack {
+                                if let definition = try? SavedBudget(payload: preview) {
+                                    SavedBudgetSummaryView(budget: definition)
+                                }
 								LabeledContent("Currency", value: preview.currencyCode)
 								LabeledContent(
 									"Categories",
@@ -60,6 +67,12 @@ struct ShareExportView: View {
 									"Expenses included",
 									value: preview.expenses.count.formatted())
 							}.padding()
+                            if let definition = try? SavedBudget(payload: preview) {
+                                VStack(alignment: .leading, spacing: Theme.Spacing.md) {
+                                    SavedBudgetEntriesView(budget: definition)
+                                }
+                                .padding()
+                            }
 						} else if let error = viewModel.previewError {
 							Text(error).foregroundStyle(Theme.Colors.danger).padding()
 							Button("Try again") { retryAttempt += 1 }

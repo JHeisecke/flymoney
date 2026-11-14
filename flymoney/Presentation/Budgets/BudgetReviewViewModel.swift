@@ -57,7 +57,9 @@ final class BudgetReviewViewModel {
 		isSaving = true
 		defer { isSaving = false }
 		do {
+			let sourceRevision = review.sourceBudgetRevision
 			review = try await useCases.prepareReceived(review.payload)
+			review.sourceBudgetRevision = sourceRevision
 			error = nil
 			needsRefresh = false
 		} catch { self.error = error.localizedDescription }

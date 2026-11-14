@@ -465,7 +465,10 @@ struct AddExpenseViewModelTests {
 		vm.search("Cof")
 		vm.search("Coff")
 
-		try? await Task.sleep(for: .milliseconds(250))
+        let deadline = ContinuousClock.now.advanced(by: .seconds(5))
+        while vm.suggestions.count != 2, ContinuousClock.now < deadline {
+            try await Task.sleep(for: .milliseconds(20))
+        }
 		let count = await counter.callCount
 		#expect(count == 1)
 		#expect(vm.suggestions.count == 2)
@@ -536,6 +539,55 @@ struct AddExpenseViewModelTests {
 			onboardingKey: UUID().uuidString,
 			searchDebounce: searchDebounce)
 	}
+    @Test("The anniversary command opens the selector without creating a category, expense or onboarding success", .tags(.viewModel),
+        arguments: ["Aniversario", " aniversario ", "ANIVERSARIO"])
+    func privateBudgetCommand(category: String) async throws {
+        let expenses = InMemoryExpenseRepository()
+        let titles = InMemoryExpenseTitleRepository()
+        let vm = makeVM(expenses: expenses, titles: titles)
+        await vm.refreshFirstExpenseHelp()
+        vm.form.amountDecimal = 20_022_021
+        vm.form.titleName = category
+        vm.form.isRecurring = true
+        await vm.save()
+        await vm.save()
+        #expect(vm.showPrivateBudgets)
+        #expect(vm.form.amountDecimal == 0 && vm.form.titleName.isEmpty)
+        #expect(vm.showFirstExpenseHelp && !vm.didJustSave && !vm.didSaveGuidedExpense)
+        #expect(try await titles.allTitles().isEmpty)
+        #expect(try await expenses.hasExpenses() == false)
+        vm.showPrivateBudgets = false
+        await vm.save()
+        #expect(try await expenses.hasExpenses() == false)
+    }
+
+    @Test("An existing anniversary category keeps its usage unchanged when the command is entered", .tags(.viewModel))
+    func existingCommandCategory() async throws {
+        let titles = InMemoryExpenseTitleRepository()
+        let title = ExpenseTitle(name: "Aniversario")
+        try await titles.upsert(title)
+        let vm = makeVM(titles: titles)
+        await vm.select(title)
+        vm.form.amountDecimal = 20_022_021
+        await vm.save()
+        #expect(vm.showPrivateBudgets)
+        #expect(try await titles.title(id: title.id)?.lastUsedAt == title.lastUsedAt)
+    }
+
+    @Test("Near matches remain ordinary expenses and fractional amounts are not rounded into the command", .tags(.viewModel),
+        arguments: ["amount", "category", "fraction"])
+    func commandNearMatches(variant: String) async throws {
+        let expenses = InMemoryExpenseRepository()
+        let vm = makeVM(expenses: expenses)
+        vm.form.titleName = variant == "category" ? "Aniversario extra" : "Aniversario"
+        vm.form.amountDecimal = variant == "fraction"
+            ? try #require(Decimal(string: "20022021.001"))
+            : Decimal(variant == "amount" ? 20_022_020 : 20_022_021)
+        await vm.save()
+        #expect(!vm.showPrivateBudgets && vm.didJustSave)
+        #expect(try await expenses.hasExpenses())
+    }
+
 }
 
 actor CountingSearchUseCase: SearchExpenseTitlesUseCase {

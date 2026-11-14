@@ -22,12 +22,18 @@ struct SharingSheetHost: View {
 	@ViewBuilder private var content: some View {
 		if let vm {
 			switch role {
-			case .send:
+			case .send, .sendBudget:
 				ShareExportView(viewModel: vm, onDismiss: { dismiss() })
 			case .receive:
 				NavigationStack {
 					Group {
-						if case .awaitingMerge = vm.phase {
+						if vm.importedSavedBudget != nil {
+                            SavedBudgetReceiveView(model: vm, assembly: assembly, onDismiss: { dismiss() })
+                        } else if case .awaitingSavedBudget = vm.phase {
+                            SavedBudgetReceiveView(model: vm, assembly: assembly, onDismiss: { dismiss() })
+                        } else if case .saving = vm.phase {
+                            ProgressView().interactiveDismissDisabled()
+                        } else if case .awaitingMerge = vm.phase {
 							MergeView(viewModel: vm, onDismiss: { dismiss() })
 						} else {
 							ShareReceiveView(viewModel: vm, onDismiss: { dismiss() })

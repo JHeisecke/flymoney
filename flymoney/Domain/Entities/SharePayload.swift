@@ -17,11 +17,12 @@ struct SharePayload: Equatable, Sendable, Codable {
 	let revisionID: UUID?
 	let includesExpenses: Bool?
 	let timeZoneIdentifier: String?
+	let budgetName: String?
 
 	init(
 		version: Int, currencyCode: String, month: CalendarMonth, titles: [TitleDTO], expenses: [ExpenseDTO],
 		budgetID: UUID? = nil, revisionID: UUID? = nil, includesExpenses: Bool? = nil,
-		timeZoneIdentifier: String? = nil
+		timeZoneIdentifier: String? = nil, budgetName: String? = nil
 	) {
 		self.version = version
 		self.currencyCode = currencyCode
@@ -32,6 +33,7 @@ struct SharePayload: Equatable, Sendable, Codable {
 		self.revisionID = revisionID
 		self.includesExpenses = includesExpenses
 		self.timeZoneIdentifier = timeZoneIdentifier
+		self.budgetName = budgetName
 	}
 
 	struct TitleDTO: Equatable, Sendable, Codable {

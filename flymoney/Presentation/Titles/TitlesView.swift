@@ -12,6 +12,7 @@ struct TitlesView: View {
 	@State private var guides = GuideCoordinator()
 	@State private var showGuides = false
 	@State private var showAllTitles = false
+	@State private var showBudgets = false
 #if DEBUG
 	@State private var showTemplate = false
 #endif
@@ -42,6 +43,12 @@ struct TitlesView: View {
 		.background(Theme.Colors.surface)
 		.modifier(GuidePresentation(coordinator: guides))
 		.sheet(isPresented: $showGuides) { GuidesView() }
+        .sheet(isPresented: $showBudgets, onDismiss: { Task { await viewModel.load() } }) {
+            assembly.makeSavedBudgetLibraryView(month: viewModel.month) {
+                viewModel.month = $0
+                Task { await onExpenseDeleted() }
+            }
+        }
 #if DEBUG
 		.sheet(isPresented: $showTemplate, onDismiss: { Task { await viewModel.load() } }) {
 			BudgetTemplateView(
@@ -106,6 +113,7 @@ struct TitlesView: View {
 			.buttonStyle(.hapticPlain)
 			Spacer()
 			Menu {
+                Button("Budgets", systemImage: "books.vertical") { showBudgets = true }
 #if DEBUG
 				Button("Load template", systemImage: "list.bullet.rectangle") { guides.request(.template) { showTemplate = true } }
 #endif

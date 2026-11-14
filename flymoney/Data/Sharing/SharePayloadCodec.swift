@@ -15,7 +15,7 @@ enum SharePayloadCodec {
 	static func decode(_ data: Data) throws -> SharePayload {
 		guard data.count <= ChunkedTransfer.maximumPayloadSize else { throw BudgetError.invalidPayload }
 		let payload = try JSONDecoder().decode(SharePayload.self, from: data)
-		guard [1, 2].contains(payload.version) else { throw CodecError.unsupportedVersion(payload.version) }
+		guard [1, 2, 3].contains(payload.version) else { throw CodecError.unsupportedVersion(payload.version) }
 		try BudgetPayloadValidation.validate(payload)
 		return payload
 	}

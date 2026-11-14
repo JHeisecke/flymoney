@@ -9,13 +9,13 @@ import Foundation
 
 enum BudgetPayloadValidation {
 	static func validate(_ payload: SharePayload) throws {
-		guard [1, 2].contains(payload.version), (1900...9999).contains(payload.month.year),
+		guard [1, 2, 3].contains(payload.version), (1900...9999).contains(payload.month.year),
 			(1...12).contains(payload.month.month),
 			payload.currencyCode.count == 3, payload.currencyCode == payload.currencyCode.uppercased(),
 			payload.currencyCode.unicodeScalars.allSatisfy({ (65...90).contains($0.value) }),
 			payload.titles.count <= 10_000, payload.expenses.count <= 20_000
 		else { throw BudgetError.invalidPayload }
-		if payload.version == 2 {
+		if payload.version >= 2 {
 			guard payload.budgetID != nil, payload.revisionID != nil,
 				let includes = payload.includesExpenses,
 				let zone = payload.timeZoneIdentifier, TimeZone(identifier: zone) != nil,
@@ -24,9 +24,18 @@ enum BudgetPayloadValidation {
 		}
 		if payload.version == 1 {
 			guard payload.budgetID == nil, payload.revisionID == nil, payload.includesExpenses == nil,
-				payload.timeZoneIdentifier == nil
+				payload.timeZoneIdentifier == nil, payload.budgetName == nil
 			else { throw BudgetError.invalidPayload }
 		}
+        if payload.version == 2, payload.budgetName != nil { throw BudgetError.invalidPayload }
+        if payload.version == 3 {
+            guard let name = payload.budgetName,
+                  !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  name.count <= 200, !payload.titles.isEmpty,
+                  payload.includesExpenses == false, payload.expenses.isEmpty else {
+                throw BudgetError.invalidPayload
+            }
+        }
 		let ids = Set(payload.titles.map(\.id))
 		guard ids.count == payload.titles.count, Set(payload.expenses.map(\.id)).count == payload.expenses.count
 		else { throw BudgetError.invalidPayload }

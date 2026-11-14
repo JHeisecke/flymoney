@@ -29,6 +29,7 @@ actor SwiftDataBudgetRepository: BudgetRepository, ModelActor {
 	func prepare(_ payload: SharePayload) throws -> BudgetReview { try prepare(payload, context: context()) }
 	private func prepare(_ payload: SharePayload, context: ModelContext) throws -> BudgetReview {
 		try BudgetPayloadValidation.validate(payload)
+        guard payload.version <= 2 else { throw BudgetError.invalidPayload }
 		guard try SharePayloadCodec.encode(payload).count <= ChunkedTransfer.maximumPayloadSize else {
 			throw BudgetError.invalidPayload
 		}
@@ -97,7 +98,15 @@ actor SwiftDataBudgetRepository: BudgetRepository, ModelActor {
 		let context = context()
 		do {
 			try Task.checkCancellation()
-			let refreshed = try prepare(review.payload, context: context)
+			if let expectedRevision = review.sourceBudgetRevision {
+                let definition = try context.fetch(FetchDescriptor<SavedBudgetModel>()).first {
+                    $0.id == review.payload.budgetID
+                }
+                guard try definition?.toEntity().revisionID == expectedRevision else {
+                    throw BudgetError.staleReview
+                }
+            }
+            let refreshed = try prepare(review.payload, context: context)
 			guard refreshed.snapshot == review.snapshot, refreshed.fingerprint == review.fingerprint else {
 				throw BudgetError.staleReview
 			}

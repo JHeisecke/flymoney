@@ -17,6 +17,7 @@ final class SharingViewModel {
 		case sending(Double)
 		case receiving(Double)
 		case awaitingMerge(ImportedMonth)
+        case awaitingSavedBudget(SavedBudgetImportReview)
 		case saving
 		case done
 		case failed(String)
@@ -39,26 +40,27 @@ final class SharingViewModel {
 		return nil
 	}
 	func prepareExportPreview() async {
-		guard let month = shareMonth else { return }
 		let id = UUID()
 		previewID = id
 		exportPreview = nil
 		previewError = nil
 		do {
-			let payload: SharePayload
-			if let budgetUseCases {
-				payload = try await budgetUseCases.preview(
-					month: month, includesExpenses: includesExpenses)
-			} else {
-				payload = try await exportMonth.execute(month)
-			}
+            let payload = try await outgoingPayload(persistIdentity: false)
 			guard !Task.isCancelled, previewID == id else { return }
 			exportPreview = payload
 		} catch { if !Task.isCancelled, previewID == id { previewError = error.localizedDescription } }
 	}
 	private(set) var budgetReviewModel: BudgetReviewViewModel?
 	private let budgetUseCases: (any BudgetUseCases)?
+    private let savedBudgetUseCases: (any SavedBudgetUseCases)?
+    private(set) var importedSavedBudget: SavedBudget?
+    private(set) var savedBudgetError: String?
+    var isSharingSavedBudget: Bool {
+        if case .sendBudget = role { return true }
+        return false
+    }
 	private var runID: UUID?
+    private var librarySaveID: UUID?
 
 	private let role: SharingRole
 	private let exportMonth: any ExportMonthUseCase
@@ -81,9 +83,11 @@ final class SharingViewModel {
 		upsertTitle: any UpsertExpenseTitleUseCase,
 		setTitleLimit: any SetTitleLimitUseCase,
 		fetchLimits: any FetchEffectiveLimitsUseCase,
-		transport: any SharingTransport, budgetUseCases: (any BudgetUseCases)? = nil
+		transport: any SharingTransport, budgetUseCases: (any BudgetUseCases)? = nil,
+        savedBudgetUseCases: (any SavedBudgetUseCases)? = nil
 	) {
 		self.budgetUseCases = budgetUseCases
+        self.savedBudgetUseCases = savedBudgetUseCases
 		self.role = role
 		self.exportMonth = exportMonth
 		self.importShared = importShared
@@ -103,8 +107,8 @@ final class SharingViewModel {
 		phase = .handshaking
 		defer { if runID == id { runID = nil } }
 		switch role {
-		case .send(let month):
-			await startSend(month: month, id: id)
+		case .send, .sendBudget:
+			await startSend(id: id)
 		case .receive:
 			await startReceive(id: id)
 		}
@@ -112,6 +116,10 @@ final class SharingViewModel {
 
 	func cancel() {
 		runID = nil
+        librarySaveID = nil
+        importedSavedBudget = nil
+        savedBudgetError = nil
+        budgetReviewModel = nil
 		qrText = nil
 		sharingTransport.cancel()
 		phase = .idle
@@ -135,15 +143,58 @@ final class SharingViewModel {
 		if budgetReviewModel.isSaved { phase = .done }
 	}
 
-	private func startSend(month: CalendarMonth, id: UUID) async {
+    private func outgoingPayload(persistIdentity: Bool) async throws -> SharePayload {
+        switch role {
+        case .sendBudget(let budget):
+            guard let savedBudgetUseCases else { throw BudgetError.invalidPayload }
+            return try await savedBudgetUseCases.export(budget)
+        case .send(let month):
+            if let budgetUseCases {
+                if persistIdentity {
+                    return try await budgetUseCases.export(month: month, includesExpenses: includesExpenses)
+                }
+                return try await budgetUseCases.preview(month: month, includesExpenses: includesExpenses)
+            }
+            return try await exportMonth.execute(month)
+        case .receive:
+            throw BudgetError.invalidPayload
+        }
+    }
+
+    func saveReceivedBudget() async {
+        guard case .awaitingSavedBudget(let review) = phase,
+              let savedBudgetUseCases else { return }
+        let saveID = UUID()
+        librarySaveID = saveID
+        defer { if librarySaveID == saveID { librarySaveID = nil } }
+        phase = .saving
+        savedBudgetError = nil
+        do {
+            let saved = try await savedBudgetUseCases.saveImport(review)
+            guard !Task.isCancelled, librarySaveID == saveID else { return }
+            importedSavedBudget = saved
+            phase = .done
+        } catch {
+            guard !Task.isCancelled, librarySaveID == saveID else { return }
+            savedBudgetError = error.localizedDescription
+            phase = .awaitingSavedBudget(review)
+        }
+    }
+
+    func refreshReceivedBudget() async {
+        guard case .awaitingSavedBudget(let review) = phase,
+              let savedBudgetUseCases else { return }
+        do {
+            let refreshed = try await savedBudgetUseCases.prepareImport(review.incoming.sharingPayload())
+            guard phase == .awaitingSavedBudget(review), !Task.isCancelled else { return }
+            phase = .awaitingSavedBudget(refreshed)
+            savedBudgetError = nil
+        } catch { savedBudgetError = error.localizedDescription }
+    }
+
+    private func startSend(id: UUID) async {
 		do {
-			let payload: SharePayload
-			if let budgetUseCases {
-				payload = try await budgetUseCases.export(
-					month: month, includesExpenses: includesExpenses)
-			} else {
-				payload = try await exportMonth.execute(month)
-			}
+            let payload = try await outgoingPayload(persistIdentity: true)
 			guard runID == id, !Task.isCancelled else { return }
 			let stream = sharingTransport.send(payload)
 			for await event in stream {
@@ -188,6 +239,18 @@ final class SharingViewModel {
 			case .completed:
 				break
 			case .received(let payload):
+                if payload.version == 3 {
+                    do {
+                        guard let savedBudgetUseCases else { throw BudgetError.invalidPayload }
+                        let review = try await savedBudgetUseCases.prepareImport(payload)
+                        guard runID == id, !Task.isCancelled else { return }
+                        phase = .awaitingSavedBudget(review)
+                    } catch {
+                        guard runID == id else { return }
+                        phase = .failed(error.localizedDescription)
+                    }
+                    return
+                }
 				if let budgetUseCases {
 					do {
 						let review = try await budgetUseCases.prepareReceived(payload)

@@ -13,6 +13,7 @@ struct BudgetReview: Sendable, Equatable {
 	let snapshot: String
 	let knownPlan: Bool
 	let localCategories: [ExpenseTitle]
+	var sourceBudgetRevision: UUID? = nil
 	var rows: [BudgetReviewRow]
 	let existingExpenseIDs: Set<UUID>
 	let conflictingExpenseIDs: Set<UUID>

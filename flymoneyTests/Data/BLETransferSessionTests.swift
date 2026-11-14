@@ -21,7 +21,7 @@ struct BLETransferSessionTests {
 				.init(
 					id: UUID(), name: String(repeating: "Supermercado", count: 10),
 					limitMinorUnits: 1000)
-			], expenses: [], budgetID: version == 2 ? UUID() : nil, revisionID: version == 2 ? UUID() : nil, includesExpenses: version == 2 ? false : nil, timeZoneIdentifier: version == 2 ? TimeZone.current.identifier : nil)
+			], expenses: [], budgetID: version >= 2 ? UUID() : nil, revisionID: version >= 2 ? UUID() : nil, includesExpenses: version >= 2 ? false : nil, timeZoneIdentifier: version >= 2 ? TimeZone.current.identifier : nil, budgetName: version == 3 ? "Saved home" : nil)
 	}
 
 	@Test("Lost missing-fragment request is retransmitted when the sender repeats end")
@@ -40,7 +40,7 @@ struct BLETransferSessionTests {
 		#expect(pair.sender.finished && pair.receiver.finished)
 	}
 
-	@Test("Authenticated transfer confirms before exposing the received payload", arguments: [1, 2])
+	@Test("Authenticated transfer confirms before exposing the received payload", arguments: [1, 2, 3])
 	func roundTrip(version: Int) throws {
 		let pair = try SessionPair(payload: payload(version: version))
 		try pair.start()
