@@ -140,6 +140,43 @@ struct BLEQRSharingTransportTests {
 		#expect(await iterator.next() == nil)
 		#expect(radio.starts == 0)
 	}
+    @Test("Content version and invalid data produce distinct receiver errors", .tags(.persistence), arguments: [1, 99])
+    func contentErrors(version: Int) async throws {
+        let a = LinkedRadio()
+        let b = LinkedRadio()
+        a.peer = b
+        b.peer = a
+        let sender = BLEQRSharingTransport(makePeripheral: { a })
+        let receiver = BLEQRSharingTransport(makeCentral: { b })
+        defer { sender.cancel(); receiver.cancel() }
+        let invalid = SharePayload(version: version, currencyCode: "PYG",
+            month: CalendarMonth(year: 2026, month: 11),
+            titles: [.init(id: UUID(), name: "", limitMinorUnits: nil)], expenses: [])
+        var sending = sender.send(invalid).makeAsyncIterator()
+        #expect(await sending.next() == .handshaking)
+        receiver.provideScannedQR(try #require(sender.qrText))
+        var last: TransferEvent?
+        for await event in receiver.receive() { last = event }
+        let expected: BLETransferError = version == 99 ? .incompatibleVersion : .invalidMessage
+        #expect(last == .failed(reason: expected.localizedDescription))
+        #expect(b.stops == 1)
+    }
+
+    @Test("An oversized saved definition fails with a size error before starting Bluetooth", .tags(.persistence))
+    func oversizedDefinition() async throws {
+        let radio = FakeRadio()
+        let transport = BLEQRSharingTransport(makePeripheral: { radio })
+        let budget = SavedBudget(name: "Large budget", currencyCode: "PYG", entries: (0..<6_000).map { _ in
+            .init(id: UUID(), name: String(repeating: "a", count: 200), limit: nil)
+        })
+        let payload = try budget.sharingPayload()
+        #expect(try SharePayloadCodec.encode(payload).count > ChunkedTransfer.maximumPayloadSize)
+        var iterator = transport.send(payload).makeAsyncIterator()
+        #expect(await iterator.next() == .failed(reason: BLETransferError.size.localizedDescription))
+        #expect(await iterator.next() == nil)
+        #expect(radio.starts == 0)
+    }
+
 }
 
 @MainActor

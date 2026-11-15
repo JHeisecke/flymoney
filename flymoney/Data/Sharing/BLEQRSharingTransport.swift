@@ -128,9 +128,13 @@ final class BLEQRSharingTransport: SharingTransport {
 	}
 	private func fail(_ error: any Error, id: UUID) {
 		guard generation == id else { return }
-		let message =
-			(error as? BLETransferError)?.localizedDescription
-			?? BLETransferError.invalidMessage.localizedDescription
+		let message: String
+		if case SharePayloadCodec.CodecError.unsupportedVersion = error {
+			message = BLETransferError.incompatibleVersion.localizedDescription
+		} else {
+			message = (error as? BLETransferError)?.localizedDescription
+				?? BLETransferError.invalidMessage.localizedDescription
+		}
 		output?.yield(.failed(reason: message))
 		end(id: id)
 	}

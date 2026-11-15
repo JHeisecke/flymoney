@@ -17,7 +17,7 @@ enum BLETransferError: Error, LocalizedError {
 			String(
 				localized:
 					"This Bluetooth connection cannot carry the transfer. Reconnect and try again.")
-		case .size: String(localized: "This transfer is too large. Share a smaller month.")
+		case .size: String(localized: "This transfer is too large. Reduce the shared content and try again.")
 		case .disconnected: String(localized: "Reception could not be confirmed. Reconnect and try again.")
 		case .timeout: String(localized: "Transfer timed out. Keep both apps open and try again.")
 		case .cancelled: String(localized: "Transfer cancelled.")

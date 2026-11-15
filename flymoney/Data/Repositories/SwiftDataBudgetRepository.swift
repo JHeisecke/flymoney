@@ -27,6 +27,17 @@ actor SwiftDataBudgetRepository: BudgetRepository, ModelActor {
 		return context
 	}
 	func prepare(_ payload: SharePayload) throws -> BudgetReview { try prepare(payload, context: context()) }
+	func refresh(_ review: BudgetReview) throws -> BudgetReview {
+		let context = context()
+		guard review.sourceBudgetRevision != nil else { return try prepare(review.payload, context: context) }
+		guard let id = review.payload.budgetID,
+			let model = try context.fetch(FetchDescriptor<SavedBudgetModel>()).first(where: { $0.id == id })
+		else { throw BudgetError.missingBudget }
+		let definition = try model.toEntity()
+		var refreshed = try prepare(definition.applicationPayload(month: review.payload.month), context: context)
+		refreshed.sourceBudgetRevision = definition.revisionID
+		return refreshed
+	}
 	private func prepare(_ payload: SharePayload, context: ModelContext) throws -> BudgetReview {
 		try BudgetPayloadValidation.validate(payload)
         guard payload.version <= 2 else { throw BudgetError.invalidPayload }
@@ -98,13 +109,24 @@ actor SwiftDataBudgetRepository: BudgetRepository, ModelActor {
 		let context = context()
 		do {
 			try Task.checkCancellation()
+			var sourceDefinition: SavedBudget?
 			if let expectedRevision = review.sourceBudgetRevision {
                 let definition = try context.fetch(FetchDescriptor<SavedBudgetModel>()).first {
                     $0.id == review.payload.budgetID
                 }
-                guard try definition?.toEntity().revisionID == expectedRevision else {
+                guard let definition else { throw BudgetError.missingBudget }
+                let saved = try definition.toEntity()
+                guard saved.revisionID == expectedRevision else {
                     throw BudgetError.staleReview
                 }
+                let expected = saved.applicationPayload(month: review.payload.month)
+                guard review.payload.version == expected.version,
+                    review.payload.currencyCode == expected.currencyCode,
+                    review.payload.titles == expected.titles,
+                    review.payload.includesExpenses == false, review.payload.expenses.isEmpty else {
+                    throw BudgetError.invalidPayload
+                }
+                sourceDefinition = saved
             }
             let refreshed = try prepare(review.payload, context: context)
 			guard refreshed.snapshot == review.snapshot, refreshed.fingerprint == review.fingerprint else {
@@ -119,6 +141,10 @@ actor SwiftDataBudgetRepository: BudgetRepository, ModelActor {
 			let localTitles = try context.fetch(FetchDescriptor<ExpenseTitleModel>())
 			let limits = try context.fetch(FetchDescriptor<TitleLimitModel>())
 			let previousLinks = try context.fetch(FetchDescriptor<BudgetCategoryLinkModel>())
+			let finalTargets = Dictionary(uniqueKeysWithValues: review.rows.map {
+				($0.id, $0.localTitleID ?? $0.newTitleID)
+			})
+			let activeConcepts = sourceDefinition.map { Set($0.entries.map(\.id)) }
 			var mapping: [UUID: UUID] = [:]
 			for row in review.rows {
 				guard let incoming = review.payload.titles.first(where: { $0.id == row.id }),
@@ -141,12 +167,17 @@ actor SwiftDataBudgetRepository: BudgetRepository, ModelActor {
 							createdAt: .now))
 				}
 				if let budgetID = review.payload.budgetID {
-					guard
-						!previousLinks.contains(where: {
-							$0.budgetID == budgetID && $0.localTitleID == localID
-								&& $0.conceptID != row.id
-						})
-					else { throw BudgetError.ambiguousCategory }
+					for link in previousLinks where link.budgetID == budgetID
+						&& link.localTitleID == localID && link.conceptID != row.id {
+						// Only a complete, revalidated local definition proves retirement.
+						// An omitted concept in a received month may still be active elsewhere.
+						guard let activeConcepts else { throw BudgetError.ambiguousCategory }
+						if !activeConcepts.contains(link.conceptID) {
+							context.delete(link)
+						} else if finalTargets[link.conceptID] == localID {
+							throw BudgetError.ambiguousCategory
+						}
+					}
 				}
 				mapping[row.id] = localID
 				if row.useIncomingLimit || row.localTitleID == nil {

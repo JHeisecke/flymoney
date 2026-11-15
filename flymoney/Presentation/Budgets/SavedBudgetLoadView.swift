@@ -23,7 +23,9 @@ struct SavedBudgetLoadView: View {
                 BudgetReviewView(model: review, onSaved: {
                     onApplied(model.month)
                     dismiss()
-                }, onCancel: { model.returnToMonth() })
+                }, onCancel: {
+                    if review.isSourceMissing { dismiss() } else { model.returnToMonth() }
+                })
             } else {
                 Form {
                     SavedBudgetSummaryView(budget: model.budget)
@@ -32,7 +34,11 @@ struct SavedBudgetLoadView: View {
                         onNext: { model.month = model.month.next(using: .current) })
                     Text("Review the categories and limits before applying them.")
                     if let error = model.error { Text(error).foregroundStyle(.red) }
-                    Button("Review budget") { Task { await model.prepare() } }
+                    if model.isSourceMissing {
+                        Button("Back to Budgets") { dismiss() }
+                    } else {
+                        Button("Review budget") { Task { await model.prepare() } }
+                    }
                     if model.isLoading { ProgressView() }
                 }
                 .disabled(model.isLoading)

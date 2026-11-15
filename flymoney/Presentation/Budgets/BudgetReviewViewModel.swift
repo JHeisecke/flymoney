@@ -15,6 +15,7 @@ final class BudgetReviewViewModel {
 	private(set) var isSaved = false
 	private(set) var error: String?
 	private(set) var needsRefresh = false
+	private(set) var isSourceMissing = false
 	private let useCases: any BudgetUseCases
 	init(review: BudgetReview, useCases: any BudgetUseCases) {
 		self.review = review
@@ -24,7 +25,7 @@ final class BudgetReviewViewModel {
 		Set(review.rows.map { $0.localTitleID ?? $0.newTitleID }).count != review.rows.count
 	}
 	var canSave: Bool {
-		!isSaving && !isSaved && !needsRefresh && !review.rows.contains(where: \.requiresSelection)
+		!isSaving && !isSaved && !needsRefresh && !isSourceMissing && !review.rows.contains(where: \.requiresSelection)
 			&& !hasDuplicateTargets
 	}
 	var plannedTotal: Money? {
@@ -50,6 +51,7 @@ final class BudgetReviewViewModel {
 		} catch {
 			self.error = error.localizedDescription
 			if case BudgetError.staleReview = error { needsRefresh = true }
+			if case BudgetError.missingBudget = error { isSourceMissing = true }
 		}
 	}
 	func refresh() async {
@@ -57,11 +59,14 @@ final class BudgetReviewViewModel {
 		isSaving = true
 		defer { isSaving = false }
 		do {
-			let sourceRevision = review.sourceBudgetRevision
-			review = try await useCases.prepareReceived(review.payload)
-			review.sourceBudgetRevision = sourceRevision
+			review = try await useCases.refresh(review)
 			error = nil
 			needsRefresh = false
-		} catch { self.error = error.localizedDescription }
+			isSourceMissing = false
+		} catch {
+			self.error = error.localizedDescription
+			needsRefresh = true
+			if case BudgetError.missingBudget = error { isSourceMissing = true }
+		}
 	}
 }

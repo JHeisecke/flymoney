@@ -1,6 +1,54 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+  "This saved budget was deleted. Return to Budgets to choose another.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "This saved budget was deleted. Return to Budgets to choose another."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Este presupuesto guardado fue borrado. Volvé a Presupuestos para elegir otro."
+        }
+      }
+    }
+  },
+  "Back to Budgets": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Back to Budgets"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Volver a Presupuestos"
+        }
+      }
+    }
+  },
+  "This transfer is too large. Reduce the shared content and try again.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "This transfer is too large. Reduce the shared content and try again."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Este envío es demasiado grande. Reducí el contenido compartido e intentá de nuevo."
+        }
+      }
+    }
+  },
   "Your expense is only saved when you choose Save expense.": {
     "localizations": {
       "en": {

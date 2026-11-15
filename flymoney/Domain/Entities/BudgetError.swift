@@ -8,7 +8,7 @@
 import Foundation
 
 enum BudgetError: Error, LocalizedError {
-	case invalidPayload, currency, staleReview, ambiguousCategory, changedRevision, missingCategory
+	case invalidPayload, currency, staleReview, ambiguousCategory, changedRevision, missingCategory, missingBudget
 	var errorDescription: String? {
 		switch self {
 		case .invalidPayload: String(localized: "This budget contains invalid or unsupported data.")
@@ -17,6 +17,7 @@ enum BudgetError: Error, LocalizedError {
 		case .ambiguousCategory: String(localized: "Choose a different category for each budget item.")
 		case .changedRevision: String(localized: "This revision was already received with different content.")
 		case .missingCategory: String(localized: "A linked category was deleted. Choose its replacement.")
+		case .missingBudget: String(localized: "This saved budget was deleted. Return to Budgets to choose another.")
 		}
 	}
 }

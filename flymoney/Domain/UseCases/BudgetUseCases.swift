@@ -10,6 +10,7 @@ import Foundation
 protocol BudgetUseCases: Sendable {
 	func prepareTemplate(profile: BudgetProfile, month: CalendarMonth) async throws -> BudgetReview
 	func prepareReceived(_ payload: SharePayload) async throws -> BudgetReview
+	func refresh(_ review: BudgetReview) async throws -> BudgetReview
 	func save(_ review: BudgetReview) async throws
 	func preview(month: CalendarMonth, includesExpenses: Bool) async throws -> SharePayload
 	func export(month: CalendarMonth, includesExpenses: Bool) async throws -> SharePayload
@@ -23,6 +24,9 @@ struct BudgetUseCasesImpl: BudgetUseCases {
 	}
 	func prepareReceived(_ payload: SharePayload) async throws -> BudgetReview {
 		try await repository.prepare(payload)
+	}
+	func refresh(_ review: BudgetReview) async throws -> BudgetReview {
+		try await repository.refresh(review)
 	}
 	func save(_ review: BudgetReview) async throws { try await repository.commit(review) }
 	func preview(month: CalendarMonth, includesExpenses: Bool) async throws -> SharePayload {

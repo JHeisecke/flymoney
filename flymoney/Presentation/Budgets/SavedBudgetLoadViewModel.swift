@@ -10,11 +10,12 @@ import Observation
 
 @MainActor @Observable
 final class SavedBudgetLoadViewModel {
-    let budget: SavedBudget
+    private(set) var budget: SavedBudget
     var month: CalendarMonth
     private(set) var reviewModel: BudgetReviewViewModel?
     private(set) var isLoading = false
     private(set) var error: String?
+    private(set) var isSourceMissing = false
     private let useCases: any SavedBudgetUseCases
     private let budgets: any BudgetUseCases
 
@@ -31,10 +32,18 @@ final class SavedBudgetLoadViewModel {
         isLoading = true
         defer { isLoading = false }
         do {
-            let review = try await useCases.prepareLoad(budget, month: month)
+            guard let current = try await useCases.list().first(where: { $0.id == budget.id }) else {
+                throw BudgetError.missingBudget
+            }
+            budget = current
+            let review = try await useCases.prepareLoad(current, month: month)
             reviewModel = BudgetReviewViewModel(review: review, useCases: budgets)
             error = nil
-        } catch { self.error = error.localizedDescription }
+            isSourceMissing = false
+        } catch {
+            self.error = error.localizedDescription
+            if case BudgetError.missingBudget = error { isSourceMissing = true }
+        }
     }
 
     func returnToMonth() { reviewModel = nil }

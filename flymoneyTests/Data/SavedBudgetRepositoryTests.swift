@@ -95,6 +95,107 @@ struct SavedBudgetRepositoryTests {
         #expect(try await cases.list() == [copy])
     }
 
+    @Test("A recreated budget line can reuse its retired line's category", .tags(.persistence))
+    func recreatedLineLoads() async throws {
+        let container = try TestSupport.makeContainer()
+        let cases = useCases(container)
+        let original = budget()
+        try await cases.save(original, expectedRevision: nil)
+        try await budgetUseCases(container).save(cases.prepareLoad(original, month: month))
+        let context = ModelContext(container)
+        let local = try #require(context.fetch(FetchDescriptor<ExpenseTitleModel>()).first)
+        let expenseID = UUID()
+        context.insert(ExpenseModel(id: expenseID, amountMinorUnits: 20, currencyCode: "PYG",
+            titleID: local.id, date: month.interval(using: .current).start, detail: "Keep this note"))
+        try context.save()
+        var edited = original
+        edited.revisionID = UUID()
+        edited.entries = [.init(id: UUID(), name: original.entries[0].name,
+            limit: Money(minorUnits: 200, currencyCode: "PYG"))]
+        try await cases.save(edited, expectedRevision: original.revisionID)
+        var review = try await cases.prepareLoad(edited, month: month)
+        #expect(review.rows[0].localTitleID == local.id)
+        review.rows[0].useIncomingLimit = true
+        let finalReview = review
+        let writer = SwiftDataBudgetRepository(modelContainer: container, currencyCode: "PYG")
+        enum Failure: Error { case injected }
+        await #expect(throws: Failure.self) {
+            try await writer.commit(finalReview, beforeSave: { throw Failure.injected })
+        }
+        let afterFailure = ModelContext(container)
+        #expect(try afterFailure.fetch(FetchDescriptor<BudgetCategoryLinkModel>()).first?.conceptID == original.entries[0].id)
+        #expect(try afterFailure.fetch(FetchDescriptor<TitleLimitModel>()).first?.limitMinorUnits == 100)
+        #expect(try afterFailure.fetch(FetchDescriptor<BudgetImportReceiptModel>()).count == 1)
+        let cancelled = Task {
+            withUnsafeCurrentTask { $0?.cancel() }
+            try await writer.commit(finalReview)
+        }
+        await #expect(throws: CancellationError.self) { try await cancelled.value }
+        try await writer.commit(finalReview)
+        let reopened = ModelContext(container)
+        #expect(try reopened.fetch(FetchDescriptor<ExpenseTitleModel>()).count == 1)
+        #expect(try reopened.fetch(FetchDescriptor<TitleLimitModel>()).first?.limitMinorUnits == 200)
+        #expect(try reopened.fetch(FetchDescriptor<ExpenseModel>()).first?.id == expenseID)
+        #expect(try reopened.fetch(FetchDescriptor<ExpenseModel>()).first?.detail == "Keep this note")
+        #expect(try reopened.fetch(FetchDescriptor<BudgetImportReceiptModel>()).count == 2)
+        #expect(try reopened.fetch(FetchDescriptor<BudgetCategoryLinkModel>()).map(\.conceptID) == [edited.entries[0].id])
+        let recordedConcepts = try reopened.fetch(FetchDescriptor<BudgetImportReceiptModel>()).flatMap {
+            try JSONDecoder().decode(BudgetReceiptRecord.self, from: $0.decisions).choices.map(\.conceptID)
+        }
+        #expect(Set(recordedConcepts) == [original.entries[0].id, edited.entries[0].id])
+    }
+
+    @Test("Partial monthly shares preserve omitted links and cannot retire another concept", .tags(.persistence))
+    func partialSharePreservesLinks() async throws {
+        let container = try TestSupport.makeContainer()
+        let cases = useCases(container)
+        var original = budget()
+        original.entries.append(.init(id: UUID(), name: "Travel", limit: Money(minorUnits: 50, currencyCode: "PYG")))
+        try await cases.save(original, expectedRevision: nil)
+        try await budgetUseCases(container).save(cases.prepareLoad(original, month: month))
+        let writer = SwiftDataBudgetRepository(modelContainer: container, currencyCode: "PYG")
+        let payload = SharePayload(version: 2, currencyCode: "PYG", month: month,
+            titles: [.init(id: original.entries[0].id, name: "Food", limitMinorUnits: 120)],
+            expenses: [], budgetID: original.id, revisionID: UUID(), includesExpenses: false, timeZoneIdentifier: "UTC")
+        var monthly = try await writer.prepare(payload)
+        monthly.rows[0].useIncomingLimit = true
+        try await writer.commit(monthly)
+        let linksBefore = try ModelContext(container).fetch(FetchDescriptor<BudgetCategoryLinkModel>()).map(\.key).sorted()
+        var edited = original
+        edited.revisionID = UUID()
+        edited.entries[0] = .init(id: UUID(), name: "Food", limit: Money(minorUnits: 200, currencyCode: "PYG"))
+        try await cases.save(edited, expectedRevision: original.revisionID)
+        let refreshed = try await writer.refresh(monthly)
+        #expect(refreshed.sourceBudgetRevision == nil && refreshed.payload == payload)
+        let remote = try await writer.prepare(edited.applicationPayload(month: month))
+        await #expect(throws: BudgetError.ambiguousCategory) { try await writer.commit(remote) }
+        #expect(try ModelContext(container).fetch(FetchDescriptor<BudgetCategoryLinkModel>()).map(\.key).sorted() == linksBefore)
+        var spoofed = remote
+        spoofed.sourceBudgetRevision = edited.revisionID
+        spoofed.rows.removeLast()
+        await #expect(throws: BudgetError.ambiguousCategory) { try await writer.commit(spoofed) }
+        #expect(try ModelContext(container).fetch(FetchDescriptor<BudgetCategoryLinkModel>()).map(\.key).sorted() == linksBefore)
+    }
+
+    @Test("A full local definition may swap category targets atomically", .tags(.persistence))
+    func swapTargets() async throws {
+        let container = try TestSupport.makeContainer()
+        let cases = useCases(container)
+        var original = budget()
+        original.entries.append(.init(id: UUID(), name: "Travel", limit: Money(minorUnits: 50, currencyCode: "PYG")))
+        try await cases.save(original, expectedRevision: nil)
+        try await budgetUseCases(container).save(cases.prepareLoad(original, month: month))
+        var review = try await cases.prepareLoad(original, month: month)
+        let firstID = review.rows[0].localTitleID
+        let secondID = review.rows[1].localTitleID
+        review.rows[0].localTitleID = secondID
+        review.rows[1].localTitleID = firstID
+        try await budgetUseCases(container).save(review)
+        let links = try ModelContext(container).fetch(FetchDescriptor<BudgetCategoryLinkModel>())
+        #expect(links.first { $0.conceptID == original.entries[0].id }?.localTitleID == secondID)
+        #expect(links.first { $0.conceptID == original.entries[1].id }?.localTitleID == firstID)
+    }
+
     @Test("The same definition loads across months without duplicate categories or revision conflicts")
     func repeatedLoading() async throws {
         let container = try TestSupport.makeContainer()

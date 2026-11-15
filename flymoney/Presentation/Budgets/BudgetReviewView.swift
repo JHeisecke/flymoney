@@ -50,7 +50,11 @@ struct BudgetReviewView: View {
 			if let error = model.error {
 				Section {
 					Text(error).foregroundStyle(.red)
-					Button("Refresh review") { refreshAttempt += 1 }
+					if model.isSourceMissing {
+						Button("Back to Budgets", action: onCancel)
+					} else {
+						Button("Refresh review") { refreshAttempt += 1 }
+					}
 				}
 			}
 			Section {
