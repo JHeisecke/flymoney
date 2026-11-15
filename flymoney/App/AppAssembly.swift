@@ -235,6 +235,10 @@ final class AppAssembly {
             assembly: self, onApplied: onApplied)
     }
 
+    func makeMinesweeperView(expenseModel: AddExpenseViewModel) -> some View {
+        MinesweeperView(model: MinesweeperViewModel(), expenseModel: expenseModel)
+    }
+
     func makeSavedBudgetLibraryView(month: CalendarMonth,
         onApplied: @escaping (CalendarMonth) -> Void) -> some View {
         SavedBudgetLibraryView(model: SavedBudgetLibraryViewModel(

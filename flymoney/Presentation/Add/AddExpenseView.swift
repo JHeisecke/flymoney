@@ -41,6 +41,9 @@ struct AddExpenseView: View {
                 Task { await viewModel.refreshAfterExternalChange() }
             }
         }
+        .fullScreenCover(isPresented: $viewModel.showMinesweeper) {
+            assembly.makeMinesweeperView(expenseModel: viewModel)
+        }
 		.dismissKeyboardOnTap()
 		.simultaneousGesture(TapGesture().onEnded { showSuggestions = false })
 		.task { await viewModel.refreshFirstExpenseHelp() }

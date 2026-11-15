@@ -539,6 +539,109 @@ struct AddExpenseViewModelTests {
 			onboardingKey: UUID().uuidString,
 			searchDebounce: searchDebounce)
 	}
+    @Test("Minesweeper opens for any valid amount and preserves the entire draft without writes", .tags(.viewModel),
+        arguments: ["buscamina", " BUSCAMINA ", "Buscamina\n"])
+    func minesweeperCommand(category: String) async throws {
+        for amount: Decimal in [1, 42.5, 20_022_021] {
+            let expenses = InMemoryExpenseRepository()
+            let titles = InMemoryExpenseTitleRepository()
+            let vm = makeVM(expenses: expenses, titles: titles)
+            await vm.refreshFirstExpenseHelp()
+            let date = Date(timeIntervalSince1970: 1_700_000_000)
+            vm.form.amountDecimal = amount
+            vm.form.titleName = category
+            vm.form.detail = "A note"
+            vm.form.date = date
+            vm.form.isRecurring = true
+            await vm.save()
+            await vm.save()
+            #expect(vm.showMinesweeper && !vm.showPrivateBudgets)
+            #expect(vm.form.amountDecimal == amount && vm.form.titleName == category)
+            #expect(vm.form.detail == "A note" && vm.form.date == date && vm.form.isRecurring)
+            #expect(vm.showFirstExpenseHelp && !vm.didJustSave && !vm.didSaveGuidedExpense)
+            #expect(try await titles.allTitles().isEmpty)
+            #expect(try await expenses.hasExpenses() == false)
+            vm.showMinesweeper = false
+            await vm.saveMinesweeperExpense()
+            #expect(try await expenses.hasExpenses() == false)
+            #expect(vm.form.amountDecimal == amount && vm.form.titleName == category)
+        }
+    }
+
+    @Test("Save as expense persists every original field once and dismisses instead of reopening the game", .tags(.viewModel))
+    func minesweeperSaveExpense() async throws {
+        let expenses = InMemoryExpenseRepository()
+        let titles = InMemoryExpenseTitleRepository()
+        let vm = makeVM(expenses: expenses, titles: titles)
+        await vm.refreshFirstExpenseHelp()
+        let date = Date(timeIntervalSince1970: 1_700_000_000)
+        vm.form.amountDecimal = 125.5
+        vm.form.titleName = "buscamina"
+        vm.form.detail = "  Original note  "
+        vm.form.date = date
+        vm.form.isRecurring = true
+        await vm.save()
+        await vm.saveMinesweeperExpense()
+        await vm.saveMinesweeperExpense()
+        let stored = try await expenses.expenses(in: DateInterval(start: date, duration: 1), titleID: nil)
+        let expense = try #require(stored.first)
+        #expect(stored.count == 1 && expense.amount == Money(minorUnits: 12550, currencyCode: "USD"))
+        #expect(expense.detail == "Original note" && expense.isRecurring && expense.date == date)
+        #expect(try await titles.title(id: expense.titleID)?.name == "buscamina")
+        #expect(!vm.showMinesweeper && vm.didJustSave && vm.didSaveGuidedExpense)
+        #expect(!vm.showFirstExpenseHelp && vm.form.amountDecimal == 0)
+    }
+
+    @Test("Failed Save as expense keeps the game and draft available for retry", .tags(.viewModel))
+    func minesweeperSaveFailure() async throws {
+        let expenses = InMemoryExpenseRepository()
+        let titles = InMemoryExpenseTitleRepository()
+        let probe = MinesweeperSaveProbe(wrapped: AddExpenseUseCaseImpl(expenses: expenses, titles: titles))
+        let vm = makeVM(expenses: expenses, titles: titles, addExpense: probe)
+        await vm.refreshFirstExpenseHelp()
+        vm.form.amountDecimal = 17
+        vm.form.titleName = "buscamina"
+        vm.form.detail = "Keep this"
+        await vm.save()
+        await vm.saveMinesweeperExpense()
+        #expect(vm.showMinesweeper && vm.saveError != nil && !vm.isSaving)
+        #expect(vm.form.amountDecimal == 17 && vm.form.detail == "Keep this")
+        #expect(!vm.didJustSave && vm.showFirstExpenseHelp)
+        let retry = Task { await vm.saveMinesweeperExpense() }
+        await probe.waitUntilSaving()
+        await vm.saveMinesweeperExpense()
+        await vm.save()
+        #expect(vm.isSaving && vm.showMinesweeper)
+        #expect(await probe.callCount == 2)
+        await probe.finishSaving()
+        await retry.value
+        #expect(!vm.showMinesweeper && vm.didJustSave && vm.saveError == nil)
+        let title = try #require(try await titles.title(named: "buscamina"))
+        #expect(try await expenses.count(forTitleID: title.id) == 1)
+    }
+
+    @Test("Only the complete category triggers the game; a note or near match remains an ordinary expense", .tags(.viewModel),
+        arguments: ["buscaminas", "buscamina extra", "Coffee"])
+    func minesweeperNearMatches(category: String) async throws {
+        let expenses = InMemoryExpenseRepository()
+        let vm = makeVM(expenses: expenses)
+        vm.form.amountDecimal = 17
+        vm.form.titleName = category
+        vm.form.detail = "buscamina"
+        await vm.save()
+        #expect(!vm.showMinesweeper && vm.didJustSave)
+        #expect(try await expenses.hasExpenses())
+    }
+
+    @Test("An invalid amount cannot launch Minesweeper", .tags(.viewModel), arguments: [0, -1])
+    func minesweeperInvalidAmount(amount: Int) async {
+        let vm = makeVM()
+        vm.form.amountDecimal = Decimal(amount)
+        vm.form.titleName = "buscamina"
+        await vm.save()
+        #expect(!vm.showMinesweeper && !vm.didJustSave)
+    }
+
     @Test("The anniversary command opens the selector without creating a category, expense or onboarding success", .tags(.viewModel),
         arguments: ["Aniversario", " aniversario ", "ANIVERSARIO"])
     func privateBudgetCommand(category: String) async throws {

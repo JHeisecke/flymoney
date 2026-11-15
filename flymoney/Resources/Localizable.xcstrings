@@ -1,6 +1,502 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+  "Your expense is only saved when you choose Save expense.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Your expense is only saved when you choose Save expense."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "El gasto se guarda solo al elegir Guardar gasto."
+        }
+      }
+    }
+  },
+  "A little break": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "A little break"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Un pequeño descanso"
+        }
+      }
+    }
+  },
+  "Watch your step": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Watch your step"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Cuidado dónde pisás"
+        }
+      }
+    }
+  },
+  "You cleared the board!": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "You cleared the board!"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "¡Completaste el tablero!"
+        }
+      }
+    }
+  },
+  "You found a mine": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "You found a mine"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Encontraste una mina"
+        }
+      }
+    }
+  },
+  "Find the 10 mines. Your first reveal is safe.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Find the 10 mines. Your first reveal is safe."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Encontrá las 10 minas. El primer casillero es seguro."
+        }
+      }
+    }
+  },
+  "Reveal every safe square to win.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Reveal every safe square to win."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Descubrí todos los casilleros seguros para ganar."
+        }
+      }
+    }
+  },
+  "All safe squares are clear. Play again?": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "All safe squares are clear. Play again?"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Descubriste todos los casilleros seguros. ¿Otra partida?"
+        }
+      }
+    }
+  },
+  "No worries. A new board is one tap away.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "No worries. A new board is one tap away."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "No pasa nada. Podés empezar otra partida."
+        }
+      }
+    }
+  },
+  "Incorrect flag": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Incorrect flag"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Bandera incorrecta"
+        }
+      }
+    }
+  },
+  "Exploded mine": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Exploded mine"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mina detonada"
+        }
+      }
+    }
+  },
+  "Mine": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mine"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mina"
+        }
+      }
+    }
+  },
+  "Flagged": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Flagged"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Con bandera"
+        }
+      }
+    }
+  },
+  "Empty": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Empty"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Vacío"
+        }
+      }
+    }
+  },
+  "Nearby mines: %lld": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Nearby mines: %lld"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Minas alrededor: %lld"
+        }
+      }
+    }
+  },
+  "Hidden": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Hidden"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Oculto"
+        }
+      }
+    }
+  },
+  "Row %lld, column %lld. %@": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Row %lld, column %lld. %@"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Fila %1$lld, columna %2$lld. %3$@"
+        }
+      }
+    }
+  },
+  "Double-tap to place or remove a flag.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Double-tap to place or remove a flag."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Tocá dos veces para colocar o quitar una bandera."
+        }
+      }
+    }
+  },
+  "Double-tap to reveal. Switch to Flag to mark a square.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Double-tap to reveal. Switch to Flag to mark a square."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Tocá dos veces para descubrir. Elegí Marcar para colocar una bandera."
+        }
+      }
+    }
+  },
+  "Minefield": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Minefield"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Campo minado"
+        }
+      }
+    }
+  },
+  "Flags left": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Flags left"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Banderas disponibles"
+        }
+      }
+    }
+  },
+  "New game": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "New game"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Nueva partida"
+        }
+      }
+    }
+  },
+  "Action": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Action"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Acción"
+        }
+      }
+    }
+  },
+  "Reveal": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Reveal"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Descubrir"
+        }
+      }
+    }
+  },
+  "Flag": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Flag"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Marcar"
+        }
+      }
+    }
+  },
+  "Tap a square to reveal it, or choose Flag to mark it. Scroll the board if needed.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Tap a square to reveal it, or choose Flag to mark it. Scroll the board if needed."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Tocá un casillero para descubrirlo o elegí Marcar para colocar una bandera. Desplazá el tablero si hace falta."
+        }
+      }
+    }
+  },
+  "Save as expense": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Save as expense"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Guardar como gasto"
+        }
+      }
+    }
+  },
+  "Your expense is only saved when you choose Save as expense.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Your expense is only saved when you choose Save as expense."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "El gasto se guarda solo al elegir Guardar como gasto."
+        }
+      }
+    }
+  },
+  "Minesweeper": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Minesweeper"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Buscaminas"
+        }
+      }
+    }
+  },
+  "Start a new game?": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Start a new game?"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "¿Empezar una nueva partida?"
+        }
+      }
+    }
+  },
+  "Your current board will be cleared.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Your current board will be cleared."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Se borrará el tablero actual."
+        }
+      }
+    }
+  },
     "Iara": {
       "localizations": {
         "en": {

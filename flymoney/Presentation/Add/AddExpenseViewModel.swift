@@ -15,6 +15,7 @@ final class AddExpenseViewModel {
 	private(set) var isSaving = false
 	var saveError: String?
     var showPrivateBudgets = false
+    var showMinesweeper = false
 	private(set) var didJustSave = false
 	private(set) var showFirstExpenseHelp = false
 	private(set) var didSaveGuidedExpense = false
@@ -146,10 +147,9 @@ final class AddExpenseViewModel {
 	}
 
 	func save() async {
-        guard !isSaving, !showPrivateBudgets else { return }
-        let category = form.titleName.trimmingCharacters(in: .whitespacesAndNewlines)
-        if form.amountDecimal == Decimal(20_022_021),
-           category.compare("Aniversario", options: .caseInsensitive, locale: Locale(identifier: "es_PY")) == .orderedSame {
+        guard !isSaving, !showPrivateBudgets, !showMinesweeper else { return }
+        switch EasterEggDestination.resolve(amount: form.amountDecimal, category: form.titleName) {
+        case .privateBudgets:
             searchTask?.cancel()
             form.reset()
             suggestions = []
@@ -160,7 +160,28 @@ final class AddExpenseViewModel {
             didJustSave = false
             showPrivateBudgets = true
             return
+        case .minesweeper:
+            guard form.canSave else { return }
+            searchTask?.cancel()
+            suggestions = []
+            saveError = nil
+            didJustSave = false
+            didSaveGuidedExpense = false
+            showMinesweeper = true
+            return
+        case nil:
+            break
         }
+        await persistExpense()
+    }
+
+    func saveMinesweeperExpense() async {
+        guard showMinesweeper, !isSaving else { return }
+        await persistExpense()
+        if didJustSave { showMinesweeper = false }
+    }
+
+    private func persistExpense() async {
 		guard let clean = form.validated() else { return }
 		isSaving = true
 		defer { isSaving = false }
@@ -170,6 +191,7 @@ final class AddExpenseViewModel {
 				amount: clean.amount, titleName: clean.titleName, date: clean.date, detail: clean.detail, isRecurring: form.isRecurring)
 			didSaveGuidedExpense = showFirstExpenseHelp
 			finishFirstExpenseHelp()
+			searchTask?.cancel()
 			form.reset()
 			suggestions = []
 			selectedTitleID = nil
