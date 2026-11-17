@@ -35,11 +35,68 @@ struct MinesweeperControlsView: View {
                 .buttonStyle(.hapticPlain)
                 .accessibilityIdentifier("minesweeper.restart")
             }
-            Picker("Action", selection: $model.isFlagging) {
-                Label("Reveal", systemImage: "hand.tap").tag(false)
-                Label("Flag", systemImage: "flag.fill").tag(true)
+            Menu {
+                ForEach(MinesweeperDifficulty.allCases) { difficulty in
+                    Button { model.requestDifficulty(difficulty) } label: {
+                        HStack {
+                            Text(verbatim: model.difficultyName(difficulty))
+                            if difficulty == model.game.difficulty { Image(systemName: "checkmark") }
+                        }
+                    }
+                }
+            } label: {
+                HStack {
+                    Text("Difficulty")
+                    Spacer()
+                    Text(verbatim: model.difficultyName(model.game.difficulty))
+                    Image(systemName: "chevron.up.chevron.down")
+                        .accessibilityHidden(true)
+                }
+                .padding(Theme.Spacing.md)
+                .frame(minHeight: 44)
+                .background(Theme.Colors.segmentedTrack, in: .rect(cornerRadius: Theme.Radius.sm))
+                .contentShape(.rect)
             }
-            .pickerStyle(.segmented)
+            .accessibilityIdentifier("minesweeper.difficulty")
+            Text("\(model.game.columns) × \(model.game.rows) · \(model.game.mineCount) mines")
+                .font(.caption)
+                .foregroundStyle(Theme.Colors.inkSecondary)
+            HStack(spacing: Theme.Spacing.xs) {
+                Button { model.isFlagging = false } label: {
+                    Label("Reveal", systemImage: "magnifyingglass")
+                        .font(.body.weight(model.isFlagging ? .regular : .semibold))
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .background(model.isFlagging ? Color.clear : Theme.Colors.segmentedThumb,
+                            in: .rect(cornerRadius: Theme.Radius.xs))
+                        .contentShape(.rect)
+                }
+                .accessibilityAddTraits(model.isFlagging ? [] : .isSelected)
+                .accessibilityIdentifier("minesweeper.reveal")
+                Button { model.isFlagging = true } label: {
+                    Label {
+                        Text("Flag")
+                    } icon: {
+                        Image(.minesweeperMarker)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                    }
+                    .font(.body.weight(model.isFlagging ? .semibold : .regular))
+                    .frame(maxWidth: .infinity, minHeight: 44)
+                    .background(model.isFlagging ? Theme.Colors.segmentedThumb : Color.clear,
+                        in: .rect(cornerRadius: Theme.Radius.xs))
+                    .contentShape(.rect)
+                }
+                .accessibilityAddTraits(model.isFlagging ? .isSelected : [])
+                .accessibilityIdentifier("minesweeper.flag")
+            }
+            .labelStyle(.titleAndIcon)
+            .buttonStyle(.hapticPlain)
+            .foregroundStyle(Theme.Colors.ink)
+            .padding(Theme.Spacing.xs)
+            .background(Theme.Colors.segmentedTrack, in: .rect(cornerRadius: Theme.Radius.sm))
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Action")
             .disabled(model.game.state.isFinished)
             Text("Tap a square to reveal it, or choose Flag to mark it. Scroll the board if needed.")
                 .font(.footnote)

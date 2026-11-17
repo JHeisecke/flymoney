@@ -52,7 +52,7 @@ struct MinesweeperView: View {
             .font(.custom("Sora", size: 16, relativeTo: .body))
             .foregroundStyle(Theme.Colors.ink)
             .background(Theme.Colors.surface)
-            .navigationTitle("Minesweeper")
+            .navigationTitle("Moneysweeper")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

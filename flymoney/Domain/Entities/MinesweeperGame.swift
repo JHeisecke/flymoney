@@ -6,27 +6,29 @@
 //
 
 struct MinesweeperGame {
-    static let columns = 8
-    static let rows = 8
-    static let mineCount = 10
+    let difficulty: MinesweeperDifficulty
+    var columns: Int { difficulty.columns }
+    var rows: Int { difficulty.rows }
+    var mineCount: Int { difficulty.mineCount }
 
     private(set) var cells: [MinesweeperCell]
     private(set) var state: MinesweeperState = .ready
     private(set) var detonatedCellID: Int?
     private let mineOrder: [Int]
 
-    init() {
+    init(difficulty: MinesweeperDifficulty = .easy) {
         var generator = SystemRandomNumberGenerator()
-        self.init(using: &generator)
+        self.init(difficulty: difficulty, using: &generator)
     }
 
-    init(using generator: inout some RandomNumberGenerator) {
-        cells = (0..<(Self.rows * Self.columns)).map { MinesweeperCell(id: $0) }
+    init(difficulty: MinesweeperDifficulty = .easy, using generator: inout some RandomNumberGenerator) {
+        self.difficulty = difficulty
+        cells = (0..<(difficulty.rows * difficulty.columns)).map { MinesweeperCell(id: $0) }
         mineOrder = cells.map(\.id).shuffled(using: &generator)
     }
 
     var flagCount: Int { cells.filter(\.isFlagged).count }
-    var remainingFlags: Int { Self.mineCount - flagCount }
+    var remainingFlags: Int { mineCount - flagCount }
 
     mutating func toggleFlag(at id: Int) {
         guard cells.indices.contains(id), !state.isFinished, !cells[id].isRevealed else { return }
@@ -57,7 +59,7 @@ struct MinesweeperGame {
     }
 
     private mutating func placeMines(excluding firstCell: Int) {
-        for id in mineOrder.lazy.filter({ $0 != firstCell }).prefix(Self.mineCount) {
+        for id in mineOrder.lazy.filter({ $0 != firstCell }).prefix(mineCount) {
             cells[id].isMine = true
         }
         for id in cells.indices {
@@ -67,16 +69,16 @@ struct MinesweeperGame {
     }
 
     private func neighbors(of id: Int) -> [Int] {
-        let row = id / Self.columns
-        let column = id % Self.columns
+        let row = id / columns
+        let column = id % columns
         return (-1...1).flatMap { rowOffset in
             (-1...1).compactMap { columnOffset in
                 let nextRow = row + rowOffset
                 let nextColumn = column + columnOffset
                 guard rowOffset != 0 || columnOffset != 0,
-                      (0..<Self.rows).contains(nextRow),
-                      (0..<Self.columns).contains(nextColumn) else { return nil }
-                return nextRow * Self.columns + nextColumn
+                      (0..<rows).contains(nextRow),
+                      (0..<columns).contains(nextColumn) else { return nil }
+                return nextRow * columns + nextColumn
             }
         }
     }

@@ -12,7 +12,12 @@ import Observation
 final class MinesweeperViewModel {
     private(set) var game: MinesweeperGame
     var isFlagging = false
-    var confirmRestart = false
+    private(set) var pendingDifficulty: MinesweeperDifficulty?
+    var confirmRestart = false {
+        didSet {
+            if !confirmRestart { pendingDifficulty = nil }
+        }
+    }
 
     init(game: MinesweeperGame = MinesweeperGame()) {
         self.game = game
@@ -23,8 +28,20 @@ final class MinesweeperViewModel {
         else { game.reveal(at: id) }
     }
 
+    private var hasProgress: Bool {
+        !game.state.isFinished && (game.state == .playing || game.flagCount > 0)
+    }
+
+    func requestDifficulty(_ difficulty: MinesweeperDifficulty) {
+        guard difficulty != game.difficulty else { return }
+        pendingDifficulty = difficulty
+        if hasProgress { confirmRestart = true }
+        else { restart() }
+    }
+
     func requestRestart() {
-        if !game.state.isFinished && (game.state == .playing || game.flagCount > 0) {
+        pendingDifficulty = nil
+        if hasProgress {
             confirmRestart = true
         } else {
             restart()
@@ -32,9 +49,17 @@ final class MinesweeperViewModel {
     }
 
     func restart() {
-        game = MinesweeperGame()
+        game = MinesweeperGame(difficulty: pendingDifficulty ?? game.difficulty)
         isFlagging = false
         confirmRestart = false
+    }
+
+    func difficultyName(_ difficulty: MinesweeperDifficulty) -> String {
+        switch difficulty {
+        case .easy: String(localized: "Easy")
+        case .medium: String(localized: "Medium")
+        case .hard: String(localized: "Hard")
+        }
     }
 
     var statusTitle: String {
@@ -48,7 +73,7 @@ final class MinesweeperViewModel {
 
     var statusMessage: String {
         switch game.state {
-        case .ready: String(localized: "Find the 10 mines. Your first reveal is safe.")
+        case .ready: String(localized: "Find the \(game.mineCount) mines. Your first reveal is safe.")
         case .playing: String(localized: "Reveal every safe square to win.")
         case .won: String(localized: "All safe squares are clear. Play again?")
         case .lost: String(localized: "No worries. A new board is one tap away.")
@@ -56,8 +81,8 @@ final class MinesweeperViewModel {
     }
 
     func cellLabel(_ cell: MinesweeperCell) -> String {
-        let row = cell.id / MinesweeperGame.columns + 1
-        let column = cell.id % MinesweeperGame.columns + 1
+        let row = cell.id / game.columns + 1
+        let column = cell.id % game.columns + 1
         let detail: String
         if game.state == .lost, cell.isFlagged, !cell.isMine {
             detail = String(localized: "Incorrect flag")

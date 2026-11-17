@@ -16,7 +16,7 @@ struct MinesweeperBoardView: View {
     var body: some View {
         ScrollView(.horizontal) {
             LazyVGrid(columns: Array(repeating: GridItem(.fixed(cellSide), spacing: 0),
-                count: MinesweeperGame.columns), spacing: 0) {
+                count: model.game.columns), spacing: 0) {
                 ForEach(model.game.cells) { cell in
                     MinesweeperCellView(cell: cell, state: model.game.state,
                         isDetonated: model.game.detonatedCellID == cell.id, size: cellSide,
@@ -25,7 +25,7 @@ struct MinesweeperBoardView: View {
                         }
                 }
             }
-            .frame(width: cellSide * CGFloat(MinesweeperGame.columns))
+            .frame(width: cellSide * CGFloat(model.game.columns))
             .padding(Theme.Spacing.sm)
             .background(MinesweeperPalette.shadow)
             .overlay { Rectangle().strokeBorder(MinesweeperPalette.panel, lineWidth: 3) }

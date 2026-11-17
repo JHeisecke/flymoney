@@ -14,7 +14,9 @@ enum EasterEggDestination {
     static func resolve(amount: Decimal, category: String) -> Self? {
         let name = category.trimmingCharacters(in: .whitespacesAndNewlines)
         let locale = Locale(identifier: "es_PY")
-        if name.compare("buscamina", options: .caseInsensitive, locale: locale) == .orderedSame {
+        if ["buscadinero", "moneysweeper"].contains(where: {
+            name.compare($0, options: .caseInsensitive, locale: locale) == .orderedSame
+        }) {
             return .minesweeper
         }
         if amount == Decimal(20_022_021),

@@ -1,6 +1,118 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+  "Moneysweeper": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Moneysweeper"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Buscadinero"
+        }
+      }
+    }
+  },
+  "Difficulty": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Difficulty"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Dificultad"
+        }
+      }
+    }
+  },
+  "Easy": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Easy"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Fácil"
+        }
+      }
+    }
+  },
+  "Medium": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Medium"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Media"
+        }
+      }
+    }
+  },
+  "Hard": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Hard"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Difícil"
+        }
+      }
+    }
+  },
+  "Find the %lld mines. Your first reveal is safe.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Find the %lld mines. Your first reveal is safe."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Encontrá las %lld minas. Tu primera casilla es segura."
+        }
+      }
+    }
+  },
+  "%lld × %lld · %lld mines": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "%lld × %lld · %lld mines"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "%lld × %lld · %lld minas"
+        }
+      }
+    }
+  },
   "This saved budget was deleted. Return to Budgets to choose another.": {
     "localizations": {
       "en": {

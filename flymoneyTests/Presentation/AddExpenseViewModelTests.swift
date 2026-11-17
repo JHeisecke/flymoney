@@ -540,7 +540,7 @@ struct AddExpenseViewModelTests {
 			searchDebounce: searchDebounce)
 	}
     @Test("Minesweeper opens for any valid amount and preserves the entire draft without writes", .tags(.viewModel),
-        arguments: ["buscamina", " BUSCAMINA ", "Buscamina\n"])
+        arguments: ["buscadinero", " BUSCADINERO ", "Buscadinero\n", "moneysweeper", " MONEYSWEEPER ", "Moneysweeper\n"])
     func minesweeperCommand(category: String) async throws {
         for amount: Decimal in [1, 42.5, 20_022_021] {
             let expenses = InMemoryExpenseRepository()
@@ -568,15 +568,16 @@ struct AddExpenseViewModelTests {
         }
     }
 
-    @Test("Save as expense persists every original field once and dismisses instead of reopening the game", .tags(.viewModel))
-    func minesweeperSaveExpense() async throws {
+    @Test("Save as expense persists every original field once and dismisses instead of reopening the game", .tags(.viewModel),
+        arguments: ["buscadinero", "moneysweeper"])
+    func minesweeperSaveExpense(category: String) async throws {
         let expenses = InMemoryExpenseRepository()
         let titles = InMemoryExpenseTitleRepository()
         let vm = makeVM(expenses: expenses, titles: titles)
         await vm.refreshFirstExpenseHelp()
         let date = Date(timeIntervalSince1970: 1_700_000_000)
         vm.form.amountDecimal = 125.5
-        vm.form.titleName = "buscamina"
+        vm.form.titleName = category
         vm.form.detail = "  Original note  "
         vm.form.date = date
         vm.form.isRecurring = true
@@ -587,7 +588,7 @@ struct AddExpenseViewModelTests {
         let expense = try #require(stored.first)
         #expect(stored.count == 1 && expense.amount == Money(minorUnits: 12550, currencyCode: "USD"))
         #expect(expense.detail == "Original note" && expense.isRecurring && expense.date == date)
-        #expect(try await titles.title(id: expense.titleID)?.name == "buscamina")
+        #expect(try await titles.title(id: expense.titleID)?.name == category)
         #expect(!vm.showMinesweeper && vm.didJustSave && vm.didSaveGuidedExpense)
         #expect(!vm.showFirstExpenseHelp && vm.form.amountDecimal == 0)
     }
@@ -600,7 +601,7 @@ struct AddExpenseViewModelTests {
         let vm = makeVM(expenses: expenses, titles: titles, addExpense: probe)
         await vm.refreshFirstExpenseHelp()
         vm.form.amountDecimal = 17
-        vm.form.titleName = "buscamina"
+        vm.form.titleName = "buscadinero"
         vm.form.detail = "Keep this"
         await vm.save()
         await vm.saveMinesweeperExpense()
@@ -616,18 +617,18 @@ struct AddExpenseViewModelTests {
         await probe.finishSaving()
         await retry.value
         #expect(!vm.showMinesweeper && vm.didJustSave && vm.saveError == nil)
-        let title = try #require(try await titles.title(named: "buscamina"))
+        let title = try #require(try await titles.title(named: "buscadinero"))
         #expect(try await expenses.count(forTitleID: title.id) == 1)
     }
 
     @Test("Only the complete category triggers the game; a note or near match remains an ordinary expense", .tags(.viewModel),
-        arguments: ["buscaminas", "buscamina extra", "Coffee"])
+        arguments: ["buscamina", "buscaminas", "buscadineros", "buscadinero extra", "moneysweepers", "moneysweeper extra", "Coffee"])
     func minesweeperNearMatches(category: String) async throws {
         let expenses = InMemoryExpenseRepository()
         let vm = makeVM(expenses: expenses)
         vm.form.amountDecimal = 17
         vm.form.titleName = category
-        vm.form.detail = "buscamina"
+        vm.form.detail = "buscadinero"
         await vm.save()
         #expect(!vm.showMinesweeper && vm.didJustSave)
         #expect(try await expenses.hasExpenses())
@@ -637,7 +638,7 @@ struct AddExpenseViewModelTests {
     func minesweeperInvalidAmount(amount: Int) async {
         let vm = makeVM()
         vm.form.amountDecimal = Decimal(amount)
-        vm.form.titleName = "buscamina"
+        vm.form.titleName = "buscadinero"
         await vm.save()
         #expect(!vm.showMinesweeper && !vm.didJustSave)
     }
